@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Marketing plateforme - Multiutilisateur</title>
+  
+  <!-- Inclure Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+  /* VOTRE CSS EXISTANT RESTE IDENTIQUE */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: "Segoe UI", sans-serif;
+    text-align: center;
+    background: #00529c;
+    margin: 0;
+    padding: 0;
+    color: #00529c;
+  }
+
+  header {
+    background: white;
+    padding: 10px;
+    border-bottom: 3px solid #00529c;
+  }
+
+  .profil-container {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    text-align: center;
+    z-index: 100;
+  }
+
+  .photo-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .photo-marketing {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #00529c;
+    object-fit: cover;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .photo-marketing:hover {
+    transform: scale(1.3);
+  }
+
+  .hover-text {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #00529c;
+    font-weight: bolder;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .photo-link:hover .hover-text {
+    opacity: 1;
+  }
+
+  .titre-poste {
+    font-size: 11px;
+    color:white;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  img.logo {
+    height: 60px;
+  }
+
+  .wrap{max-width:1280px;margin:0 auto}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  header h1{font-size:20px;margin:0;color:var(--accent)}
+  .top-actions{display:flex;gap:8px;align-items:center}
+  .big-btn{background:#00529c; color:#fff;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(11,118,209,0.12)}
+  .ghost-btn{background:transparent;border:1px solid rgba(3,40,80,0.06);padding:10px;border-radius:10px;cursor:pointer}
+
+  /* STATISTIQUES - EN BAS DE LA PAGE */
+  .stats-container {
+    display: flex;
+    gap: 15px;
+    margin: 30px 0 20px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #ffffff, #f8fbff);
+    border: 2px solid #e6f2ff;
+    border-radius: 12px;
+    padding: 15px;
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 82, 156, 0.15);
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00529c;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .stat-details {
+    font-size: 11px;
+    color: #888;
+    margin-top: 5px;
+  }
+
+  /* GRAPHIQUES - EN BAS DE LA PAGE */
+  .charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0 30px 0;
+  }
+
+  .chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .chart-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00529c;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .chart {
+    width: 100%;
+    height: 200px;
+    position: relative;
+  }
+
+  .bar-container {
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    height: 160px;
+    margin-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  .bar {
+    width: 40px;
+    background: linear-gradient(to top, #00529c, #0b76d1);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .bar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 82, 156, 0.3);
+  }
+
+  .bar-label {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #666;
+    white-space: nowrap;
+    font-weight: bold;
+    width: 80px;
+    text-align: center;
+  }
+
+  .bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #00529c;
+  }
+
+  /* categories row - TOUS LES BOUTONS ALIGNÉS */
+  .cats{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap; justify-content: center;}
+  .cat-btn{flex:1;min-width:180px;padding:16px;background:linear-gradient(180deg,#fff,#f7fbff);border-radius:10px;border:1px solid rgba(11,118,209,0.06);cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px; transition: all 0.3s ease;}
+  .cat-btn h3{margin:0;font-size:15px;color:#00529c;}
+  .cat-btn p{margin:0;color:#00529c;font-size:13px}
+
+  /* Catégorie active en vert */
+  .cat-btn.active {
+    background: linear-gradient(180deg, #e8f5e8, #d4edda);
+    border-color: #28a745;
+    transform: translateY(-2px);
+  }
+
+  .cat-btn.active h3,
+  .cat-btn.active p {
+    color: #155724;
+  }
+
+  /* board - LISTE DES CONTACTS */
+  .board{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow); margin-top: 20px;}
+  .board .board-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+  .board .board-header .title{font-weight:700}
+  .controls{display:flex;gap:8px;align-items:center}
+
+  /* BOUTONS PDF - DÉPLACÉS À GAUCHE */
+  .pdf-buttons {
+      display: flex;
+      gap: 10px;
+      margin-right: auto;
+  }
+
+  .pdf-btn {
+      background: #00529c;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      justify-content: center;
+  }
+
+  .pdf-btn:hover {
+      background: #003d75;
+      transform: translateY(-1px);
+  }
+
+  .pdf-btn.client {
+      background: #28a745;
+  }
+
+  .pdf-btn.client:hover {
+      background: #218838;
+  }
+
+  .pdf-btn.all {
+      background: #17a2b8;
+  }
+
+  .pdf-btn.all:hover {
+      background: #138496;
+  }
+
+  /* table */
+  .table-wrap{overflow:auto;border-radius:10px;border:1px solid #e8f0fb}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{position:sticky;top:0;background:linear-gradient(180deg,#fff,#f7fbff);padding:10px;border-bottom:1px solid #e6eefc;text-align:left}
+  tbody td{padding:10px;border-bottom:1px solid #f0f6ff}
+  tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff}
+  tr.contact-row:hover{background:var(--row-hover);cursor:pointer}
+  td.actions-td{display:flex;gap:6px;justify-content:flex-end}
+  .btn-small{border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-edit{background:#fff;border:1px solid #cfe6ff;color:var(--accent)}
+  .btn-delete{background:transparent;border:1px solid rgba(255,0,0,0.08);color:var(--danger)}
+  .icon-delete{width:28px;height:28px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);display:grid;place-items:center;background:#fff}
+  .icon-delete svg{width:14px;height:14px;fill:var(--danger)}
+
+  /* new contact form modal - CORRIGÉ */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(6,12,24,0.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:40}
+  .modal{background:var(--card);width:820px;max-width:90%;border-radius:12px;padding:24px;box-shadow:0 20px 60px rgba(6,20,40,0.45); overflow-y: auto; max-height: 90vh;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px; margin: 20px 0;}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px; font-weight: 600;}
+  input[type="text"], input[type="email"], select, textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #e6f2ff;background:#fbfeff; box-sizing: border-box; font-size: 14px;}
+  .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px; padding-top: 20px; border-top: 1px solid #e6f2ff;}
+
+  /* plan section under table - OPTIMISÉ */
+  .plan{display:none;margin-top:14px;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:10px;padding:14px;border:1px solid #e6f3ff; max-height: 70vh; overflow-y: auto;}
+  .plan .plan-header{display:flex;justify-content:space-between;align-items:center;gap:8px; position: sticky; top: 0; background: white; padding: 10px; margin: -14px -14px 10px -14px; border-bottom: 1px solid #e6f3ff; z-index: 10;}
+  .plan .meta{color:var(--muted);font-size:13px}
+  .plan-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px; position: sticky; bottom: 0; background: white; padding: 10px; margin: 10px -14px -14px -14px; border-top: 1px solid #e6f3ff;}
+
+  .small-muted{font-size:13px;color:var(--muted)}
+
+  /* PIED DE PAGE CORRIGÉ */
+  .footer {
+    background: white;
+    padding: 15px 20px;
+    margin-top: 30px;
+    border-top: 2px solid #00529c;
+    color: #00529c;
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* coloration des lignes selon département */
+  tr.contact-row[data-dept="Mesure"] td { background: var(--orange-mesure); }
+  tr.contact-row[data-dept="Projet"] td { background: var(--blue-projet); }
+
+  /* ---- FORMULAIRE CONTACT MODERNISE ---- */
+  .modal { 
+      background: #ffffff;
+      width: 820px; 
+      max-width: 90%;
+      border-radius: 16px; 
+      padding: 24px; 
+      box-shadow: 0 20px 60px rgba(6,20,40,0.35); 
+      font-family: 'Inter', sans-serif;
+      overflow-y: auto;
+      max-height: 90vh;
+  }
+
+  .modal h3 { 
+      font-size: 22px; 
+      font-weight: 700; 
+      color: #032; 
+      margin-bottom: 10px;
+  }
+
+  .form-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px; 
+      margin: 20px 0;
+  }
+
+  label { 
+      font-size: 14px; 
+      font-weight: 600; 
+      color: #555; 
+      margin-bottom: 6px; 
+      display: block; 
+  }
+
+  input[type="text"], input[type="email"], select, textarea { 
+      width: 100%; 
+      padding: 12px 14px; 
+      border-radius: 12px; 
+      border: 1px solid #d0e2ff; 
+      background: #f9fbff; 
+      font-size: 14px; 
+      color: #033; 
+      transition: all 0.2s ease-in-out; 
+      box-sizing: border-box;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  select:focus,
+  textarea:focus { 
+      border-color: #0b76d1; 
+      box-shadow: 0 0 6px rgba(11,118,209,0.25); 
+      outline: none; 
+  }
+
+  textarea { 
+      min-height: 100px; 
+      resize: vertical; 
+  }
+
+  .modal-footer { 
+      display: flex; 
+      justify-content: flex-end; 
+      gap: 12px; 
+      margin-top: 20px; 
+      padding-top: 20px;
+      border-top: 1px solid #e6f2ff;
+  }
+
+  .big-btn { 
+      padding: 12px 20px; 
+      border-radius: 12px; 
+      font-weight: 700; 
+      font-size: 14px; 
+      letter-spacing: 0.5px; 
+      box-shadow: 0 6px 18px rgba(11,118,209,0.15); 
+  }
+
+  .ghost-btn { 
+      border: 1px solid #cfe6ff; 
+      background: transparent; 
+      padding: 10px 16px; 
+      border-radius: 12px; 
+      color:#6fa0d4; 
+      font-weight: 600; 
+      transition: all 0.2s ease-in-out; 
+  }
+
+  .ghost-btn:hover { 
+      background: #00529c; 
+      border-color:white ; 
+  }
+
+  /* AJOUT DES NOUVEAUX STYLES POUR LES ZONES AVEC CADENAS - OPTIMISÉS */
+  .zone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0 8px 0;
+      padding: 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+  }
+
+  .zone-1 { background: #e6f2ff; border: 2px solid #00529c; }
+  .zone-2 { background: #fff3e6; border: 2px solid #ff9800; }
+  .zone-3 { background: #e6ffe6; border: 2px solid #4caf50; }
+
+  .discussion-item {
+      background: white;
+      padding: 8px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: 1px solid #cce0ff;
+      position: relative;
+  }
+
+  .discussion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 8px;
+  }
+
+  .discussion-select {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid #00529c;
+      border-radius: 4px;
+      font-weight: bold;
+      color: #00529c;
+      font-size: 12px;
+  }
+
+  .discussion-text {
+      width: 100%;
+      min-height: 50px;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 12px;
+  }
+
+  .lock-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+  }
+
+  .lock-btn.unlocked {
+      background: #ffebee;
+      color: #d32f2f;
+  }
+
+  .lock-btn.locked {
+      background: #e8f5e8;
+      color: #2e7d32;
+      cursor: not-allowed;
+  }
+
+  .add-discussion-btn {
+      background: #00529c;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 6px 0;
+      font-weight: bold;
+      font-size: 12px;
+  }
+
+  .add-discussion-btn:hover {
+      background: #003d75;
+  }
+
+  .remark-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 8px 0;
+  }
+
+  .remark-text {
+      flex: 1;
+      min-height: 60px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 12px;
+  }
+
+  /* STYLES OPTIMISÉS POUR LES ÉTAPES AVEC FLÈCHES */
+  .steps-container {
+      margin: 10px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 8px;
+  }
+
+  .step-card {
+      background: white;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccffcc;
+      position: relative;
+      min-height: 80px;
+  }
+
+  .step-card::after {
+      content: "→";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4caf50;
+      font-weight: bold;
+      font-size: 16px;
+  }
+
+  .step-card:last-child::after {
+      display: none;
+  }
+
+  .step-card .label {
+      font-weight: 700;
+      color: #035;
+      font-size: 12px;
+      margin-bottom: 4px;
+  }
+
+  .step-input {
+      width: 100%;
+      min-height: 50px;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-size: 12px;
+  }
+
+  .global-lock-container {
+      text-align: right;
+      margin: 10px 0;
+  }
+
+  .global-lock-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+  }
+
+  .global-lock-btn:disabled {
+      background: #9e9e9e;
+      cursor: not-allowed;
+  }
+
+  /* Styles pour les éléments verrouillés */
+  .locked-field {
+      background-color: #f5f5f5;
+      color: #666;
+      cursor: not-allowed;
+  }
+
+  /* Style pour les cadenas définitifs - pas de hover */
+  .lock-btn.locked:hover {
+      background: #e8f5e8;
+      transform: none;
+  }
+
+  /* Indicateur de synchronisation en temps réel */
+  .sync-indicator {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #28a745;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      z-index: 1000;
+      display: none;
+  }
+
+  .sync-indicator.syncing {
+      background: #ffc107;
+      color: black;
+  }
+
+  /* Variables CSS */
+  :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#0b76d1;
+      --accent-2:#0b9bd1;
+      --success:#2d9f6a;
+      --danger:#e44;
+      --radius:12px;
+      --shadow: 0 6px 18px rgba(11,34,60,0.08);
+      --blue-projet:#e6f5ff;
+      --orange-mesure:#fff3e6;
+      --row-hover:#f2f8ff;
+  }
+
+  /* responsive */
+  @media (max-width: 880px){
+      .form-grid { grid-template-columns: 1fr; }
+      .modal { padding: 18px; max-width: 95%; }
+      .pdf-buttons {
+          flex-direction: column;
+          gap: 5px;
+      }
+      .pdf-btn {
+          min-width: 100px;
+          padding: 10px 12px;
+          font-size: 12px;
+      }
+      .cat-btn {
+          flex: 1 1 45%;
+          min-width: 140px;
+      }
+      .stats-container {
+          gap: 10px;
+      }
+      .stat-card {
+          min-width: 150px;
+          padding: 12px;
+      }
+      .charts-container {
+          grid-template-columns: 1fr;
+      }
+      .bar-container {
+          overflow-x: auto;
+          padding-bottom: 10px;
+      }
+      .bar-label {
+          font-size: 10px;
+          width: 60px;
+          bottom: -30px;
+      }
+  }
+
+  /* responsive */
+  @media (max-width:880px){
+      .cat-btn{flex:1 1 48%}
+      .form-grid{grid-template-columns:1fr}
+  }
+  /* --- Bouton Fiche Contact --- */
+.contact-button-container {
+  position: fixed;
+  top: 13px;
+  left: 20px; /* à côté de la photo */
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Segoe UI", sans-serif; 
+}
+
+.contact-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  background-color: #00529c;
+  border-radius: 50%;
+  text-decoration: none;
+  cursor: pointer;
+  border: 3px solid white; /* ✅ Bord blanc ajouté */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.contact-button:hover {
+  transform: scale(1.1);
+  background-color: #2e70a9;
+}
+
+.contact-label {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+/* NOUVEAU GRAPHE PLEINE LARGEUR */
+.chart-full-width {
+  grid-column: 1 / -1;
+  margin: 20px 0;
+}
+
+.chart-full-width .chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Responsive pour le nouveau graphique */
+@media (max-width: 880px){
+  .chart-full-width {
+    grid-column: 1;
+  }
+}
+  </style>
+  
+</head>
+<body>
+
+  <!-- Indicateur de synchronisation -->
+  <div class="sync-indicator" id="syncIndicator">🟢 Connecté</div>
+  
+  <header>
+    <img src="" alt="" class="logo" />
+    <div class="profil-container">
+      <a href="#contact" class="photo-link">
+        <img src="./photos/Fedoua_Gauche.jpg" alt="Chargée marketing" class="photo-marketing">
+        <div class="hover-text">Contactez-moi</div>
+      </a>
+      <div class="titre-poste">Chargée Marketing</div>
+    </div>
+     <div class="contact-button-container">
+    <a href="index.html" class="contact-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24" height="24">
+        <path d="M12 13.065L2.4 6h19.2L12 13.065zM12 15.5l-10-7V18h20V8.5l-10 7z"/>
+      </svg>
+    </a>
+    <div class="contact-label">Fiche Contact</div>
+  </div>
+
+  </header>
+
+  <div class="wrap">
+    <header>
+      <p style="color: #00529c;font-weight: bolder; font-size: 30px;">Gestion des contacts | NAPEC 2025</p>
+      <div class="top-actions">
+        <!-- BOUTONS PDF DÉPLACÉS À GAUCHE -->
+        <div class="pdf-buttons">
+          <button id="btnExport" class="pdf-btn" title="Télécharger liste affichée en PDF">📊 PDF Liste</button>
+          <button id="btnDownloadClient" class="pdf-btn client" title="Télécharger le plan d'action du client">📄 PDF Client</button>
+          <button id="btnDownloadAll" class="pdf-btn all" title="Télécharger tous les clients par catégorie">📁 Tous PDF</button>
+        </div>
+        <button id="btnAdd" class="ghost-btn">➕ Nouveau contact</button>
+      </div>
+    </header>
+
+    <!-- categories - TOUS LES BOUTONS ALIGNÉS -->
+    <div class="cats" id="cats">
+      <div class="cat-btn" data-cat="important"><h3>Client — Important</h3><p>Clients stratégiques</p></div>
+      <div class="cat-btn" data-cat="partner"><h3>Chercheur — Partnership</h3><p>Partenariats</p></div>
+      <div class="cat-btn" data-cat="collab"><h3>Chercheur — Collaboration</h3><p>Collaborations</p></div>
+      <div class="cat-btn" data-cat="small"><h3>Client — Moins important</h3><p>Clients secondaires</p></div>
+      <div class="cat-btn" data-cat="marketing"><h3>Marketing</h3><p>Prospects</p></div>
+    </div>
+
+    <!-- board - LISTE DES CONTACTS EN HAUT -->
+    <div class="board" id="board" style="display:none">
+      <div class="board-header">
+        <div>
+          <div class="title" id="boardTitle">Catégorie —</div>
+          <div class="small-muted" id="boardSub">Liste des contacts</div>
+        </div>
+        <div class="controls">
+          <button id="btnBack" class="ghost-btn">← Retour</button>
+        </div>
+      </div>
+
+      <div class="table-wrap" id="tableWrap">
+        <table id="contactsTable" aria-label="Tableau contacts">
+          <thead>
+            <tr>
+              <th>Entreprise</th><th>Nom</th><th>Poste</th><th>Portable</th><th>Fixe</th><th>Email</th><th>Département</th><th>Sujet/Fournisseur</th><th style="width:140px;text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="contactsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- plan d'action OPTIMISÉ -->
+      <div class="plan" id="planSection" aria-live="polite">
+        <div class="plan-header">
+          <div>
+            <div style="font-weight:800" id="planTitle">Plan d'action — <span id="planCompany"></span></div>
+            <div class="meta" id="planPerson">Contact — <span id="planContact"></span> | <span id="planPoste"></span></div>
+          </div>
+          <div class="small-muted">Éditez les discussions et les actions, puis Sauvegarder.</div>
+        </div>
+
+        <!-- 🟦 ZONE 1 : Discussions dynamiques -->
+        <div class="zone-1">
+          <div class="zone-header">
+            <span>🟦 Discussions dynamiques</span>
+            <button class="add-discussion-btn" id="btnAddDiscussion">+ Ajouter</button>
+          </div>
+          <div id="discussionsContainer"></div>
+        </div>
+
+        <!-- 🟩 ZONE 2 : Étapes à remplir -->
+        <div class="zone-3">
+          <div class="zone-header">
+            <span>🟩 Actions du plan</span>
+            <button class="add-discussion-btn" id="btnAddStep">+ Action</button>
+          </div>
+          <div class="steps-container" id="stepsContainer">
+            <!-- Les étapes seront ajoutées dynamiquement ici -->
+          </div>
+          <div class="global-lock-container">
+            <button class="global-lock-btn" id="lockAllSteps">🔒 Verrouiller toutes les actions</button>
+          </div>
+        </div>
+
+        <!-- 🟧 ZONE 3 : Suite / Remarque - DÉPLACÉE APRÈS LES ACTIONS -->
+        <div class="zone-2">
+          <div class="zone-header">
+            <span>🟧 Suite / Remarque</span>
+          </div>
+          <div class="remark-container">
+            <textarea id="remarkText" class="remark-text" placeholder="Remarques complémentaires..."></textarea>
+            <button class="lock-btn unlocked" id="lockRemark">🔓</button>
+          </div>
+        </div>
+
+        <div class="plan-actions">
+          <button id="btnDeletePlan" class="btn-small btn-delete">🗑 Supprimer</button>
+          <button id="btnClosePlan" class="btn-small" style="background:#f3f3f3">Fermer</button>
+          <button id="btnSavePlan" class="btn-small" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff">💾 Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESPACE VIDE -->
+    <div style="height: 40px;"></div>
+
+    <!-- STATISTIQUES - EN BAS DE LA PAGE -->
+    <div class="stats-container" id="statsContainer">
+      <!-- Les statistiques seront générées dynamiquement ici -->
+    </div>
+
+    <!-- GRAPHIQUES - EN BAS DE LA PAGE -->
+    <div class="charts-container" id="chartsContainer">
+      <!-- Les graphiques seront générés dynamiquement ici -->
+    </div>
+<!-- GRAPHIQUES - EN BAS DE LA PAGE -->
+<div class="charts-container" id="chartsContainer">
+  <!-- Les graphiques seront générés dynamiquement ici -->
+</div>
+
+<!-- NOUVEAU GRAPHE : Discussions par personne -->
+<div class="chart-full-width" id="personChartContainer">
+  <div class="chart-card">
+    <div class="chart-title">Discussions par Personne</div>
+    <div class="bar-container" id="personChart">
+      <!-- Le graphique des personnes sera généré ici -->
+    </div>
+  </div>
+</div>
+    <!-- PIED DE PAGE CORRIGÉ -->
+    <div class="footer">
+      <p>© 2025 Fedoua Timzit - Tous droits réservés</p>
+    </div>
+  </div>
+
+  <!-- modal: add / edit - CORRIGÉ -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom: 10px;">
+        <h3 id="modalTitle" style="margin:0">Nouveau contact</h3>
+        <button id="closeModal" class="ghost-btn">✖</button>
+      </div>
+
+      <form id="contactForm">
+        <div class="form-grid">
+          <div>
+            <label for="fEntreprise">Entreprise *</label>
+            <input type="text" id="fEntreprise" required />
+          </div>
+          <div>
+            <label for="fNom">Nom & Prénom *</label>
+            <input type="text" id="fNom" required />
+          </div>
+          <div>
+            <label for="fPoste">Poste</label>
+            <input type="text" id="fPoste" />
+          </div>
+          <div>
+            <label for="fDepart">Département</label>
+            <select id="fDepart">
+              <option value="">-- choisir --</option>
+              <option value="Projet">Projet</option>
+              <option value="Mesure">Mesure</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div>
+            <label for="fPortable">Portable</label>
+            <input type="text" id="fPortable" />
+          </div>
+          <div>
+            <label for="fFixe">Fixe</label>
+            <input type="text" id="fFixe" />
+          </div>
+          <div>
+            <label for="fEmail">Email</label>
+            <input type="email" id="fEmail" />
+          </div>
+          <div>
+            <label for="fProjet">Projet / Mesure</label>
+            <input type="text" id="fProjet" />
+          </div>
+          <div>
+            <label for="fCategory">Catégorie *</label>
+            <select id="fCategory" required>
+              <option value="">-- choisir --</option>
+              <option value="important">Client Important</option>
+              <option value="partner">Chercheur Partnership</option>
+              <option value="collab">Chercheur Collaboration</option>
+              <option value="small">Client Moins important</option>
+              <option value="marketing">Marketing</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnCancel" class="ghost-btn">Annuler</button>
+          <button type="submit" class="big-btn" id="btnSaveContact">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<!-- libs for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ---------- CONFIGURATION SUPABASE ---------- */
+// ⚠️ REMPLACEZ CES VALEURS PAR LES VÔTRES
+const SUPABASE_URL = 'https://vzbpgtynmpxqrgxebjeb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6YnBndHlubXB4cXJneGViamViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzOTU4NDYsImV4cCI6MjA3Njk3MTg0Nn0.qyYtm8ohNmxeBW0oRHww68titENi1gA5IOoZjr3uzkk';
+
+// Initialiser Supabase
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ---------- Data model & storage ---------- */
+const categories = {
+  important: 'Client Important',
+  partner: 'Chercheur Partnership', 
+  collab: 'Chercheur Collaboration',
+  small: 'Client Moins important',
+  marketing: 'Marketing'
+};
+
+const chartCategories = {
+  important: 'Important',
+  partner: 'Partnership', 
+  collab: 'Collaboration',
+  small: 'Moins important',
+  marketing: 'Marketing'
+};
+
+// Stockage local pour les données (cache)
+let store = { categories: {} };
+let activeCat = null;
+let editingId = null;
+let activeContactId = null;
+let activeCategoryBtn = null;
+
+// LISTE DES NOMS POUR LES MENUS DÉROULANTS
+const nameList = [
+  "Mohamed Bellatreche","M.Mostefaoui", "Timzit Fedoua", "Rabea Arab", "Camelya Benatmane", 
+  "Tinhinane Dahmani", "Nadia Khicha", "Lamia Attou", 
+];
+
+// COMPTEURS
+let discussionCounter = 0;
+let stepCounter = 0;
+
+/* ---------- FONCTIONS SUPABASE ---------- */
+
+// Charger tous les contacts depuis Supabase
+async function loadContactsFromSupabase() {
+  try {
+    showSyncIndicator('🔄 Chargement...', 'syncing');
+    
+    const { data, error } = await supabase
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur Supabase:', error);
+      showSyncIndicator('❌ Erreur', 'error');
+      return;
+    }
+
+    // Réorganiser les données par catégorie
+    store.categories = {
+      important: [],
+      partner: [],
+      collab: [],
+      small: [],
+      marketing: []
+    };
+
+    if (data) {
+      data.forEach(contact => {
+        if (contact.category && store.categories[contact.category]) {
+          store.categories[contact.category].push({
+            id: contact.id,
+            entreprise: contact.entreprise,
+            nom: contact.nom,
+            poste: contact.poste,
+            departement: contact.departement,
+            portable: contact.portable,
+            fixe: contact.fixe,
+            email: contact.email,
+            projet: contact.projet,
+            discussions: contact.discussions || [],
+            remark: contact.remark || '',
+            remarkLocked: contact.remark_locked || false,
+            steps: contact.steps || {},
+            stepsLocked: contact.steps_locked || false,
+            created_at: contact.created_at,
+            updated_at: contact.updated_at
+          });
+        }
+      });
+    }
+
+    showSyncIndicator('🟢 Synchronisé', 'success');
+    updateStatistics();
+    updateCharts();
+    
+    // Si une catégorie est active, re-rendre le tableau
+    if (activeCat) {
+      renderTable();
+    }
+    
+  } catch (error) {
+    console.error('Erreur lors du chargement:', error);
+    showSyncIndicator('❌ Erreur', 'error');
+  }
+}
+
+// Sauvegarder un contact dans Supabase
+async function saveContactToSupabase(contactData) {
+  try {
+    showSyncIndicator('🔄 Sauvegarde...', 'syncing');
+    
+    const contactToSave = {
+      entreprise: contactData.entreprise,
+      nom: contactData.nom,
+      poste: contactData.poste,
+      departement: contactData.departement,
+      portable: contactData.portable,
+      fixe: contactData.fixe,
+      email: contactData.email,
+      projet: contactData.projet,
+      category: contactData.category,
+      discussions: contactData.discussions || [],
+      remark: contactData.remark || '',
+      remark_locked: contactData.remarkLocked || false,
+      steps: contactData.steps || {},
+      steps_locked: contactData.stepsLocked || false,
+      updated_at: new Date().toISOString()
+    };
+
+    let result;
+    
+    if (contactData.id && contactData.id.startsWith('c_')) {
+      // Nouveau contact (ID local)
+      result = await supabase
+        .from('contacts')
+        .insert([contactToSave])
+        .select();
+    } else {
+      // Mise à jour de contact existant
+      result = await supabase
+        .from('contacts')
+        .update(contactToSave)
+        .eq('id', contactData.id)
+        .select();
+    }
+
+    if (result.error) {
+      throw result.error;
+    }
+
+    showSyncIndicator('🟢 Sauvegardé', 'success');
+    return result.data[0];
+    
+  } catch (error) {
+    console.error('Erreur sauvegarde:', error);
+    showSyncIndicator('❌ Erreur sauvegarde', 'error');
+    throw error;
+  }
+}
+
+// Supprimer un contact de Supabase
+async function deleteContactFromSupabase(contactId) {
+  try {
+    showSyncIndicator('🔄 Suppression...', 'syncing');
+    
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', contactId);
+
+    if (error) {
+      throw error;
+    }
+
+    showSyncIndicator('🟢 Supprimé', 'success');
+    
+  } catch (error) {
+    console.error('Erreur suppression:', error);
+    showSyncIndicator('❌ Erreur suppression', 'error');
+    throw error;
+  }
+}
+
+// Écouter les changements en temps réel
+function setupRealtimeSubscription() {
+  const subscription = supabase
+    .channel('contacts-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'contacts'
+      },
+      (payload) => {
+        console.log('Changement reçu:', payload);
+        showSyncIndicator('🔄 Mise à jour...', 'syncing');
+        
+        // Recharger les données
+        setTimeout(() => {
+          loadContactsFromSupabase();
+        }, 500);
+      }
+    )
+    .subscribe();
+
+  return subscription;
+}
+
+// Afficher l'indicateur de synchronisation
+function showSyncIndicator(message, type = 'success') {
+  const indicator = document.getElementById('syncIndicator');
+  indicator.textContent = message;
+  indicator.style.display = 'block';
+  
+  indicator.classList.remove('syncing', 'error');
+  if (type === 'syncing') {
+    indicator.classList.add('syncing');
+  } else if (type === 'error') {
+    indicator.style.background = '#dc3545';
+  }
+  
+  if (type === 'success') {
+    setTimeout(() => {
+      indicator.style.display = 'none';
+    }, 3000);
+  }
+}
+
+/* ---------- FONCTIONS STATISTIQUES ---------- */
+
+function updateStatistics() {
+  const statsContainer = document.getElementById('statsContainer');
+  if (!statsContainer) return;
+
+  let totalEntreprises = 0;
+  let totalContacts = 0;
+  let totalDiscussions = 0;
+  const statsByCategory = {};
+
+  // Initialiser les stats par catégorie
+  Object.keys(categories).forEach(cat => {
+    statsByCategory[cat] = {
+      entreprises: new Set(),
+      contacts: 0,
+      discussions: 0
+    };
+  });
+
+  // Calculer les statistiques
+  Object.keys(store.categories).forEach(cat => {
+    const contacts = store.categories[cat];
+    
+    contacts.forEach(contact => {
+      // Compter les entreprises uniques
+      if (contact.entreprise) {
+        statsByCategory[cat].entreprises.add(contact.entreprise);
+      }
+      
+      // Compter les contacts
+      statsByCategory[cat].contacts++;
+      
+      // Compter les discussions
+      if (contact.discussions) {
+        statsByCategory[cat].discussions += contact.discussions.length;
+      }
+    });
+
+    // Totaux globaux
+    totalEntreprises += statsByCategory[cat].entreprises.size;
+    totalContacts += statsByCategory[cat].contacts;
+    totalDiscussions += statsByCategory[cat].discussions;
+  });
+
+  // Générer le HTML des statistiques
+  statsContainer.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-number">${totalEntreprises}</div>
+      <div class="stat-label">Entreprises Total</div>
+      <div class="stat-details">${Object.keys(categories).map(cat => 
+        `${categories[cat]}: ${statsByCategory[cat].entreprises.size}`
+      ).join(' • ')}</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-number">${totalContacts}</div>
+      <div class="stat-label">Contacts Total</div>
+      <div class="stat-details">${Object.keys(categories).map(cat => 
+        `${categories[cat]}: ${statsByCategory[cat].contacts}`
+      ).join(' • ')}</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-number">${totalDiscussions}</div>
+      <div class="stat-label">Discussions Total</div>
+      <div class="stat-details">${Object.keys(categories).map(cat => 
+        `${categories[cat]}: ${statsByCategory[cat].discussions}`
+      ).join(' • ')}</div>
+    </div>
+  `;
+
+  // Ajouter les statistiques détaillées par personne
+  const personStats = calculatePersonStatistics();
+  if (personStats.length > 0) {
+    statsContainer.innerHTML += `
+      <div class="stat-card">
+        <div class="stat-number">${personStats.length}</div>
+        <div class="stat-label">Personnes Actives</div>
+        <div class="stat-details">${personStats.slice(0, 3).map(p => 
+          `${p.name}: ${p.discussions} disc.`
+        ).join(' • ')}${personStats.length > 3 ? '...' : ''}</div>
+      </div>
+    `;
+  }
+}
+
+/* ---------- FONCTIONS GRAPHIQUES ---------- */
+
+function updateCharts() {
+  const chartsContainer = document.getElementById('chartsContainer');
+  if (!chartsContainer) return;
+
+  // Calculer les données pour les graphiques
+  const contactsByCategory = {};
+  const entreprisesByCategory = {};
+  const discussionsByCategory = {};
+  
+  Object.keys(categories).forEach(cat => {
+    const contacts = store.categories[cat];
+    contactsByCategory[cat] = contacts.length;
+    
+    // Compter les entreprises uniques
+    const entreprises = new Set();
+    let discussionsCount = 0;
+    
+    contacts.forEach(contact => {
+      if (contact.entreprise) {
+        entreprises.add(contact.entreprise);
+      }
+      if (contact.discussions) {
+        discussionsCount += contact.discussions.length;
+      }
+    });
+    
+    entreprisesByCategory[cat] = entreprises.size;
+    discussionsByCategory[cat] = discussionsCount;
+  });
+
+  // Graphique 1: Contacts par catégorie
+  const maxContacts = Math.max(...Object.values(contactsByCategory));
+  
+  let contactsChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Contacts par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxContacts > 0 ? (contactsByCategory[cat] / maxContacts) * 140 : 0;
+    contactsChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${contactsByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  contactsChartHTML += `</div></div>`;
+
+  // Graphique 2: Entreprises par catégorie
+  const maxEntreprises = Math.max(...Object.values(entreprisesByCategory));
+  
+  let entreprisesChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Entreprises par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxEntreprises > 0 ? (entreprisesByCategory[cat] / maxEntreprises) * 140 : 0;
+    entreprisesChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${entreprisesByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  entreprisesChartHTML += `</div></div>`;
+
+  // Graphique 3: Discussions par catégorie
+  const maxDiscussions = Math.max(...Object.values(discussionsByCategory));
+  
+  let discussionsChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Discussions par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxDiscussions > 0 ? (discussionsByCategory[cat] / maxDiscussions) * 140 : 0;
+    discussionsChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${discussionsByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  discussionsChartHTML += `</div></div>`;
+
+  chartsContainer.innerHTML = contactsChartHTML + entreprisesChartHTML + discussionsChartHTML;
+}
+
+function calculatePersonStatistics() {
+  const personStats = {};
+  
+  // Compter les discussions par personne
+  Object.keys(store.categories).forEach(cat => {
+    store.categories[cat].forEach(contact => {
+      if (contact.discussions) {
+        contact.discussions.forEach(discussion => {
+          if (discussion.name && discussion.name.trim() !== '') {
+            if (!personStats[discussion.name]) {
+              personStats[discussion.name] = 0;
+            }
+            personStats[discussion.name]++;
+          }
+        });
+      }
+    });
+  });
+
+  // Convertir en tableau et trier par nombre de discussions
+  return Object.keys(personStats)
+    .map(name => ({ name, discussions: personStats[name] }))
+    .sort((a, b) => b.discussions - a.discussions);
+}
+
+/* ---------- UI elements ---------- */
+const board = document.getElementById('board');
+const boardTitle = document.getElementById('boardTitle');
+const contactsBody = document.getElementById('contactsBody');
+const plan = document.getElementById('planSection');
+const planCompany = document.getElementById('planCompany');
+const planContact = document.getElementById('planContact');
+const planPoste = document.getElementById('planPoste');
+
+/* ---------- INITIALISATION ---------- */
+
+document.addEventListener('DOMContentLoaded', async function() {
+  // Initialiser Supabase et charger les données
+  await loadContactsFromSupabase();
+  
+  // Démarrer l'écoute en temps réel
+  setupRealtimeSubscription();
+  
+  // Initialiser les écouteurs d'événements
+  initializeEventListeners();
+  
+  // Ajouter une discussion et une étape par défaut
+  addDiscussion();
+  addStep();
+});
+
+function initializeEventListeners() {
+  // Événements des catégories
+  document.querySelectorAll('.cat-btn').forEach(el => {
+    el.addEventListener('click', function() {
+      if (activeContactId) {
+        hidePlan();
+      }
+      
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      this.classList.add('active');
+      activeCategoryBtn = this;
+      
+      openCategory(this.dataset.cat);
+    });
+  });
+
+  // Événements des boutons principaux
+  document.getElementById('btnAdd').addEventListener('click', () => openModalForNew());
+  document.getElementById('btnBack').addEventListener('click', () => { 
+    board.style.display='none'; 
+    hidePlan(); 
+    activeCat=null; 
+    if (activeCategoryBtn) {
+      activeCategoryBtn.classList.remove('active');
+    }
+  });
+
+  // Événements du modal
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  document.getElementById('btnCancel').addEventListener('click', closeModal);
+  document.getElementById('contactForm').addEventListener('submit', onSaveContact);
+  
+  // Événements du plan d'action
+  document.getElementById('btnSavePlan').addEventListener('click', onSavePlan);
+  document.getElementById('btnClosePlan').addEventListener('click', () => { 
+    hidePlan();
+    setTimeout(() => {
+      document.getElementById('tableWrap').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  });
+  document.getElementById('btnDeletePlan').addEventListener('click', onDeletePlan);
+  
+  // Événements PDF
+  document.getElementById('btnExport').addEventListener('click', exportTablePDF);
+  document.getElementById('btnDownloadAll').addEventListener('click', downloadAllClientsPDF);
+  document.getElementById('btnDownloadClient').addEventListener('click', downloadClientPDF);
+  
+  // Événements des nouvelles fonctionnalités
+  document.getElementById('btnAddDiscussion').addEventListener('click', addDiscussion);
+  document.getElementById('btnAddStep').addEventListener('click', addStep);
+  document.getElementById('lockRemark').addEventListener('click', toggleRemarkLock);
+  document.getElementById('lockAllSteps').addEventListener('click', lockAllSteps);
+}
+
+/* ---------- FONCTIONS NOUVELLES ---------- */
+
+// Ajouter une discussion
+function addDiscussion() {
+  discussionCounter++;
+  const container = document.getElementById('discussionsContainer');
+  
+  const discussionDiv = document.createElement('div');
+  discussionDiv.className = 'discussion-item';
+  discussionDiv.innerHTML = `
+    <div class="discussion-header">
+      <select class="discussion-select" data-discussion="${discussionCounter}">
+        <option value="">Choisir un nom...</option>
+        ${nameList.map(name => `<option value="${name}">${name}</option>`).join('')}
+      </select>
+      <button class="lock-btn unlocked" data-discussion="${discussionCounter}">🔓</button>
+    </div>
+    <textarea class="discussion-text" data-discussion="${discussionCounter}" 
+              placeholder="Texte de la discussion..."></textarea>
+  `;
+  
+  container.appendChild(discussionDiv);
+  
+  const lockBtn = discussionDiv.querySelector('.lock-btn');
+  lockBtn.addEventListener('click', function() {
+    toggleDiscussionLock(this);
+  });
+}
+
+// Ajouter une étape (renommée en Action)
+function addStep() {
+  stepCounter++;
+  const container = document.getElementById('stepsContainer');
+  
+  const stepDiv = document.createElement('div');
+  stepDiv.className = 'step-card';
+  stepDiv.innerHTML = `
+    <div class="label">Action ${stepCounter}</div>
+    <textarea class="step-input" data-step="${stepCounter}" 
+              placeholder="Détail action ${stepCounter}..."></textarea>
+  `;
+  
+  container.appendChild(stepDiv);
+}
+
+// Verrouiller définitivement une discussion
+function toggleDiscussionLock(lockButton) {
+  const discussionId = lockButton.dataset.discussion;
+  
+  lockButton.classList.remove('unlocked');
+  lockButton.classList.add('locked');
+  lockButton.textContent = '🔒';
+  lockButton.disabled = true;
+  
+  document.querySelector(`.discussion-select[data-discussion="${discussionId}"]`).disabled = true;
+  document.querySelector(`.discussion-text[data-discussion="${discussionId}"]`).disabled = true;
+}
+
+// Verrouiller définitivement la remarque
+function toggleRemarkLock() {
+  const remarkText = document.getElementById('remarkText');
+  const lockBtn = document.getElementById('lockRemark');
+  
+  lockBtn.classList.remove('unlocked');
+  lockBtn.classList.add('locked');
+  lockBtn.textContent = '🔒';
+  lockBtn.disabled = true;
+  remarkText.disabled = true;
+}
+
+// Verrouiller définitivement toutes les étapes
+function lockAllSteps() {
+  const stepInputs = document.querySelectorAll('.step-input');
+  const lockBtn = document.getElementById('lockAllSteps');
+  
+  stepInputs.forEach(input => {
+    input.disabled = true;
+    input.classList.add('locked-field');
+  });
+  
+  lockBtn.disabled = true;
+  lockBtn.textContent = '🔒 Verrouillé';
+  lockBtn.style.background = '#9e9e9e';
+}
+
+/* ---------- FONCTIONS EXISTANTES MODIFIÉES ---------- */
+
+function openPlan(id) {
+  const c = store.categories[activeCat].find(x => x.id === id);
+  if (!c) return;
+  
+  activeContactId = id;
+  planCompany.textContent = c.entreprise || '';
+  planContact.textContent = c.nom || '';
+  planPoste.textContent = c.poste || '';
+  
+  // Afficher le plan
+  plan.style.display = 'block';
+  
+  // DESCENDRE AUTOMATIQUEMENT VERS LE PLAN
+  setTimeout(() => {
+    plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+  
+  // Réinitialiser les discussions
+  discussionCounter = 0;
+  const discussionsContainer = document.getElementById('discussionsContainer');
+  discussionsContainer.innerHTML = '';
+  
+  if (c.discussions && c.discussions.length > 0) {
+    c.discussions.forEach((discussion, index) => {
+      discussionCounter = index + 1;
+      const discussionDiv = document.createElement('div');
+      discussionDiv.className = 'discussion-item';
+      discussionDiv.innerHTML = `
+        <div class="discussion-header">
+          <select class="discussion-select" data-discussion="${discussionCounter}" 
+                  ${discussion.locked ? 'disabled' : ''}>
+            <option value="">Choisir un nom...</option>
+            ${nameList.map(name => 
+              `<option value="${name}" ${name === discussion.name ? 'selected' : ''}>${name}</option>`
+            ).join('')}
+          </select>
+          <button class="lock-btn ${discussion.locked ? 'locked' : 'unlocked'}" 
+                  data-discussion="${discussionCounter}"
+                  ${discussion.locked ? 'disabled' : ''}>
+            ${discussion.locked ? '🔒' : '🔓'}
+          </button>
+        </div>
+        <textarea class="discussion-text" data-discussion="${discussionCounter}" 
+                  ${discussion.locked ? 'disabled' : ''}
+                  placeholder="Texte de la discussion...">${discussion.text || ''}</textarea>
+      `;
+      discussionsContainer.appendChild(discussionDiv);
+      
+      if (!discussion.locked) {
+        const lockBtn = discussionDiv.querySelector('.lock-btn');
+        lockBtn.addEventListener('click', function() {
+          toggleDiscussionLock(this);
+        });
+      }
+    });
+  } else {
+    addDiscussion();
+  }
+  
+  // Réinitialiser les étapes (renommées en Actions)
+  stepCounter = 0;
+  const stepsContainer = document.getElementById('stepsContainer');
+  stepsContainer.innerHTML = '';
+  
+  if (c.steps && Object.keys(c.steps).length > 0) {
+    Object.keys(c.steps).forEach(stepKey => {
+      stepCounter++;
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-card';
+      stepDiv.innerHTML = `
+        <div class="label">Action ${stepCounter}</div>
+        <textarea class="step-input" data-step="${stepCounter}" 
+                  ${c.stepsLocked ? 'disabled' : ''}
+                  placeholder="Détail action ${stepCounter}...">${c.steps[stepKey] || ''}</textarea>
+      `;
+      stepsContainer.appendChild(stepDiv);
+    });
+  } else {
+    addStep();
+  }
+  
+  // Charger la remarque
+  document.getElementById('remarkText').value = c.remark || '';
+  if (c.remarkLocked) {
+    document.getElementById('lockRemark').classList.remove('unlocked');
+    document.getElementById('lockRemark').classList.add('locked');
+    document.getElementById('lockRemark').textContent = '🔒';
+    document.getElementById('lockRemark').disabled = true;
+    document.getElementById('remarkText').disabled = true;
+  } else {
+    document.getElementById('lockRemark').classList.remove('locked');
+    document.getElementById('lockRemark').classList.add('unlocked');
+    document.getElementById('lockRemark').textContent = '🔓';
+    document.getElementById('lockRemark').disabled = false;
+    document.getElementById('remarkText').disabled = false;
+  }
+  
+  // Gérer le verrouillage des étapes
+  const lockBtn = document.getElementById('lockAllSteps');
+  if (c.stepsLocked) {
+    lockAllSteps();
+  } else {
+    lockBtn.disabled = false;
+    lockBtn.textContent = '🔒 Verrouiller toutes les actions';
+    lockBtn.style.background = '#4caf50';
+  }
+}
+
+async function onSavePlan() {
+  if (!activeContactId) return alert('Aucun contact actif.');
+  
+  const c = store.categories[activeCat].find(x => x.id === activeContactId);
+  if (!c) return;
+  
+  // Sauvegarder les discussions
+  c.discussions = [];
+  const discussionItems = document.querySelectorAll('.discussion-item');
+  discussionItems.forEach(item => {
+    const select = item.querySelector('.discussion-select');
+    const textarea = item.querySelector('.discussion-text');
+    const lockBtn = item.querySelector('.lock-btn');
+    
+    c.discussions.push({
+      name: select.value,
+      text: textarea.value,
+      locked: lockBtn.classList.contains('locked')
+    });
+  });
+  
+  // Sauvegarder les étapes (renommées en Actions)
+  c.steps = {};
+  const stepItems = document.querySelectorAll('.step-card');
+  stepItems.forEach((item, index) => {
+    const textarea = item.querySelector('.step-input');
+    c.steps[(index + 1).toString()] = textarea.value;
+  });
+  
+  // Sauvegarder la remarque
+  c.remark = document.getElementById('remarkText').value;
+  c.remarkLocked = document.getElementById('lockRemark').classList.contains('locked');
+  c.stepsLocked = document.getElementById('lockAllSteps').disabled;
+  
+  try {
+    // Sauvegarder dans Supabase
+    await saveContactToSupabase(c);
+    alert('Plan sauvegardé !');
+  } catch (error) {
+    alert('Erreur lors de la sauvegarde du plan');
+  }
+}
+
+/* ---------- FONCTIONS EXISTANTES ---------- */
+
+function uid(){ return 'c_' + Date.now() + '_' + Math.floor(Math.random()*999); }
+
+function openCategory(cat){
+  activeCat = cat;
+  board.style.display = 'block';
+  boardTitle.textContent = categories[cat];
+  renderTable();
+}
+
+function renderTable(){
+  contactsBody.innerHTML = '';
+  const items = store.categories[activeCat] || [];
+  const groups = {};
+  
+  items.forEach(i=>{
+    const k = (i.entreprise||'[Sans entreprise]').trim().toLowerCase();
+    if(!groups[k]) groups[k] = {name: i.entreprise || '[Sans entreprise]', items: []};
+    groups[k].items.push(i);
+  });
+  
+  Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name)).forEach(k=>{
+    const grp = groups[k];
+    const trg = document.createElement('tr'); 
+    trg.className='company-row';
+    const tdg = document.createElement('td'); 
+    tdg.setAttribute('colspan',9); 
+    tdg.textContent = grp.name;
+    trg.appendChild(tdg); 
+    contactsBody.appendChild(trg);
+    
+    grp.items.forEach(c=>{
+      const tr = document.createElement('tr'); 
+      tr.className='contact-row';
+      tr.dataset.id = c.id;
+      const dep = (c.departement||'').toLowerCase();
+      if(dep === 'projet') tr.setAttribute('data-dept','Projet');
+      else if(dep === 'mesure') tr.setAttribute('data-dept','Mesure');
+
+      tr.innerHTML = `
+        <td>${escape(c.entreprise)}</td>
+        <td>${escape(c.nom)}</td>
+        <td>${escape(c.poste)}</td>
+        <td>${escape(c.portable)}</td>
+        <td>${escape(c.fixe)}</td>
+        <td>${escape(c.email)}</td>
+        <td>${escape(c.departement)}</td>
+        <td>${escape(c.projet)}</td>
+        <td class="actions-td">
+          <button class="btn-small btn-edit" data-id="${c.id}" title="Modifier">✎</button>
+          <button class="btn-small btn-delete" data-id="${c.id}" title="Supprimer">🗑</button>
+        </td>
+      `;
+      
+      tr.addEventListener('click', (e)=>{
+        if(e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
+        openPlan(c.id);
+      });
+      
+      tr.querySelector('.btn-edit').addEventListener('click', (ev)=>{ 
+        ev.stopPropagation(); 
+        openModalForEdit(c.id); 
+      });
+      tr.querySelector('.btn-delete').addEventListener('click', async (ev)=>{ 
+        ev.stopPropagation(); 
+        await onDeleteContact(c.id); 
+      });
+      contactsBody.appendChild(tr);
+    });
+  });
+  
+  if(Object.keys(groups).length === 0){
+    const tr = document.createElement('tr'); 
+    tr.innerHTML = `<td colspan="9" class="small-muted" style="padding:18px">Aucun contact — cliquez sur "Nouveau contact".</td>`;
+    contactsBody.appendChild(tr);
+  }
+}
+
+function openModalForNew(){
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Nouveau contact';
+  contactForm.reset();
+  fDepart.value = '';
+  fCategory.value = '';
+  modal.style.display = 'flex';
+}
+
+function openModalForEdit(id){
+  const c = store.categories[activeCat].find(x=>x.id===id);
+  if(!c) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Modifier contact';
+  fEntreprise.value = c.entreprise||'';
+  fNom.value = c.nom||'';
+  fPoste.value = c.poste||'';
+  fDepart.value = c.departement||'';
+  fPortable.value = c.portable||'';
+  fFixe.value = c.fixe||'';
+  fEmail.value = c.email||'';
+  fProjet.value = c.projet||'';
+  
+  // Trouver la catégorie actuelle
+  let currentCategory = activeCat;
+  if (!currentCategory) {
+    for (const [cat, contacts] of Object.entries(store.categories)) {
+      if (contacts.find(contact => contact.id === id)) {
+        currentCategory = cat;
+        break;
+      }
+    }
+  }
+  fCategory.value = currentCategory || '';
+  
+  modal.style.display = 'flex';
+}
+
+function closeModal(){
+  modal.style.display = 'none';
+  contactForm.reset();
+  editingId = null;
+}
+
+async function onSaveContact(e){
+  e.preventDefault();
+  
+  const category = fCategory.value;
+  if (!category) {
+    alert('Veuillez sélectionner une catégorie');
+    return;
+  }
+
+  const obj = {
+    id: editingId || uid(),
+    entreprise: fEntreprise.value.trim(),
+    nom: fNom.value.trim(),
+    poste: fPoste.value.trim(),
+    departement: fDepart.value,
+    portable: fPortable.value.trim(),
+    fixe: fFixe.value.trim(),
+    email: fEmail.value.trim(),
+    projet: fProjet.value.trim(),
+    category: category,
+    discussions: [],
+    remark: '',
+    remarkLocked: false,
+    steps: {},
+    stepsLocked: false
+  };
+  
+  try {
+    // Sauvegarder dans Supabase
+    const savedContact = await saveContactToSupabase(obj);
+    
+    // Mettre à jour le store local avec l'ID de Supabase
+    if (savedContact) {
+      obj.id = savedContact.id;
+    }
+    
+    // Mettre à jour l'interface
+    if(editingId){
+      // Supprimer l'ancien contact de sa catégorie précédente
+      Object.keys(store.categories).forEach(cat => {
+        store.categories[cat] = store.categories[cat].filter(x => x.id !== editingId);
+      });
+      // Ajouter à la nouvelle catégorie
+      store.categories[category].push(obj);
+    } else {
+      store.categories[category].push(obj);
+    }
+    
+    closeModal();
+    
+    // Si on est dans la catégorie modifiée, re-rendre le tableau
+    if (activeCat === category) {
+      renderTable();
+    } else if (editingId && activeCat) {
+      // Si on a changé de catégorie, fermer le tableau actuel
+      board.style.display = 'none';
+      activeCat = null;
+      if (activeCategoryBtn) {
+        activeCategoryBtn.classList.remove('active');
+      }
+    }
+    
+  } catch (error) {
+    alert('Erreur lors de la sauvegarde du contact');
+  }
+}
+
+async function onDeleteContact(id){
+  if(!confirm('Supprimer ce contact ?')) return;
+  
+  try {
+    await deleteContactFromSupabase(id);
+    
+    // Supprimer du store local
+    Object.keys(store.categories).forEach(cat => {
+      store.categories[cat] = store.categories[cat].filter(x => x.id !== id);
+    });
+    
+    renderTable();
+    if(activeContactId === id){ 
+      hidePlan(); 
+    }
+    
+    updateStatistics();
+    updateCharts();
+    
+  } catch (error) {
+    alert('Erreur lors de la suppression du contact');
+  }
+}
+
+function hidePlan(){ 
+  plan.style.display = 'none'; 
+  activeContactId = null; 
+  discussionCounter = 0;
+  stepCounter = 0;
+  document.getElementById('discussionsContainer').innerHTML = '';
+  document.getElementById('stepsContainer').innerHTML = '';
+  document.getElementById('remarkText').value = '';
+  document.getElementById('lockRemark').classList.remove('locked');
+  document.getElementById('lockRemark').classList.add('unlocked');
+  document.getElementById('lockRemark').textContent = '🔓';
+  document.getElementById('lockRemark').disabled = false;
+  document.getElementById('remarkText').disabled = false;
+  
+  const lockBtn = document.getElementById('lockAllSteps');
+  lockBtn.disabled = false;
+  lockBtn.textContent = '🔒 Verrouiller toutes les actions';
+  lockBtn.style.background = '#4caf50';
+  
+  addDiscussion();
+  addStep();
+}
+
+async function onDeletePlan(){
+  if(!activeContactId) return;
+  if(!confirm('Supprimer le plan (efface discussions, remarques et actions) ?')) return;
+  
+  const c = store.categories[activeCat].find(x=>x.id===activeContactId);
+  if(!c) return;
+  
+  c.discussions = [];
+  c.remark = '';
+  c.remarkLocked = false;
+  c.steps = {};
+  c.stepsLocked = false;
+  
+  try {
+    await saveContactToSupabase(c);
+    hidePlan();
+    renderTable();
+  } catch (error) {
+    alert('Erreur lors de la suppression du plan');
+  }
+}
+
+/* ---------- FONCTIONS PDF (inchangées) ---------- */
+
+async function downloadClientPDF() {
+  // Votre code PDF existant reste identique
+  // ... (le code PDF reste le même)
+}
+
+async function downloadAllClientsPDF() {
+  // Votre code PDF existant reste identique
+  // ... (le code PDF reste le même)
+}
+
+async function exportTablePDF(){
+  // Votre code PDF existant reste identique
+  // ... (le code PDF reste le même)
+}
+
+function escape(s){ if(!s) return ''; return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Variables pour les éléments du modal
+const modal = document.getElementById('modal');
+const contactForm = document.getElementById('contactForm');
+const fEntreprise = document.getElementById('fEntreprise');
+const fNom = document.getElementById('fNom');
+const fPoste = document.getElementById('fPoste');
+const fDepart = document.getElementById('fDepart');
+const fPortable = document.getElementById('fPortable');
+const fFixe = document.getElementById('fFixe');
+const fEmail = document.getElementById('fEmail');
+const fProjet = document.getElementById('fProjet');
+const fCategory = document.getElementById('fCategory');
+/* ---------- FONCTION POUR LE GRAPHIQUE DES DISCUSSIONS PAR PERSONNE ---------- */
+
+function updatePersonChart() {
+  const personStats = calculatePersonStatistics();
+  const container = document.getElementById('personChart');
+  
+  if (!container) return;
+  
+  // Créer le conteneur parent si nécessaire
+  const parentContainer = document.getElementById('personChartContainer');
+  if (!parentContainer) {
+    const chartsContainer = document.getElementById('chartsContainer');
+    if (!chartsContainer) return;
+    
+    const newContainer = document.createElement('div');
+    newContainer.className = 'chart-full-width';
+    newContainer.id = 'personChartContainer';
+    newContainer.innerHTML = `
+      <div class="chart-card">
+        <div class="chart-title">Discussions par Personne</div>
+        <div class="bar-container" id="personChart"></div>
+      </div>
+    `;
+    chartsContainer.parentNode.insertBefore(newContainer, chartsContainer.nextSibling);
+  }
+  
+  // Vider le conteneur
+  container.innerHTML = '';
+  
+  if (personStats.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#666">Aucune discussion enregistrée</div>';
+    return;
+  }
+  
+  // Calculer la hauteur maximale pour l'échelle
+  const maxDiscussions = Math.max(...personStats.map(p => p.discussions));
+  const maxHeight = 160;
+  
+  // Générer les barres
+  personStats.forEach(person => {
+    const height = maxDiscussions > 0 ? (person.discussions / maxDiscussions) * maxHeight : 0;
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = `${height}px`;
+    bar.innerHTML = `
+      <div class="bar-value">${person.discussions}</div>
+      <div class="bar-label">${person.name}</div>
+    `;
+    
+    // Ajouter un effet au survol avec plus d'informations
+    bar.addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.05)';
+      this.style.boxShadow = '0 4px 8px rgba(0, 82, 156, 0.3)';
+    });
+    
+    bar.addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+      this.style.boxShadow = 'none';
+    });
+    
+    container.appendChild(bar);
+  });
+  
+  // Ajouter une légende si beaucoup de données
+  if (personStats.length > 8) {
+    const legend = document.createElement('div');
+    legend.style.cssText = 'margin-top: 20px; font-size: 12px; color: #666; text-align: center;';
+    legend.textContent = `${personStats.length} personnes - ${personStats.reduce((sum, p) => sum + p.discussions, 0)} discussions totales`;
+    container.parentNode.appendChild(legend);
+  }
+}
+
+/* ---------- MODIFICATION DE LA FONCTION updateCharts ---------- */
+
+function updateCharts() {
+  const chartsContainer = document.getElementById('chartsContainer');
+  if (!chartsContainer) return;
+
+  // Calculer les données pour les graphiques
+  const contactsByCategory = {};
+  const entreprisesByCategory = {};
+  const discussionsByCategory = {};
+  
+  Object.keys(categories).forEach(cat => {
+    const contacts = store.categories[cat];
+    contactsByCategory[cat] = contacts.length;
+    
+    // Compter les entreprises uniques
+    const entreprises = new Set();
+    let discussionsCount = 0;
+    
+    contacts.forEach(contact => {
+      if (contact.entreprise) {
+        entreprises.add(contact.entreprise);
+      }
+      if (contact.discussions) {
+        discussionsCount += contact.discussions.length;
+      }
+    });
+    
+    entreprisesByCategory[cat] = entreprises.size;
+    discussionsByCategory[cat] = discussionsCount;
+  });
+
+  // Graphique 1: Contacts par catégorie
+  const maxContacts = Math.max(...Object.values(contactsByCategory));
+  
+  let contactsChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Contacts par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxContacts > 0 ? (contactsByCategory[cat] / maxContacts) * 140 : 0;
+    contactsChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${contactsByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  contactsChartHTML += `</div></div>`;
+
+  // Graphique 2: Entreprises par catégorie
+  const maxEntreprises = Math.max(...Object.values(entreprisesByCategory));
+  
+  let entreprisesChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Entreprises par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxEntreprises > 0 ? (entreprisesByCategory[cat] / maxEntreprises) * 140 : 0;
+    entreprisesChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${entreprisesByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  entreprisesChartHTML += `</div></div>`;
+
+  // Graphique 3: Discussions par catégorie
+  const maxDiscussions = Math.max(...Object.values(discussionsByCategory));
+  
+  let discussionsChartHTML = `
+    <div class="chart-card">
+      <div class="chart-title">Discussions par Catégorie</div>
+      <div class="bar-container">
+  `;
+  
+  Object.keys(categories).forEach(cat => {
+    const height = maxDiscussions > 0 ? (discussionsByCategory[cat] / maxDiscussions) * 140 : 0;
+    discussionsChartHTML += `
+      <div class="bar" style="height: ${height}px">
+        <div class="bar-value">${discussionsByCategory[cat]}</div>
+        <div class="bar-label">${chartCategories[cat]}</div>
+      </div>
+    `;
+  });
+  
+  discussionsChartHTML += `</div></div>`;
+
+  chartsContainer.innerHTML = contactsChartHTML + entreprisesChartHTML + discussionsChartHTML;
+  
+  // METTRE À JOUR LE NOUVEAU GRAPHIQUE DES PERSONNES
+  updatePersonChart();
+}
+</script>
+</body>
+</html>
