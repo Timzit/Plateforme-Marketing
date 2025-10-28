@@ -350,12 +350,21 @@
   tbody td{padding:10px;border-bottom:1px solid #f0f6ff}
   tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff}
   
-  /* CORRECTION: Appliquer la couleur à toute la ligne, pas seulement aux cellules */
-  tr.contact-row[data-dept="Mesure"] {
-    background: var(--orange-mesure) !important;
-  }
+  /* MODIFICATION: Appliquer les couleurs aux départements */
   tr.contact-row[data-dept="Projet"] {
     background: var(--blue-projet) !important;
+  }
+  tr.contact-row[data-dept="EPC"] {
+    background: var(--orange-epc) !important;
+  }
+  tr.contact-row[data-dept="O&G"] {
+    background: var(--orange-og) !important;
+  }
+  tr.contact-row[data-dept="Industrie"] {
+    background: var(--orange-industrie) !important;
+  }
+  tr.contact-row[data-dept="Water"] {
+    background: var(--orange-water) !important;
   }
   
   tr.contact-row:hover{background:var(--row-hover);cursor:pointer}
@@ -393,10 +402,6 @@
     width: 100%;
     box-sizing: border-box;
   }
-
-  /* SUPPRIMER l'ancienne coloration des cellules et appliquer aux lignes */
-  /* tr.contact-row[data-dept="Mesure"] td { background: var(--orange-mesure); } */
-  /* tr.contact-row[data-dept="Projet"] td { background: var(--blue-projet); } */
 
   /* ---- FORMULAIRE CONTACT MODERNISE ---- */
   .modal { 
@@ -701,7 +706,7 @@
       color: black;
   }
 
-  /* Variables CSS */
+  /* Variables CSS - MODIFIÉES POUR LES NOUVEAUX DÉPARTEMENTS */
   :root{
       --bg:#f3f6fb;
       --card:#ffffff;
@@ -713,7 +718,10 @@
       --radius:12px;
       --shadow: 0 6px 18px rgba(11,34,60,0.08);
       --blue-projet:#e6f5ff;
-      --orange-mesure:#fff3e6;
+      --orange-epc:#fff3e6;
+      --orange-og:#ffe6e6;
+      --orange-industrie:#fff8e6;
+      --orange-water:#e6fff6;
       --row-hover:#f2f8ff;
   }
 
@@ -1150,8 +1158,10 @@
               <select id="filterDepartement" class="filter-select">
                 <option value="">Tous les départements</option>
                 <option value="Projet">Projet</option>
-                <option value="Mesure">Mesure</option>
-                <option value="Autre">Autre</option>
+                <option value="EPC">EPC</option>
+                <option value="O&G">O&G</option>
+                <option value="Industrie">Industrie</option>
+                <option value="Water">Water</option>
               </select>
             </div>
             <div class="filter-group">
@@ -1219,7 +1229,7 @@
                 <span class="filter-indicator" id="indicatorDepartement" style="display: none;"></span>
               </th>
               <th class="table-header-with-filter" data-sort="projet">
-                Sujet/Fournisseur
+                Thème
                 <span class="filter-indicator" id="indicatorProjet" style="display: none;"></span>
               </th>
               <th style="width:140px;text-align:right">Actions</th>
@@ -1341,8 +1351,10 @@
             <select id="fDepart">
               <option value="">-- choisir --</option>
               <option value="Projet">Projet</option>
-              <option value="Mesure">Mesure</option>
-              <option value="Autre">Autre</option>
+              <option value="EPC">EPC</option>
+              <option value="O&G">O&G</option>
+              <option value="Industrie">Industrie</option>
+              <option value="Water">Water</option>
             </select>
           </div>
           <div>
@@ -1358,7 +1370,7 @@
             <input type="email" id="fEmail" />
           </div>
           <div>
-            <label for="fProjet">Projet / Mesure</label>
+            <label for="fProjet">Thème</label>
             <input type="text" id="fProjet" />
           </div>
           <div>
@@ -2527,8 +2539,12 @@ function renderTable(){
       tr.className='contact-row';
       tr.dataset.id = c.id;
       const dep = (c.departement||'').toLowerCase();
+      // MODIFICATION: Appliquer les couleurs selon le département
       if(dep === 'projet') tr.setAttribute('data-dept','Projet');
-      else if(dep === 'mesure') tr.setAttribute('data-dept','Mesure');
+      else if(dep === 'epc') tr.setAttribute('data-dept','EPC');
+      else if(dep === 'o&g') tr.setAttribute('data-dept','O&G');
+      else if(dep === 'industrie') tr.setAttribute('data-dept','Industrie');
+      else if(dep === 'water') tr.setAttribute('data-dept','Water');
 
       tr.innerHTML = `
         <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
@@ -2754,19 +2770,458 @@ async function onDeletePlan(){
 
 /* ---------- FONCTIONS PDF (inchangées) ---------- */
 
+/* ---------- FONCTIONS PDF CORRIGÉES ---------- */
+
 async function downloadClientPDF() {
-  // Votre code PDF existant reste identique
-  // ... (le code PDF reste le même)
+  if (!activeContactId) {
+    alert('Veuillez d\'abord sélectionner un client en cliquant sur une ligne du tableau');
+    return;
+  }
+
+  try {
+    const c = store.categories[activeCat].find(x => x.id === activeContactId);
+    if (!c) return;
+
+    showSyncIndicator('🔄 Génération PDF client...', 'syncing');
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Configuration
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    let yPosition = margin;
+    
+    // Couleurs
+    const primaryColor = [0, 82, 156]; // Bleu NAPEC
+    const secondaryColor = [40, 167, 69]; // Vert
+    
+    // En-tête
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, pageWidth, 40, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FICHE CLIENT', pageWidth / 2, 15, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.text('NAPE C - Marketing Plateforme', pageWidth / 2, 25, { align: 'center' });
+    
+    // Date
+    const today = new Date().toLocaleDateString('fr-FR');
+    doc.text(`Généré le: ${today}`, pageWidth - margin, 35, { align: 'right' });
+    
+    yPosition = 60;
+    
+    // Informations client
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INFORMATIONS CLIENT', margin, yPosition);
+    
+    yPosition += 15;
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    
+    const clientInfo = [
+      `Entreprise: ${c.entreprise || 'Non renseigné'}`,
+      `Contact: ${c.nom || 'Non renseigné'}`,
+      `Poste: ${c.poste || 'Non renseigné'}`,
+      `Département: ${c.departement || 'Non renseigné'}`,
+      `Email: ${c.email || 'Non renseigné'}`,
+      `Portable: ${c.portable || 'Non renseigné'}`,
+      `Fixe: ${c.fixe || 'Non renseigné'}`,
+      `Thème: ${c.projet || 'Non renseigné'}`,
+      `Catégorie: ${categories[c.category] || 'Non renseigné'}`
+    ];
+    
+    clientInfo.forEach(info => {
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      doc.text(info, margin, yPosition);
+      yPosition += 8;
+    });
+    
+    yPosition += 10;
+    
+    // Discussions
+    if (c.discussions && c.discussions.length > 0) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...primaryColor);
+      doc.text('DISCUSSIONS', margin, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      
+      c.discussions.forEach((discussion, index) => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Discussion ${index + 1}: ${discussion.name || 'Non spécifié'}`, margin, yPosition);
+        yPosition += 6;
+        
+        doc.setFont('helvetica', 'normal');
+        const lines = doc.splitTextToSize(discussion.text || 'Aucun texte', pageWidth - 2 * margin);
+        lines.forEach(line => {
+          if (yPosition > 270) {
+            doc.addPage();
+            yPosition = margin;
+          }
+          doc.text(line, margin + 5, yPosition);
+          yPosition += 5;
+        });
+        yPosition += 8;
+      });
+    }
+    
+    yPosition += 5;
+    
+    // Plan d'action
+    if (c.steps && Object.keys(c.steps).length > 0) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...secondaryColor);
+      doc.text('PLAN D\'ACTION', margin, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      
+      Object.keys(c.steps).forEach(stepKey => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Action ${stepKey}:`, margin, yPosition);
+        yPosition += 6;
+        
+        doc.setFont('helvetica', 'normal');
+        const lines = doc.splitTextToSize(c.steps[stepKey] || 'Aucun détail', pageWidth - 2 * margin);
+        lines.forEach(line => {
+          if (yPosition > 270) {
+            doc.addPage();
+            yPosition = margin;
+          }
+          doc.text(line, margin + 5, yPosition);
+          yPosition += 5;
+        });
+        yPosition += 8;
+      });
+    }
+    
+    yPosition += 5;
+    
+    // Remarques
+    if (c.remark) {
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 140, 0);
+      doc.text('REMARQUES', margin, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0);
+      
+      const lines = doc.splitTextToSize(c.remark, pageWidth - 2 * margin);
+      lines.forEach(line => {
+        if (yPosition > 270) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        doc.text(line, margin, yPosition);
+        yPosition += 5;
+      });
+    }
+    
+    // Pied de page
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      doc.text(`Page ${i} / ${totalPages} - NAPEC Marketing Plateforme`, pageWidth / 2, 285, { align: 'center' });
+    }
+    
+    // Téléchargement
+    const fileName = `Client_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}_${(c.nom || 'SansContact').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    doc.save(fileName);
+    
+    showSyncIndicator('✅ PDF client généré', 'success');
+    
+  } catch (error) {
+    console.error('Erreur génération PDF client:', error);
+    showSyncIndicator('❌ Erreur PDF', 'error');
+    alert('Erreur lors de la génération du PDF client');
+  }
 }
 
 async function downloadAllClientsPDF() {
-  // Votre code PDF existant reste identique
-  // ... (le code PDF reste le même)
+  if (!activeCat) {
+    alert('Veuillez d\'abord sélectionner une catégorie');
+    return;
+  }
+
+  try {
+    showSyncIndicator('🔄 Génération de tous les PDF...', 'syncing');
+    
+    const contacts = store.categories[activeCat];
+    if (!contacts || contacts.length === 0) {
+      alert('Aucun client dans cette catégorie');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    
+    for (let i = 0; i < contacts.length; i++) {
+      const c = contacts[i];
+      
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 20;
+      let yPosition = margin;
+      
+      // En-tête
+      doc.setFillColor(0, 82, 156);
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FICHE CLIENT', pageWidth / 2, 15, { align: 'center' });
+      doc.setFontSize(10);
+      doc.text(`Catégorie: ${categories[activeCat]}`, pageWidth / 2, 25, { align: 'center' });
+      
+      yPosition = 60;
+      
+      // Informations client
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      
+      const clientInfo = [
+        `Entreprise: ${c.entreprise || 'Non renseigné'}`,
+        `Contact: ${c.nom || 'Non renseigné'}`,
+        `Poste: ${c.poste || 'Non renseigné'}`,
+        `Email: ${c.email || 'Non renseigné'}`,
+        `Thème: ${c.projet || 'Non renseigné'}`
+      ];
+      
+      clientInfo.forEach(info => {
+        doc.text(info, margin, yPosition);
+        yPosition += 8;
+      });
+      
+      yPosition += 5;
+      
+      // Discussions résumées
+      if (c.discussions && c.discussions.length > 0) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Discussions: ${c.discussions.length}`, margin, yPosition);
+        yPosition += 15;
+        
+        // Première discussion seulement pour le résumé
+        const firstDiscussion = c.discussions[0];
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Dernière discussion: ${firstDiscussion.name || 'Non spécifié'}`, margin, yPosition);
+        yPosition += 5;
+        
+        const previewText = (firstDiscussion.text || '').substring(0, 100) + '...';
+        const lines = doc.splitTextToSize(previewText, pageWidth - 2 * margin);
+        lines.forEach(line => {
+          doc.text(line, margin, yPosition);
+          yPosition += 5;
+        });
+      }
+      
+      // Pied de page
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} - NAPEC Marketing`, pageWidth / 2, 285, { align: 'center' });
+      
+      // Sauvegarder
+      const fileName = `Client_${activeCat}_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+      doc.save(fileName);
+      
+      // Petite pause entre les générations
+      if (i < contacts.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+    
+    showSyncIndicator(`✅ ${contacts.length} PDF générés`, 'success');
+    
+  } catch (error) {
+    console.error('Erreur génération PDF multiples:', error);
+    showSyncIndicator('❌ Erreur PDF', 'error');
+    alert('Erreur lors de la génération des PDF');
+  }
 }
 
-async function exportTablePDF(){
-  // Votre code PDF existant reste identique
-  // ... (le code PDF reste le même)
+async function exportTablePDF() {
+  if (!activeCat) {
+    alert('Veuillez d\'abord sélectionner une catégorie');
+    return;
+  }
+
+  try {
+    showSyncIndicator('🔄 Génération PDF liste...', 'syncing');
+
+    // Appliquer les filtres pour obtenir les contacts affichés
+    const contacts = applyFilters();
+    
+    if (!contacts || contacts.length === 0) {
+      alert('Aucun contact à exporter');
+      return;
+    }
+
+    const { jsPDF } = window.jsPDF;
+    const doc = new jsPDF();
+    
+    // Configuration
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPosition = margin;
+    
+    // En-tête
+    doc.setFillColor(0, 82, 156);
+    doc.rect(0, 0, pageWidth, 30, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LISTE DES CONTACTS', pageWidth / 2, 12, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.text(`Catégorie: ${categories[activeCat]}`, pageWidth / 2, 20, { align: 'center' });
+    
+    // Date et statistiques
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(8);
+    const today = new Date().toLocaleDateString('fr-FR');
+    doc.text(`Généré le: ${today}`, margin, 40);
+    doc.text(`Nombre de contacts: ${contacts.length}`, pageWidth - margin, 40, { align: 'right' });
+    
+    yPosition = 50;
+    
+    // En-têtes du tableau
+    const headers = ['Entreprise', 'Nom', 'Poste', 'Email', 'Département', 'Thème'];
+    const columnWidths = [35, 30, 30, 40, 25, 30];
+    let xPosition = margin;
+    
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 8, 'F');
+    
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    headers.forEach((header, index) => {
+      doc.text(header, xPosition, yPosition);
+      xPosition += columnWidths[index];
+    });
+    
+    yPosition += 10;
+    
+    // Lignes du tableau
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    
+    contacts.forEach((contact, index) => {
+      // Vérifier si on besoin d'une nouvelle page
+      if (yPosition > pageHeight - 20) {
+        doc.addPage();
+        yPosition = margin;
+        
+        // Redessiner les en-têtes
+        doc.setFillColor(240, 240, 240);
+        doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 8, 'F');
+        
+        doc.setFont('helvetica', 'bold');
+        xPosition = margin;
+        headers.forEach((header, idx) => {
+          doc.text(header, xPosition, yPosition);
+          xPosition += columnWidths[idx];
+        });
+        yPosition += 10;
+        doc.setFont('helvetica', 'normal');
+      }
+      
+      // Dessiner la ligne
+      xPosition = margin;
+      const rowData = [
+        contact.entreprise || '',
+        contact.nom || '',
+        contact.poste || '',
+        contact.email || '',
+        contact.departement || '',
+        contact.projet || ''
+      ];
+      
+      rowData.forEach((data, colIndex) => {
+        const lines = doc.splitTextToSize(data, columnWidths[colIndex] - 2);
+        if (lines.length > 1) {
+          // Texte trop long, on prend la première ligne avec "..."
+          doc.text(lines[0].substring(0, lines[0].length - 3) + '...', xPosition, yPosition);
+        } else {
+          doc.text(data, xPosition, yPosition);
+        }
+        xPosition += columnWidths[colIndex];
+      });
+      
+      yPosition += 6;
+      
+      // Ligne séparatrice
+      if (index < contacts.length - 1) {
+        doc.setDrawColor(200, 200, 200);
+        doc.line(margin, yPosition - 1, pageWidth - margin, yPosition - 1);
+      }
+    });
+    
+    // Pied de page
+    doc.setFontSize(8);
+    doc.setTextColor(128, 128, 128);
+    doc.text(`NAPEC Marketing Plateforme - Page 1/1`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    
+    // Téléchargement
+    const fileName = `Liste_Contacts_${activeCat}_${today.replace(/\//g, '-')}.pdf`;
+    doc.save(fileName);
+    
+    showSyncIndicator('✅ PDF liste généré', 'success');
+    
+  } catch (error) {
+    console.error('Erreur génération PDF liste:', error);
+    showSyncIndicator('❌ Erreur PDF', 'error');
+    alert('Erreur lors de la génération du PDF liste');
+  }
 }
 
 function escape(s){ if(!s) return ''; return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
