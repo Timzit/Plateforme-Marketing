@@ -349,6 +349,15 @@
   thead th{position:sticky;top:0;background:linear-gradient(180deg,#fff,#f7fbff);padding:10px;border-bottom:1px solid #e6eefc;text-align:left}
   tbody td{padding:10px;border-bottom:1px solid #f0f6ff}
   tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff}
+  
+  /* CORRECTION: Appliquer la couleur à toute la ligne, pas seulement aux cellules */
+  tr.contact-row[data-dept="Mesure"] {
+    background: var(--orange-mesure) !important;
+  }
+  tr.contact-row[data-dept="Projet"] {
+    background: var(--blue-projet) !important;
+  }
+  
   tr.contact-row:hover{background:var(--row-hover);cursor:pointer}
   td.actions-td{display:flex;gap:6px;justify-content:flex-end}
   .btn-small{border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
@@ -385,9 +394,9 @@
     box-sizing: border-box;
   }
 
-  /* coloration des lignes selon département */
-  tr.contact-row[data-dept="Mesure"] td { background: var(--orange-mesure); }
-  tr.contact-row[data-dept="Projet"] td { background: var(--blue-projet); }
+  /* SUPPRIMER l'ancienne coloration des cellules et appliquer aux lignes */
+  /* tr.contact-row[data-dept="Mesure"] td { background: var(--orange-mesure); } */
+  /* tr.contact-row[data-dept="Projet"] td { background: var(--blue-projet); } */
 
   /* ---- FORMULAIRE CONTACT MODERNISE ---- */
   .modal { 
@@ -810,6 +819,246 @@
     grid-column: 1;
   }
 }
+
+/* ========== NOUVEAUX STYLES POUR LA RECHERCHE ET LES FILTRES ========== */
+
+.search-filters-container {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+}
+
+.search-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 10px 15px;
+  border: 1px solid #e6f2ff;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fbfeff;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #0b76d1;
+  box-shadow: 0 0 6px rgba(11,118,209,0.25);
+  outline: none;
+}
+
+.filter-toggle-btn {
+  background: #00529c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.filter-toggle-btn:hover {
+  background: #003d75;
+  transform: translateY(-1px);
+}
+
+.filters-section {
+  display: none;
+  background: #f8fbff;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e6f2ff;
+  margin-top: 10px;
+}
+
+.filters-section.active {
+  display: block;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #00529c;
+  margin-bottom: 5px;
+}
+
+.filter-select, .filter-input {
+  padding: 8px 10px;
+  border: 1px solid #e6f2ff;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus, .filter-input:focus {
+  border-color: #0b76d1;
+  box-shadow: 0 0 4px rgba(11,118,209,0.25);
+  outline: none;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-results {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-clear {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-apply {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.btn-apply:hover {
+  background: #218838;
+}
+
+.no-results {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+}
+
+.highlight {
+  background-color: #fff3cd;
+  font-weight: bold;
+}
+
+/* Style pour les en-têtes de tableau avec filtres */
+.table-header-with-filter {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.table-header-with-filter:hover {
+  background: #f0f7ff;
+}
+
+.filter-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background: #28a745;
+  border-radius: 50%;
+}
+
+/* ========== NOUVEAUX STYLES POUR LE TRI ALPHABÉTIQUE ========== */
+
+.sort-indicator {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 10px;
+  color: #00529c;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8fbff;
+  border-radius: 8px;
+  border: 1px solid #e6f2ff;
+}
+
+.sort-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #00529c;
+}
+
+.sort-select {
+  padding: 6px 10px;
+  border: 1px solid #e6f2ff;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sort-select:focus {
+  border-color: #0b76d1;
+  box-shadow: 0 0 4px rgba(11,118,209,0.25);
+  outline: none;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sort-info {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
   </style>
   
 </head>
@@ -873,19 +1122,119 @@
         </div>
       </div>
 
+      <!-- ========== NOUVEAU : SECTION RECHERCHE ET FILTRES ========== -->
+      <div class="search-filters-container" id="searchFiltersContainer" style="display: none;">
+        <div class="search-section">
+          <input type="text" id="globalSearch" class="search-input" placeholder="🔍 Rechercher dans tous les contacts..." />
+          <button id="toggleFilters" class="filter-toggle-btn">
+            <span>⚙️ Filtres</span>
+          </button>
+        </div>
+        
+        <div class="filters-section" id="filtersSection">
+          <div class="filters-grid">
+            <div class="filter-group">
+              <label class="filter-label">Entreprise</label>
+              <input type="text" id="filterEntreprise" class="filter-input" placeholder="Filtrer par entreprise..." />
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Nom</label>
+              <input type="text" id="filterNom" class="filter-input" placeholder="Filtrer par nom..." />
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Poste</label>
+              <input type="text" id="filterPoste" class="filter-input" placeholder="Filtrer par poste..." />
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Département</label>
+              <select id="filterDepartement" class="filter-select">
+                <option value="">Tous les départements</option>
+                <option value="Projet">Projet</option>
+                <option value="Mesure">Mesure</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Email</label>
+              <input type="text" id="filterEmail" class="filter-input" placeholder="Filtrer par email..." />
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Projet/Mesure</label>
+              <input type="text" id="filterProjet" class="filter-input" placeholder="Filtrer par projet..." />
+            </div>
+          </div>
+          
+          <!-- ========== NOUVEAU : SECTION TRI ALPHABÉTIQUE ========== -->
+          <div class="sort-controls">
+            <span class="sort-label">Trier par :</span>
+            <select id="sortSelect" class="sort-select">
+              <option value="entreprise-asc">Entreprise (A-Z)</option>
+              <option value="entreprise-desc">Entreprise (Z-A)</option>
+              <option value="nom-asc">Nom (A-Z)</option>
+              <option value="nom-desc">Nom (Z-A)</option>
+              <option value="date-desc">Date de création (récent)</option>
+              <option value="date-asc">Date de création (ancien)</option>
+            </select>
+            <div class="sort-info" id="sortInfo">
+              Tri automatique par entreprise (A-Z)
+            </div>
+          </div>
+          
+          <div class="filter-actions">
+            <div class="filter-results" id="filterResults">
+              Affichage de <span id="resultsCount">0</span> contacts sur <span id="totalCount">0</span>
+            </div>
+            <div class="filter-buttons">
+              <button id="clearFilters" class="btn-clear">Effacer les filtres</button>
+              <button id="applyFilters" class="btn-apply">Appliquer les filtres</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="table-wrap" id="tableWrap">
         <table id="contactsTable" aria-label="Tableau contacts">
           <thead>
             <tr>
-              <th>Entreprise</th><th>Nom</th><th>Poste</th><th>Portable</th><th>Fixe</th><th>Email</th><th>Département</th><th>Sujet/Fournisseur</th><th style="width:140px;text-align:right">Actions</th>
+              <th class="table-header-with-filter" data-sort="entreprise">
+                Entreprise <span class="sort-indicator">▲</span>
+                <span class="filter-indicator" id="indicatorEntreprise" style="display: none;"></span>
+              </th>
+              <th class="table-header-with-filter" data-sort="nom">
+                Nom
+                <span class="filter-indicator" id="indicatorNom" style="display: none;"></span>
+              </th>
+              <th class="table-header-with-filter" data-sort="poste">
+                Poste
+                <span class="filter-indicator" id="indicatorPoste" style="display: none;"></span>
+              </th>
+              <th>Portable</th>
+              <th>Fixe</th>
+              <th class="table-header-with-filter" data-sort="email">
+                Email
+                <span class="filter-indicator" id="indicatorEmail" style="display: none;"></span>
+              </th>
+              <th class="table-header-with-filter" data-sort="departement">
+                Département
+                <span class="filter-indicator" id="indicatorDepartement" style="display: none;"></span>
+              </th>
+              <th class="table-header-with-filter" data-sort="projet">
+                Sujet/Fournisseur
+                <span class="filter-indicator" id="indicatorProjet" style="display: none;"></span>
+              </th>
+              <th style="width:140px;text-align:right">Actions</th>
             </tr>
           </thead>
           <tbody id="contactsBody"></tbody>
         </table>
+        <div id="noResults" class="no-results" style="display: none;">
+          Aucun contact ne correspond à vos critères de recherche.
+        </div>
       </div>
 
       <!-- plan d'action OPTIMISÉ -->
       <div class="plan" id="planSection" aria-live="polite">
+        <!-- Le contenu du plan d'action reste inchangé -->
         <div class="plan-header">
           <div>
             <div style="font-weight:800" id="planTitle">Plan d'action — <span id="planCompany"></span></div>
@@ -948,20 +1297,17 @@
     <div class="charts-container" id="chartsContainer">
       <!-- Les graphiques seront générés dynamiquement ici -->
     </div>
-<!-- GRAPHIQUES - EN BAS DE LA PAGE -->
-<div class="charts-container" id="chartsContainer">
-  <!-- Les graphiques seront générés dynamiquement ici -->
-</div>
 
-<!-- NOUVEAU GRAPHE : Discussions par personne -->
-<div class="chart-full-width" id="personChartContainer">
-  <div class="chart-card">
-    <div class="chart-title">Discussions par Personne</div>
-    <div class="bar-container" id="personChart">
-      <!-- Le graphique des personnes sera généré ici -->
+    <!-- NOUVEAU GRAPHE : Discussions par personne -->
+    <div class="chart-full-width" id="personChartContainer">
+      <div class="chart-card">
+        <div class="chart-title">Discussions par Personne</div>
+        <div class="bar-container" id="personChart">
+          <!-- Le graphique des personnes sera généré ici -->
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
     <!-- PIED DE PAGE CORRIGÉ -->
     <div class="footer">
       <p>© 2025 Fedoua Timzit - Tous droits réservés</p>
@@ -1082,6 +1428,20 @@ const nameList = [
 // COMPTEURS
 let discussionCounter = 0;
 let stepCounter = 0;
+
+/* ========== NOUVEAU : VARIABLES POUR LA RECHERCHE, FILTRES ET TRI ========== */
+let currentFilters = {
+  globalSearch: '',
+  entreprise: '',
+  nom: '',
+  poste: '',
+  departement: '',
+  email: '',
+  projet: ''
+};
+
+let currentSort = 'entreprise-asc'; // Tri par défaut : entreprise A-Z
+let filteredContacts = [];
 
 /* ---------- FONCTIONS SUPABASE ---------- */
 
@@ -1271,6 +1631,229 @@ function showSyncIndicator(message, type = 'success') {
       indicator.style.display = 'none';
     }, 3000);
   }
+}
+
+/* ========== NOUVEAU : FONCTIONS DE TRI ALPHABÉTIQUE ========== */
+
+// Trier les contacts selon le critère sélectionné
+function sortContacts(contacts) {
+  if (!contacts || contacts.length === 0) return contacts;
+  
+  const [field, direction] = currentSort.split('-');
+  
+  return [...contacts].sort((a, b) => {
+    let valueA = a[field] || '';
+    let valueB = b[field] || '';
+    
+    // Pour les champs texte, convertir en minuscules pour un tri insensible à la casse
+    if (typeof valueA === 'string') {
+      valueA = valueA.toLowerCase();
+      valueB = valueB.toLowerCase();
+    }
+    
+    // Pour les dates
+    if (field === 'created_at') {
+      valueA = new Date(valueA);
+      valueB = new Date(valueB);
+    }
+    
+    let result = 0;
+    
+    if (valueA < valueB) result = -1;
+    if (valueA > valueB) result = 1;
+    
+    // Inverser le résultat pour le tri descendant
+    if (direction === 'desc') {
+      result = -result;
+    }
+    
+    return result;
+  });
+}
+
+// Mettre à jour l'affichage des informations de tri
+function updateSortInfo() {
+  const sortInfo = document.getElementById('sortInfo');
+  const [field, direction] = currentSort.split('-');
+  
+  const fieldNames = {
+    'entreprise': 'Entreprise',
+    'nom': 'Nom',
+    'poste': 'Poste',
+    'email': 'Email',
+    'departement': 'Département',
+    'projet': 'Projet',
+    'created_at': 'Date de création'
+  };
+  
+  const directionNames = {
+    'asc': 'croissant (A-Z)',
+    'desc': 'décroissant (Z-A)'
+  };
+  
+  sortInfo.textContent = `Tri par ${fieldNames[field]} ${directionNames[direction]}`;
+}
+
+// Mettre à jour les indicateurs visuels dans les en-têtes
+function updateSortIndicators() {
+  // Réinitialiser tous les indicateurs
+  document.querySelectorAll('.sort-indicator').forEach(indicator => {
+    indicator.textContent = '';
+  });
+  
+  // Mettre à jour l'indicateur de la colonne triée
+  const [field] = currentSort.split('-');
+  const header = document.querySelector(`th[data-sort="${field}"]`);
+  if (header) {
+    const indicator = header.querySelector('.sort-indicator');
+    const direction = currentSort.split('-')[1];
+    indicator.textContent = direction === 'asc' ? '▲' : '▼';
+  }
+}
+
+/* ========== NOUVEAU : FONCTIONS DE RECHERCHE ET FILTRES ========== */
+
+// Appliquer les filtres aux contacts
+function applyFilters() {
+  if (!activeCat) return [];
+  
+  const contacts = store.categories[activeCat] || [];
+  
+  filteredContacts = contacts.filter(contact => {
+    // Filtre de recherche globale
+    if (currentFilters.globalSearch) {
+      const searchTerm = currentFilters.globalSearch.toLowerCase();
+      const searchFields = [
+        contact.entreprise,
+        contact.nom,
+        contact.poste,
+        contact.departement,
+        contact.email,
+        contact.projet
+      ];
+      
+      const hasMatch = searchFields.some(field => 
+        field && field.toLowerCase().includes(searchTerm)
+      );
+      
+      if (!hasMatch) return false;
+    }
+    
+    // Filtres individuels
+    if (currentFilters.entreprise && 
+        (!contact.entreprise || !contact.entreprise.toLowerCase().includes(currentFilters.entreprise.toLowerCase()))) {
+      return false;
+    }
+    
+    if (currentFilters.nom && 
+        (!contact.nom || !contact.nom.toLowerCase().includes(currentFilters.nom.toLowerCase()))) {
+      return false;
+    }
+    
+    if (currentFilters.poste && 
+        (!contact.poste || !contact.poste.toLowerCase().includes(currentFilters.poste.toLowerCase()))) {
+      return false;
+    }
+    
+    if (currentFilters.departement && contact.departement !== currentFilters.departement) {
+      return false;
+    }
+    
+    if (currentFilters.email && 
+        (!contact.email || !contact.email.toLowerCase().includes(currentFilters.email.toLowerCase()))) {
+      return false;
+    }
+    
+    if (currentFilters.projet && 
+        (!contact.projet || !contact.projet.toLowerCase().includes(currentFilters.projet.toLowerCase()))) {
+      return false;
+    }
+    
+    return true;
+  });
+  
+  // Appliquer le tri aux contacts filtrés
+  filteredContacts = sortContacts(filteredContacts);
+  
+  return filteredContacts;
+}
+
+// Mettre à jour l'affichage des résultats
+function updateFilterResults() {
+  const resultsCount = document.getElementById('resultsCount');
+  const totalCount = document.getElementById('totalCount');
+  const noResults = document.getElementById('noResults');
+  
+  const totalContacts = store.categories[activeCat] ? store.categories[activeCat].length : 0;
+  const filteredCount = filteredContacts.length;
+  
+  resultsCount.textContent = filteredCount;
+  totalCount.textContent = totalContacts;
+  
+  // Afficher/masquer le message "Aucun résultat"
+  if (filteredCount === 0 && totalContacts > 0) {
+    noResults.style.display = 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+  
+  // Mettre à jour les indicateurs de filtres actifs
+  updateFilterIndicators();
+}
+
+// Mettre à jour les indicateurs visuels des filtres actifs
+function updateFilterIndicators() {
+  const indicators = {
+    entreprise: document.getElementById('indicatorEntreprise'),
+    nom: document.getElementById('indicatorNom'),
+    poste: document.getElementById('indicatorPoste'),
+    departement: document.getElementById('indicatorDepartement'),
+    email: document.getElementById('indicatorEmail'),
+    projet: document.getElementById('indicatorProjet')
+  };
+  
+  Object.keys(indicators).forEach(key => {
+    if (currentFilters[key]) {
+      indicators[key].style.display = 'block';
+    } else {
+      indicators[key].style.display = 'none';
+    }
+  });
+}
+
+// Réinitialiser tous les filtres
+function resetFilters() {
+  currentFilters = {
+    globalSearch: '',
+    entreprise: '',
+    nom: '',
+    poste: '',
+    departement: '',
+    email: '',
+    projet: ''
+  };
+  
+  // Réinitialiser les champs de formulaire
+  document.getElementById('globalSearch').value = '';
+  document.getElementById('filterEntreprise').value = '';
+  document.getElementById('filterNom').value = '';
+  document.getElementById('filterPoste').value = '';
+  document.getElementById('filterDepartement').value = '';
+  document.getElementById('filterEmail').value = '';
+  document.getElementById('filterProjet').value = '';
+  
+  // Réappliquer les filtres (qui seront vides)
+  applyFilters();
+  renderTable();
+  updateFilterResults();
+}
+
+// Mettre en évidence le texte correspondant à la recherche
+function highlightText(text, searchTerm) {
+  if (!searchTerm) return text;
+  
+  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
 }
 
 /* ---------- FONCTIONS STATISTIQUES ---------- */
@@ -1563,6 +2146,93 @@ function initializeEventListeners() {
   document.getElementById('btnAddStep').addEventListener('click', addStep);
   document.getElementById('lockRemark').addEventListener('click', toggleRemarkLock);
   document.getElementById('lockAllSteps').addEventListener('click', lockAllSteps);
+  
+  /* ========== NOUVEAU : ÉVÉNEMENTS POUR LA RECHERCHE, FILTRES ET TRI ========== */
+  
+  // Recherche globale
+  document.getElementById('globalSearch').addEventListener('input', function() {
+    currentFilters.globalSearch = this.value;
+    applyFiltersAndRender();
+  });
+  
+  // Bouton pour afficher/masquer les filtres
+  document.getElementById('toggleFilters').addEventListener('click', function() {
+    const filtersSection = document.getElementById('filtersSection');
+    filtersSection.classList.toggle('active');
+  });
+  
+  // Filtres individuels
+  document.getElementById('filterEntreprise').addEventListener('input', function() {
+    currentFilters.entreprise = this.value;
+  });
+  
+  document.getElementById('filterNom').addEventListener('input', function() {
+    currentFilters.nom = this.value;
+  });
+  
+  document.getElementById('filterPoste').addEventListener('input', function() {
+    currentFilters.poste = this.value;
+  });
+  
+  document.getElementById('filterDepartement').addEventListener('change', function() {
+    currentFilters.departement = this.value;
+  });
+  
+  document.getElementById('filterEmail').addEventListener('input', function() {
+    currentFilters.email = this.value;
+  });
+  
+  document.getElementById('filterProjet').addEventListener('input', function() {
+    currentFilters.projet = this.value;
+  });
+  
+  // Boutons d'action des filtres
+  document.getElementById('applyFilters').addEventListener('click', function() {
+    applyFiltersAndRender();
+  });
+  
+  document.getElementById('clearFilters').addEventListener('click', function() {
+    resetFilters();
+  });
+  
+  // Événements pour le tri
+  document.getElementById('sortSelect').addEventListener('change', function() {
+    currentSort = this.value;
+    applyFiltersAndRender();
+    updateSortInfo();
+    updateSortIndicators();
+  });
+  
+  // Événements de clic sur les en-têtes pour le tri
+  document.querySelectorAll('.table-header-with-filter').forEach(header => {
+    header.addEventListener('click', function() {
+      const field = this.dataset.sort;
+      if (!field) return;
+      
+      // Déterminer la nouvelle direction
+      const [currentField, currentDirection] = currentSort.split('-');
+      let newDirection = 'asc';
+      
+      if (currentField === field) {
+        newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+      }
+      
+      currentSort = `${field}-${newDirection}`;
+      document.getElementById('sortSelect').value = currentSort;
+      
+      applyFiltersAndRender();
+      updateSortInfo();
+      updateSortIndicators();
+    });
+  });
+}
+
+/* ========== NOUVEAU : FONCTION POUR APPLIQUER LES FILTRES ET RE-RENDRE ========== */
+
+function applyFiltersAndRender() {
+  applyFilters();
+  renderTable();
+  updateFilterResults();
 }
 
 /* ---------- FONCTIONS NOUVELLES ---------- */
@@ -1762,7 +2432,7 @@ function openPlan(id) {
 
 async function onSavePlan() {
   if (!activeContactId) return alert('Aucun contact actif.');
-  
+
   const c = store.categories[activeCat].find(x => x.id === activeContactId);
   if (!c) return;
   
@@ -1811,12 +2481,26 @@ function openCategory(cat){
   activeCat = cat;
   board.style.display = 'block';
   boardTitle.textContent = categories[cat];
+  
+  // Afficher la section de recherche et filtres
+  document.getElementById('searchFiltersContainer').style.display = 'block';
+  
+  // Réinitialiser les filtres mais conserver le tri
+  resetFilters();
+  
+  // Mettre à jour les informations de tri
+  updateSortInfo();
+  updateSortIndicators();
+  
   renderTable();
 }
 
 function renderTable(){
   contactsBody.innerHTML = '';
-  const items = store.categories[activeCat] || [];
+  
+  // Appliquer les filtres et obtenir les contacts filtrés
+  const items = applyFilters();
+  
   const groups = {};
   
   items.forEach(i=>{
@@ -1825,13 +2509,16 @@ function renderTable(){
     groups[k].items.push(i);
   });
   
-  Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name)).forEach(k=>{
+  // Trier les groupes d'entreprises par ordre alphabétique
+  const sortedGroups = Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name));
+  
+  sortedGroups.forEach(k=>{
     const grp = groups[k];
     const trg = document.createElement('tr'); 
     trg.className='company-row';
     const tdg = document.createElement('td'); 
     tdg.setAttribute('colspan',9); 
-    tdg.textContent = grp.name;
+    tdg.innerHTML = highlightText(grp.name, currentFilters.globalSearch);
     trg.appendChild(tdg); 
     contactsBody.appendChild(trg);
     
@@ -1844,14 +2531,14 @@ function renderTable(){
       else if(dep === 'mesure') tr.setAttribute('data-dept','Mesure');
 
       tr.innerHTML = `
-        <td>${escape(c.entreprise)}</td>
-        <td>${escape(c.nom)}</td>
-        <td>${escape(c.poste)}</td>
+        <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
+        <td>${highlightText(escape(c.nom), currentFilters.globalSearch)}</td>
+        <td>${highlightText(escape(c.poste), currentFilters.globalSearch)}</td>
         <td>${escape(c.portable)}</td>
         <td>${escape(c.fixe)}</td>
-        <td>${escape(c.email)}</td>
-        <td>${escape(c.departement)}</td>
-        <td>${escape(c.projet)}</td>
+        <td>${highlightText(escape(c.email), currentFilters.globalSearch)}</td>
+        <td>${highlightText(escape(c.departement), currentFilters.globalSearch)}</td>
+        <td>${highlightText(escape(c.projet), currentFilters.globalSearch)}</td>
         <td class="actions-td">
           <button class="btn-small btn-edit" data-id="${c.id}" title="Modifier">✎</button>
           <button class="btn-small btn-delete" data-id="${c.id}" title="Supprimer">🗑</button>
@@ -1880,6 +2567,9 @@ function renderTable(){
     tr.innerHTML = `<td colspan="9" class="small-muted" style="padding:18px">Aucun contact — cliquez sur "Nouveau contact".</td>`;
     contactsBody.appendChild(tr);
   }
+  
+  // Mettre à jour les résultats des filtres
+  updateFilterResults();
 }
 
 function openModalForNew(){
@@ -2093,6 +2783,7 @@ const fFixe = document.getElementById('fFixe');
 const fEmail = document.getElementById('fEmail');
 const fProjet = document.getElementById('fProjet');
 const fCategory = document.getElementById('fCategory');
+
 /* ---------- FONCTION POUR LE GRAPHIQUE DES DISCUSSIONS PAR PERSONNE ---------- */
 
 function updatePersonChart() {
