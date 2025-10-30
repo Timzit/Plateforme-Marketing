@@ -366,7 +366,9 @@
   tr.contact-row[data-dept="Water"] {
     background: var(--orange-water) !important;
   }
-  
+  tr.contact-row[data-dept="Mesure/Projet"] {
+    background: var(--orange-water) !important;
+  }
   tr.contact-row:hover{background:var(--row-hover);cursor:pointer}
   td.actions-td{display:flex;gap:6px;justify-content:flex-end}
   .btn-small{border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
@@ -991,7 +993,41 @@
   background-color: #fff3cd;
   font-weight: bold;
 }
+/* Bouton Retour en haut */
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: white;
+  color: #00529c;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 82, 156, 0.3);
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+}
 
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover {
+  background: #003d75;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 82, 156, 0.4);
+}
+
+.back-to-top:active {
+  transform: translateY(-1px);
+}
 /* Style pour les en-têtes de tableau avec filtres */
 .table-header-with-filter {
   position: relative;
@@ -1162,6 +1198,7 @@
                 <option value="O&G">O&G</option>
                 <option value="Industrie">Industrie</option>
                 <option value="Water">Water</option>
+                <option value="Mesure/Projet">Mesure/Projet</option>
               </select>
             </div>
             <div class="filter-group">
@@ -1241,7 +1278,10 @@
           Aucun contact ne correspond à vos critères de recherche.
         </div>
       </div>
-
+<!-- Bouton Retour en haut -->
+<button id="backToTop" class="back-to-top" title="Retour en haut">
+  ↑
+</button>
       <!-- plan d'action OPTIMISÉ -->
       <div class="plan" id="planSection" aria-live="polite">
         <!-- Le contenu du plan d'action reste inchangé -->
@@ -1355,6 +1395,7 @@
               <option value="O&G">O&G</option>
               <option value="Industrie">Industrie</option>
               <option value="Water">Water</option>
+               <option value="Mesure/Projet">Mesure/Projet</option>
             </select>
           </div>
           <div>
@@ -1399,6 +1440,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+  // Bouton Retour en haut
+const backToTopButton = document.getElementById('backToTop');
+
+// Afficher/masquer le bouton au défilement
+window.addEventListener('scroll', function() {
+  if (window.pageYOffset > 300) {
+    backToTopButton.classList.add('show');
+  } else {
+    backToTopButton.classList.remove('show');
+  }
+});
+
+// Retour en haut quand on clique
+backToTopButton.addEventListener('click', function() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
 /* ---------- CONFIGURATION SUPABASE ---------- */
 // ⚠️ REMPLACEZ CES VALEURS PAR LES VÔTRES
 const SUPABASE_URL = 'https://vzbpgtynmpxqrgxebjeb.supabase.co';
@@ -2545,6 +2605,7 @@ function renderTable(){
       else if(dep === 'o&g') tr.setAttribute('data-dept','O&G');
       else if(dep === 'industrie') tr.setAttribute('data-dept','Industrie');
       else if(dep === 'water') tr.setAttribute('data-dept','Water');
+      else if(dep === 'Mesure/Projet') tr.setAttribute('data-dept','Mesure/Projet'); 
 
       tr.innerHTML = `
         <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
@@ -3096,7 +3157,6 @@ async function exportTablePDF() {
   try {
     showSyncIndicator('🔄 Génération PDF liste...', 'syncing');
 
-    // Appliquer les filtres pour obtenir les contacts affichés
     const contacts = applyFilters();
     
     if (!contacts || contacts.length === 0) {
@@ -3104,124 +3164,265 @@ async function exportTablePDF() {
       return;
     }
 
-    const { jsPDF } = window.jsPDF;
-    const doc = new jsPDF();
-    
-    // Configuration
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape');
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 15;
     let yPosition = margin;
-    
-    // En-tête
+
+    // === EN-TÊTE ===
     doc.setFillColor(0, 82, 156);
-    doc.rect(0, 0, pageWidth, 30, 'F');
+    doc.rect(0, 0, pageWidth, 25, 'F');
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('LISTE DES CONTACTS', pageWidth / 2, 12, { align: 'center' });
+    doc.text('Gestion des contacts | NAPEC 2025', pageWidth / 2, 10, { align: 'center' });
     
     doc.setFontSize(10);
-    doc.text(`Catégorie: ${categories[activeCat]}`, pageWidth / 2, 20, { align: 'center' });
+    doc.text(`Catégorie: ${categories[activeCat]}`, pageWidth / 2, 18, { align: 'center' });
     
-    // Date et statistiques
-    doc.setTextColor(0, 0, 0);
+    yPosition = 35;
+
+    // === INFORMATIONS ===
+    doc.setTextColor(100, 100, 100);
     doc.setFontSize(8);
     const today = new Date().toLocaleDateString('fr-FR');
-    doc.text(`Généré le: ${today}`, margin, 40);
-    doc.text(`Nombre de contacts: ${contacts.length}`, pageWidth - margin, 40, { align: 'right' });
-    
-    yPosition = 50;
-    
-    // En-têtes du tableau
-    const headers = ['Entreprise', 'Nom', 'Poste', 'Email', 'Département', 'Thème'];
-    const columnWidths = [35, 30, 30, 40, 25, 30];
-    let xPosition = margin;
-    
-    doc.setFillColor(240, 240, 240);
-    doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 8, 'F');
-    
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    headers.forEach((header, index) => {
-      doc.text(header, xPosition, yPosition);
-      xPosition += columnWidths[index];
-    });
+    doc.text(`Généré le: ${today} | Contacts: ${contacts.length}`, margin, yPosition);
     
     yPosition += 10;
+
+    // === CONFIGURATION DES COLONNES - THÈME ÉLARGI ===
+    const totalTableWidth = pageWidth - (2 * margin);
+    const columns = [
+      { header: 'Entreprise', width: totalTableWidth * 0.18 },  // Réduit
+      { header: 'Nom', width: totalTableWidth * 0.16 },         // Réduit
+      { header: 'Poste', width: totalTableWidth * 0.18 },       // Réduit
+      { header: 'Portable', width: totalTableWidth * 0.12 },    // Même
+      { header: 'Email', width: totalTableWidth * 0.14 },       // Réduit
+      { header: 'Département', width: totalTableWidth * 0.07 }, // Réduit
+      { header: 'Thème', width: totalTableWidth * 0.15 }        // AUGMENTÉ à 15%
+    ];
+
+    // === EN-TÊTES DU TABLEAU ===
+    doc.setFillColor(240, 248, 255);
+    doc.rect(margin, yPosition - 4, totalTableWidth, 7, 'F');
     
-    // Lignes du tableau
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
+    doc.setDrawColor(200, 220, 240);
+    doc.rect(margin, yPosition - 4, totalTableWidth, 7, 'S');
     
-    contacts.forEach((contact, index) => {
-      // Vérifier si on besoin d'une nouvelle page
-      if (yPosition > pageHeight - 20) {
+    doc.setTextColor(0, 82, 156);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    
+    let xPosition = margin;
+    columns.forEach(column => {
+      let headerText = column.header;
+      if (column.header === 'Département') headerText = 'Départ.';
+      
+      doc.text(headerText, xPosition + 3, yPosition);
+      xPosition += column.width;
+    });
+    
+    yPosition += 9;
+
+    // === ORGANISATION DES DONNÉES ===
+    const groups = {};
+    contacts.forEach(contact => {
+      const entreprise = contact.entreprise || '[Sans entreprise]';
+      if (!groups[entreprise]) groups[entreprise] = [];
+      groups[entreprise].push(contact);
+    });
+
+    const sortedEntreprises = Object.keys(groups).sort();
+
+    // === CONTENU DU TABLEAU ===
+    let currentPage = 1;
+    const maxY = pageHeight - 20;
+
+    for (const entreprise of sortedEntreprises) {
+      const contactsEntreprise = groups[entreprise];
+      
+      // Vérifier espace disponible
+      const spaceNeeded = 8 + (contactsEntreprise.length * 8) + 5;
+      if (yPosition + spaceNeeded > maxY) {
         doc.addPage();
+        currentPage++;
         yPosition = margin;
         
         // Redessiner les en-têtes
-        doc.setFillColor(240, 240, 240);
-        doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 8, 'F');
+        drawTableHeaders(doc, margin, yPosition, totalTableWidth, columns);
+        yPosition += 9;
+      }
+      
+      // === LIGNE ENTREPRISE ===
+      doc.setFillColor(245, 251, 255);
+      doc.rect(margin, yPosition - 3, totalTableWidth, 6, 'F');
+      
+      doc.setTextColor(0, 82, 156);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      
+      doc.text(entreprise, margin + 3, yPosition);
+      
+      yPosition += 7;
+
+      // === LIGNES DES CONTACTS ===
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(0, 0, 0);
+
+      for (let i = 0; i < contactsEntreprise.length; i++) {
+        const contact = contactsEntreprise[i];
         
-        doc.setFont('helvetica', 'bold');
-        xPosition = margin;
-        headers.forEach((header, idx) => {
-          doc.text(header, xPosition, yPosition);
-          xPosition += columnWidths[idx];
-        });
-        yPosition += 10;
-        doc.setFont('helvetica', 'normal');
-      }
-      
-      // Dessiner la ligne
-      xPosition = margin;
-      const rowData = [
-        contact.entreprise || '',
-        contact.nom || '',
-        contact.poste || '',
-        contact.email || '',
-        contact.departement || '',
-        contact.projet || ''
-      ];
-      
-      rowData.forEach((data, colIndex) => {
-        const lines = doc.splitTextToSize(data, columnWidths[colIndex] - 2);
-        if (lines.length > 1) {
-          // Texte trop long, on prend la première ligne avec "..."
-          doc.text(lines[0].substring(0, lines[0].length - 3) + '...', xPosition, yPosition);
-        } else {
-          doc.text(data, xPosition, yPosition);
+        // Vérifier espace pour chaque ligne
+        if (yPosition > maxY - 10) {
+          doc.addPage();
+          currentPage++;
+          yPosition = margin;
+          drawTableHeaders(doc, margin, yPosition, totalTableWidth, columns);
+          yPosition += 9;
         }
-        xPosition += columnWidths[colIndex];
-      });
-      
-      yPosition += 6;
-      
-      // Ligne séparatrice
-      if (index < contacts.length - 1) {
-        doc.setDrawColor(200, 200, 200);
-        doc.line(margin, yPosition - 1, pageWidth - margin, yPosition - 1);
+
+        // Fond alterné
+        if (i % 2 === 0) {
+          doc.setFillColor(255, 255, 255);
+        } else {
+          doc.setFillColor(250, 252, 255);
+        }
+        doc.rect(margin, yPosition - 3, totalTableWidth, 6, 'F');
+
+        // === DONNÉES DU CONTACT ===
+        let currentX = margin;
+        
+        // Entreprise (vide car déjà dans le groupe)
+        currentX += columns[0].width;
+        
+        // Nom
+        const nom = contact.nom || '';
+        const nomLines = doc.splitTextToSize(nom, columns[1].width - 6);
+        nomLines.forEach((line, index) => {
+          if (index === 0) {
+            doc.text(line, currentX + 3, yPosition);
+          } else {
+            doc.text(line, currentX + 3, yPosition + (index * 3));
+          }
+        });
+        currentX += columns[1].width;
+        
+        // Poste
+        const poste = contact.poste || '';
+        const posteLines = doc.splitTextToSize(poste, columns[2].width - 6);
+        posteLines.forEach((line, index) => {
+          if (index === 0) {
+            doc.text(line, currentX + 3, yPosition);
+          } else {
+            doc.text(line, currentX + 3, yPosition + (index * 3));
+          }
+        });
+        currentX += columns[2].width;
+        
+        // Portable
+        const portable = contact.portable || '';
+        doc.text(portable, currentX + 3, yPosition);
+        currentX += columns[3].width;
+        
+        // Email
+        const email = contact.email || '';
+        const emailLines = doc.splitTextToSize(email, columns[4].width - 6);
+        emailLines.forEach((line, index) => {
+          if (index === 0) {
+            doc.text(line, currentX + 3, yPosition);
+          } else {
+            doc.text(line, currentX + 3, yPosition + (index * 3));
+          }
+        });
+        currentX += columns[4].width;
+        
+        // Département
+        const departement = contact.departement || '';
+        doc.text(departement, currentX + 3, yPosition);
+        currentX += columns[5].width;
+        
+        // THÈME - MAINTENANT AVEC PLUS D'ESPACE
+        const theme = contact.projet || '';
+        const themeLines = doc.splitTextToSize(theme, columns[6].width - 6);
+        themeLines.forEach((line, index) => {
+          if (index === 0) {
+            doc.text(line, currentX + 3, yPosition);
+          } else {
+            doc.text(line, currentX + 3, yPosition + (index * 3));
+          }
+        });
+
+        // Calculer la hauteur maximale pour cette ligne
+        const maxLines = Math.max(
+          nomLines.length,
+          posteLines.length,
+          emailLines.length,
+          themeLines.length,
+          1
+        );
+        
+        yPosition += (maxLines * 3) + 2;
+        
+        // Ligne séparatrice
+        doc.setDrawColor(245, 245, 245);
+        doc.line(margin, yPosition - 1, margin + totalTableWidth, yPosition - 1);
       }
-    });
-    
-    // Pied de page
-    doc.setFontSize(8);
-    doc.setTextColor(128, 128, 128);
-    doc.text(`NAPEC Marketing Plateforme - Page 1/1`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    
-    // Téléchargement
-    const fileName = `Liste_Contacts_${activeCat}_${today.replace(/\//g, '-')}.pdf`;
+      
+      // Espace après chaque groupe
+      yPosition += 5;
+    }
+
+    // === PIED DE PAGE ===
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(7);
+      doc.setTextColor(150, 150, 150);
+      doc.text(
+        `Page ${i}/${totalPages} • NAPEC 2025 _STC Co • ${categories[activeCat]} • ${contacts.length} contact(s)`,
+        pageWidth / 2,
+        pageHeight - 8,
+        { align: 'center' }
+      );
+    }
+
+    // === TÉLÉCHARGEMENT ===
+    const fileName = `Liste_${categories[activeCat].replace(/[^a-zA-Z0-9]/g, '_')}_${today.replace(/\//g, '-')}.pdf`;
     doc.save(fileName);
     
-    showSyncIndicator('✅ PDF liste généré', 'success');
+    showSyncIndicator(`✅ PDF généré • ${contacts.length} contact(s) • ${currentPage} page(s)`, 'success');
     
   } catch (error) {
-    console.error('Erreur génération PDF liste:', error);
-    showSyncIndicator('❌ Erreur PDF', 'error');
-    alert('Erreur lors de la génération du PDF liste');
+    console.error('Erreur détaillée:', error);
+    showSyncIndicator('❌ Erreur génération PDF', 'error');
+    alert('Erreur lors de la génération: ' + error.message);
   }
+}
+
+// FONCTION POUR DESSINER LES EN-TÊTES
+function drawTableHeaders(doc, margin, yPosition, totalTableWidth, columns) {
+  doc.setFillColor(240, 248, 255);
+  doc.rect(margin, yPosition - 4, totalTableWidth, 7, 'F');
+  
+  doc.setDrawColor(200, 220, 240);
+  doc.rect(margin, yPosition - 4, totalTableWidth, 7, 'S');
+  
+  doc.setTextColor(0, 82, 156);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  
+  let xPosition = margin;
+  columns.forEach(column => {
+    let headerText = column.header;
+    if (column.header === 'Département') headerText = 'Départ.';
+    
+    doc.text(headerText, xPosition + 3, yPosition);
+    xPosition += column.width;
+  });
 }
 
 function escape(s){ if(!s) return ''; return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
