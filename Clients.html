@@ -8,12 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
   <style>
-  /* VOTRE CSS EXISTANT RESTE IDENTIQUE */
-  html {
+  /* TOUT VOTRE CSS EXISTANT - JE GARDE TOUT */
+ html {
     scroll-behavior: smooth;
-  }
+    /* S'assurer qu'on démarre toujours en haut */
+    scroll-padding-top: 0;
+}
 
-  body {
+  body {  overflow-anchor: none;
     font-family: "Segoe UI", sans-serif;
     text-align: center;
     background: #00529c;
@@ -91,7 +93,7 @@
   .wrap{
     max-width:1280px; 
     margin:0 auto;
-    padding: 0 20px; /* AJOUT: Marge interne pour éviter que le contenu touche les bords */
+    padding: 0 20px;
   }
   
   header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:48px}
@@ -100,7 +102,6 @@
   .big-btn{background:#00529c; color:#fff;padding:12px 16px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(11,118,209,0.12)}
   .ghost-btn{background:transparent;border:1px solid rgba(3,40,80,0.06);padding:10px;border-radius:10px;cursor:pointer}
 
-  /* STATISTIQUES - EN BAS DE LA PAGE */
   .stats-container {
     display: flex;
     gap: 15px;
@@ -145,7 +146,6 @@
     margin-top: 5px;
   }
 
-  /* GRAPHIQUES - EN BAS DE LA PAGE */
   .charts-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -183,7 +183,6 @@
     height: 160px;
     margin-top: 20px;
     padding-bottom: 40px;
-    /* AJOUT: Assurer que les barres ne touchent pas les bords */
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -194,7 +193,6 @@
     border-radius: 4px 4px 0 0;
     position: relative;
     transition: all 0.3s ease;
-    /* AJOUT: Marge entre les barres */
     margin: 0 5px;
   }
 
@@ -226,14 +224,12 @@
     color: #00529c;
   }
 
-  /* categories row - TOUS LES BOUTONS ALIGNÉS */
   .cats{
     display:flex;
     gap:12px;
     margin-bottom:18px;
     flex-wrap:wrap; 
     justify-content: center;
-    /* AJOUT: Marge pour éviter que les boutons touchent les bords */
     padding: 0 10px;
   }
   
@@ -255,7 +251,6 @@
   .cat-btn h3{margin:0;font-size:15px;color:#00529c;}
   .cat-btn p{margin:0;color:#00529c;font-size:13px}
 
-  /* Catégorie active en vert */
   .cat-btn.active {
     background: linear-gradient(180deg, #e8f5e8, #d4edda);
     border-color: #28a745;
@@ -267,14 +262,12 @@
     color: #155724;
   }
 
-  /* board - LISTE DES CONTACTS */
   .board{
     background:var(--card);
     border-radius:var(--radius);
     padding:14px;
     box-shadow:var(--shadow); 
     margin-top: 20px;
-    /* AJOUT: Marge pour éviter que le tableau touche les bords */
     margin-left: 10px;
     margin-right: 10px;
   }
@@ -290,13 +283,17 @@
   .board .board-header .title{font-weight:700}
   .controls{display:flex;gap:8px;align-items:center}
 
-  /* BOUTONS PDF - DÉPLACÉS À GAUCHE */
   .pdf-buttons {
       display: flex;
       gap: 10px;
       margin-right: auto;
   }
 
+.contact-row.selected {
+    background: #e6f7ff !important;
+    border-left: 4px solid #00529c;
+    box-shadow: 0 2px 8px rgba(0, 82, 156, 0.2);
+}
   .pdf-btn {
       background: #00529c;
       color: white;
@@ -336,12 +333,10 @@
       background: #138496;
   }
 
-  /* table */
   .table-wrap{
     overflow:auto;
     border-radius:10px;
     border:1px solid #e8f0fb;
-    /* AJOUT: Marge pour éviter que le tableau touche les bords */
     margin: 0 5px;
   }
   
@@ -350,7 +345,6 @@
   tbody td{padding:10px;border-bottom:1px solid #f0f6ff}
   tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff}
   
-  /* MODIFICATION: Appliquer les couleurs aux départements */
   tr.contact-row[data-dept="Projet"] {
     background: var(--blue-projet) !important;
   }
@@ -366,8 +360,17 @@
   tr.contact-row[data-dept="Water"] {
     background: var(--orange-water) !important;
   }
-  tr.contact-row[data-dept="Mesure/Projet"] {
-    background: var(--orange-water) !important;
+  tr.contact-row[data-dept="O&G/Projet"] {
+    background: linear-gradient(135deg, var(--orange-og), var(--blue-projet)) !important;
+  }
+  tr.contact-row[data-dept="Water/Projet"] {
+    background: linear-gradient(135deg, var(--orange-water), var(--blue-projet)) !important;
+  }
+  tr.contact-row[data-dept="EPC/Projet"] {
+    background: linear-gradient(135deg, var(--orange-epc), var(--blue-projet)) !important;
+  }
+  tr.contact-row[data-dept="Industrie/Projet"] {
+    background: linear-gradient(135deg, var(--orange-industrie), var(--blue-projet)) !important;
   }
   tr.contact-row:hover{background:var(--row-hover);cursor:pointer}
   td.actions-td{display:flex;gap:6px;justify-content:flex-end}
@@ -377,7 +380,6 @@
   .icon-delete{width:28px;height:28px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);display:grid;place-items:center;background:#fff}
   .icon-delete svg{width:14px;height:14px;fill:var(--danger)}
 
-  /* new contact form modal - CORRIGÉ */
   .modal-backdrop{position:fixed;inset:0;background:rgba(6,12,24,0.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:40}
   .modal{background:var(--card);width:820px;max-width:90%;border-radius:12px;padding:24px;box-shadow:0 20px 60px rgba(6,20,40,0.45); overflow-y: auto; max-height: 90vh;}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px; margin: 20px 0;}
@@ -385,7 +387,6 @@
   input[type="text"], input[type="email"], select, textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #e6f2ff;background:#fbfeff; box-sizing: border-box; font-size: 14px;}
   .modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px; padding-top: 20px; border-top: 1px solid #e6f2ff;}
 
-  /* plan section under table - OPTIMISÉ */
   .plan{display:none;margin-top:14px;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:10px;padding:14px;border:1px solid #e6f3ff; max-height: 70vh; overflow-y: auto;}
   .plan .plan-header{display:flex;justify-content:space-between;align-items:center;gap:8px; position: sticky; top: 0; background: white; padding: 10px; margin: -14px -14px 10px -14px; border-bottom: 1px solid #e6f3ff; z-index: 10;}
   .plan .meta{color:var(--muted);font-size:13px}
@@ -393,7 +394,6 @@
 
   .small-muted{font-size:13px;color:var(--muted)}
 
-  /* PIED DE PAGE CORRIGÉ */
   .footer {
     background: white;
     padding: 15px 20px;
@@ -405,7 +405,6 @@
     box-sizing: border-box;
   }
 
-  /* ---- FORMULAIRE CONTACT MODERNISE ---- */
   .modal { 
       background: #ffffff;
       width: 820px; 
@@ -474,7 +473,26 @@
       padding-top: 20px;
       border-top: 1px solid #e6f2ff;
   }
+/* Style pour la ligne sélectionnée pour PDF */
+.contact-row.selected-for-pdf {
+    border-left: 4px solid #28a745 !important;
+    background: linear-gradient(135deg, #e8f5e8, #d4edda) !important;
+}
 
+/* Animation pour le message temporaire */
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    20% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Indicateur de double-clic */
+.double-click-hint {
+    background-color: #e6f7ff !important;
+    border-left: 4px solid #00529c !important;
+    transition: all 0.3s ease;
+}
   .big-btn { 
       padding: 12px 20px; 
       border-radius: 12px; 
@@ -499,7 +517,6 @@
       border-color:white ; 
   }
 
-  /* AJOUT DES NOUVEAUX STYLES POUR LES ZONES AVEC CADENAS - OPTIMISÉS */
   .zone-header {
       display: flex;
       justify-content: space-between;
@@ -606,7 +623,6 @@
       font-size: 12px;
   }
 
-  /* STYLES OPTIMISÉS POUR LES ÉTAPES AVEC FLÈCHES */
   .steps-container {
       margin: 10px 0;
       display: grid;
@@ -676,24 +692,21 @@
       cursor: not-allowed;
   }
 
-  /* Styles pour les éléments verrouillés */
   .locked-field {
       background-color: #f5f5f5;
       color: #666;
       cursor: not-allowed;
   }
 
-  /* Style pour les cadenas définitifs - pas de hover */
   .lock-btn.locked:hover {
       background: #e8f5e8;
       transform: none;
   }
 
-  /* Indicateur de synchronisation en temps réel */
   .sync-indicator {
       position: fixed;
-      top: 10px;
-      left: 10px;
+      top: 30px;
+      left: 100px;
       background: #28a745;
       color: white;
       padding: 5px 10px;
@@ -708,7 +721,6 @@
       color: black;
   }
 
-  /* Variables CSS - MODIFIÉES POUR LES NOUVEAUX DÉPARTEMENTS */
   :root{
       --bg:#f3f6fb;
       --card:#ffffff;
@@ -720,14 +732,14 @@
       --radius:12px;
       --shadow: 0 6px 18px rgba(11,34,60,0.08);
       --blue-projet:#e6f5ff;
-      --orange-epc:#fff3e6;
+      --orange-epc:#fae5ce;
       --orange-og:#ffe6e6;
-      --orange-industrie:#fff8e6;
+      --orange-industrie:#fae8f9;
       --orange-water:#e6fff6;
+
       --row-hover:#f2f8ff;
   }
 
-  /* responsive */
   @media (max-width: 880px){
       .form-grid { grid-template-columns: 1fr; }
       .modal { padding: 18px; max-width: 95%; }
@@ -765,16 +777,15 @@
       }
   }
 
-  /* responsive */
   @media (max-width:880px){
       .cat-btn{flex:1 1 48%}
       .form-grid{grid-template-columns:1fr}
   }
-  /* --- Bouton Fiche Contact --- */
+
 .contact-button-container {
   position: fixed;
   top: 13px;
-  left: 20px; /* à côté de la photo */
+  left: 20px;
   text-align: center;
   z-index: 1000;
   display: flex;
@@ -793,7 +804,7 @@
   border-radius: 50%;
   text-decoration: none;
   cursor: pointer;
-  border: 3px solid white; /* ✅ Bord blanc ajouté */
+  border: 3px solid white;
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
@@ -808,7 +819,7 @@
   font-weight: bold;
   color: white;
 }
-/* NOUVEAU GRAPHE PLEINE LARGEUR */
+
 .chart-full-width {
   grid-column: 1 / -1;
   margin: 20px 0;
@@ -823,14 +834,11 @@
   position: relative;
 }
 
-/* Responsive pour le nouveau graphique */
 @media (max-width: 880px){
   .chart-full-width {
     grid-column: 1;
   }
 }
-
-/* ========== NOUVEAUX STYLES POUR LA RECHERCHE ET LES FILTRES ========== */
 
 .search-filters-container {
   background: white;
@@ -847,7 +855,22 @@
   align-items: center;
   flex-wrap: wrap;
 }
-
+:root{
+    /* ... vos variables existantes ... */
+    
+    /* AJOUT : Variables pour les couleurs des personnes */
+    --person-camelya: #28a745;
+    --person-fedoua: #dc3545;
+    --person-mohamed: #ffc107;
+    --person-bellatreche: #17a2b8;
+    --person-mostefaoui: #6f42c1;
+    --person-timzit: #fd7e14;
+    --person-rabea: #e83e8c;
+    --person-tinhinane: #20c997;
+    --person-nadia: #6c757d;
+    --person-lamia: #6610f2;
+    --person-default: #6c757d;
+}
 .search-input {
   flex: 1;
   min-width: 250px;
@@ -993,7 +1016,7 @@
   background-color: #fff3cd;
   font-weight: bold;
 }
-/* Bouton Retour en haut */
+
 .back-to-top {
   position: fixed;
   bottom: 30px;
@@ -1028,7 +1051,7 @@
 .back-to-top:active {
   transform: translateY(-1px);
 }
-/* Style pour les en-têtes de tableau avec filtres */
+
 .table-header-with-filter {
   position: relative;
   cursor: pointer;
@@ -1048,8 +1071,6 @@
   background: #28a745;
   border-radius: 50%;
 }
-
-/* ========== NOUVEAUX STYLES POUR LE TRI ALPHABÉTIQUE ========== */
 
 .sort-indicator {
   display: inline-block;
@@ -1103,12 +1124,384 @@
   font-style: italic;
 }
 
+.discussion-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #ff4444;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.suggestions-container {
+  position: relative;
+  width: 100%;
+}
+/* AJOUT : Styles pour les codes couleur des personnes */
+/* Container pour les indicateurs de couleur */
+.color-indicators-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* Indicateurs de couleur pour les discussions multiples */
+.person-color-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid white;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+}
+
+/* Indicateur pour le nombre de discussions supplémentaires */
+.person-more-indicator {
+    display: inline-block;
+    font-size: 9px;
+    background: #6c757d;
+    color: white;
+    border-radius: 8px;
+    padding: 1px 4px;
+    margin-left: 2px;
+    font-weight: bold;
+}
+
+/* COULEURS REVISÉES - Plus distinctes */
+.person-color-indicator.person-camelya { background-color: #4c54ea; } /* VERT FONCÉ */
+.person-color-indicator.person-fedoua { background-color: #28a745; } /* ROUGE VIF */
+.person-color-indicator.person-bellatreche { background-color: #ff6a00; } /* ORANGE VIF (Mohamed) */
+.person-color-indicator.person-mostefaoui { background-color: #9c27b0; } /* VIOLET FONCÉ */
+.person-color-indicator.person-rabea { background-color: #e91e63; } /* ROSE VIF */
+.person-color-indicator.person-tinhinane { background-color: #e0dd1e; } /* CYAN */
+.person-color-indicator.person-nadia { background-color: #000000; } /* MARRON */
+.person-color-indicator.person-lamia { background-color: #7be4f7; } /* BLEU INDIGO */
+
+/* Mêmes couleurs pour la barre de référence */
+.reference-color.person-camelya { background-color: #4c54ea; }
+.reference-color.person-fedoua { background-color: #28a745; }
+.reference-color.person-bellatreche {background-color: #ff6a00; }
+.reference-color.person-mostefaoui { background-color: #9c27b0; }
+.reference-color.person-rabea { background-color: #e91e63; }
+.reference-color.person-tinhinane { background-color: #e0dd1e; }
+.reference-color.person-nadia {background-color: #000000; }
+.reference-color.person-lamia { background-color:  #7be4f7;  }
+
+/* Barre de code couleur dans le tableau */
+.color-code-bar {
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 2px;
+}
+
+/* Style pour la liste déroulante avec codes couleur */
+.discussion-select.with-colors option {
+    padding-left: 25px;
+    position: relative;
+}
+
+.discussion-select.with-colors option::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Couleurs pour les options */
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e6f2ff;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+  display: none;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f6ff;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f7ff;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item.highlighted {
+  background-color: #00529c;
+  color: white;
+}
+
+.input-with-suggestions {
+  border-radius: 8px 8px 0 0 !important;
+  border-bottom: 1px solid #e6f2ff !important;
+}
+
+.names-suggestions-container {
+  position: relative;
+  width: 100%;
+}
+
+.names-suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e6f2ff;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 82, 156, 0.1);
+  display: none;
+}
+
+.name-suggestion-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f6ff;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.name-suggestion-item:hover {
+  background-color: #f0f7ff;
+}
+
+.name-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.name-suggestion-item.highlighted {
+  background-color: #00529c;
+  color: white;
+}
+
+.existing-suggestion {
+  color: #00529c;
+  font-weight: 600;
+}
+
+.history-suggestion {
+  color: #333;
+}
+
+.existing-name-suggestion {
+  color: #00529c;
+  font-weight: 600;
+}
+
+.discussion-text {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 12px;
+}
+
+.contact-row {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-row.double-click-hint {
+  background-color: #e6f7ff !important;
+  border-left: 4px solid #00529c;
+}
+
+.double-click-hint-text {
+  font-size: 11px;
+  color: #00529c;
+  font-style: italic;
+  margin-left: 5px;
+}
+
+/* AJOUT : Style pour le message d'erreur de nom existant */
+.name-error {
+  color: #dc3545;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+  display: none;
+}
+
+/* AJOUT : Style pour le champ invalide */
+.invalid-field {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5 !important;
+}
+/* Bouton icône fixe pour ouvrir la barre */
+.reference-toggle-btn {
+    position: fixed;
+    right: 14px;
+    top: 45%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: #00529c;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 89;
+    box-shadow: 0 4px 15px rgba(0, 82, 156, 0.3);
+    transition: all 0.3s ease;
+    border: 3px solid white;
+}
+
+.reference-toggle-btn:hover {
+    background: #003d75;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 82, 156, 0.4);
+}
+
+/* Barre de référence latérale */
+.reference-sidebar {
+    position: fixed;
+    right: -250px; /* Cachée à droite */
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 90;
+    width: 100px;
+    max-height: 70vh;
+    overflow-y: auto;
+    border: 2px solid #e6f2ff;
+    transition: right 0.3s ease;
+}
+
+.reference-sidebar.open {
+    right: 80px; /* Apparaît à gauche du bouton */
+}
+
+.reference-header {
+    font-size: 12px;
+    font-weight: bold;
+    color: #00529c;
+    text-align: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e6f2ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-reference-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-reference-btn:hover {
+    background: #f0f0f0;
+    color: #00529c;
+}
+
+.reference-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reference-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+    background: #f8fbff;
+    border: 1px solid #e6f2ff;
+    transition: background-color 0.2s ease;
+}
+
+.reference-item:hover {
+    background: #e6f2ff;
+}
+
+.reference-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+}
+
+.reference-initials {
+    font-size: 13px;
+    font-weight: 700;
+    color: #00529c;
+    min-width: 30px;
+}
+
+.reference-name {
+    font-size: 11px;
+    color: #666;
+    flex: 1;
+}
+
+
+
+/* Animation d'apparition */
+@keyframes slideInReference {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
   </style>
   
 </head>
 <body>
 
-  <!-- Indicateur de synchronisation -->
   <div class="sync-indicator" id="syncIndicator">🟢 Connecté</div>
   
   <header>
@@ -1116,7 +1509,7 @@
     <div class="profil-container">
       <a href="#contact" class="photo-link">
         <img src="./photos/Fedoua_Gauche.jpg" alt="Chargée marketing" class="photo-marketing">
-        <div class="hover-text">Contactez-moi</div>
+       
       </a>
       <div class="titre-poste">Chargée Marketing</div>
     </div>
@@ -1135,7 +1528,6 @@
     <header>
       <p style="color: #00529c;font-weight: bolder; font-size: 30px; margin-top: 30px ;">Gestion des contacts | NAPEC 2025</p>
       <div class="top-actions">
-        <!-- BOUTONS PDF DÉPLACÉS À GAUCHE -->
         <div class="pdf-buttons">
           <button id="btnExport" class="pdf-btn" title="Télécharger liste affichée en PDF">📊 PDF Liste</button>
           <button id="btnDownloadClient" class="pdf-btn client" title="Télécharger le plan d'action du client">📄 PDF Client</button>
@@ -1145,7 +1537,6 @@
       </div>
     </header>
 
-    <!-- categories - TOUS LES BOUTONS ALIGNÉS -->
     <div class="cats" id="cats">
       <div class="cat-btn" data-cat="important"><h3>Client — Important</h3><p>Clients stratégiques</p></div>
       <div class="cat-btn" data-cat="partner"><h3>Chercheur — Partnership</h3><p>Partenariats</p></div>
@@ -1154,7 +1545,6 @@
       <div class="cat-btn" data-cat="marketing"><h3>Marketing</h3><p>Prospects</p></div>
     </div>
 
-    <!-- board - LISTE DES CONTACTS EN HAUT -->
     <div class="board" id="board" style="display:none">
       <div class="board-header">
         <div>
@@ -1166,7 +1556,6 @@
         </div>
       </div>
 
-      <!-- ========== NOUVEAU : SECTION RECHERCHE ET FILTRES ========== -->
       <div class="search-filters-container" id="searchFiltersContainer" style="display: none;">
         <div class="search-section">
           <input type="text" id="globalSearch" class="search-input" placeholder="🔍 Rechercher dans tous les contacts..." />
@@ -1198,7 +1587,10 @@
                 <option value="O&G">O&G</option>
                 <option value="Industrie">Industrie</option>
                 <option value="Water">Water</option>
-                <option value="Mesure/Projet">Mesure/Projet</option>
+                <option value="O&G/Projet">O&G/Projet</option>
+                <option value="Water/Projet">Water/Projet</option>
+                <option value="EPC/Projet">EPC/Projet</option>
+                <option value="Industrie/Projet">Industrie/Projet</option>
               </select>
             </div>
             <div class="filter-group">
@@ -1211,7 +1603,6 @@
             </div>
           </div>
           
-          <!-- ========== NOUVEAU : SECTION TRI ALPHABÉTIQUE ========== -->
           <div class="sort-controls">
             <span class="sort-label">Trier par :</span>
             <select id="sortSelect" class="sort-select">
@@ -1278,13 +1669,12 @@
           Aucun contact ne correspond à vos critères de recherche.
         </div>
       </div>
-<!-- Bouton Retour en haut -->
+
 <button id="backToTop" class="back-to-top" title="Retour en haut">
   ↑
 </button>
-      <!-- plan d'action OPTIMISÉ -->
+
       <div class="plan" id="planSection" aria-live="polite">
-        <!-- Le contenu du plan d'action reste inchangé -->
         <div class="plan-header">
           <div>
             <div style="font-weight:800" id="planTitle">Plan d'action — <span id="planCompany"></span></div>
@@ -1293,7 +1683,6 @@
           <div class="small-muted">Éditez les discussions et les actions, puis Sauvegarder.</div>
         </div>
 
-        <!-- 🟦 ZONE 1 : Discussions dynamiques -->
         <div class="zone-1">
           <div class="zone-header">
             <span>🟦 Discussions dynamiques</span>
@@ -1302,21 +1691,18 @@
           <div id="discussionsContainer"></div>
         </div>
 
-        <!-- 🟩 ZONE 2 : Étapes à remplir -->
         <div class="zone-3">
           <div class="zone-header">
             <span>🟩 Actions du plan</span>
             <button class="add-discussion-btn" id="btnAddStep">+ Action</button>
           </div>
           <div class="steps-container" id="stepsContainer">
-            <!-- Les étapes seront ajoutées dynamiquement ici -->
           </div>
           <div class="global-lock-container">
             <button class="global-lock-btn" id="lockAllSteps">🔒 Verrouiller toutes les actions</button>
           </div>
         </div>
 
-        <!-- 🟧 ZONE 3 : Suite / Remarque - DÉPLACÉE APRÈS LES ACTIONS -->
         <div class="zone-2">
           <div class="zone-header">
             <span>🟧 Suite / Remarque</span>
@@ -1335,36 +1721,27 @@
       </div>
     </div>
 
-    <!-- ESPACE VIDE -->
     <div style="height: 40px;"></div>
 
-    <!-- STATISTIQUES - EN BAS DE LA PAGE -->
     <div class="stats-container" id="statsContainer">
-      <!-- Les statistiques seront générées dynamiquement ici -->
     </div>
 
-    <!-- GRAPHIQUES - EN BAS DE LA PAGE -->
     <div class="charts-container" id="chartsContainer">
-      <!-- Les graphiques seront générés dynamiquement ici -->
     </div>
 
-    <!-- NOUVEAU GRAPHE : Discussions par personne -->
     <div class="chart-full-width" id="personChartContainer">
       <div class="chart-card">
         <div class="chart-title">Discussions par Personne</div>
         <div class="bar-container" id="personChart">
-          <!-- Le graphique des personnes sera généré ici -->
         </div>
       </div>
     </div>
 
-    <!-- PIED DE PAGE CORRIGÉ -->
     <div class="footer">
       <p>© 2025 Fedoua Timzit - Tous droits réservés</p>
     </div>
   </div>
 
-  <!-- modal: add / edit - CORRIGÉ -->
   <div class="modal-backdrop" id="modal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div style="display:flex;justify-content:space-between;align-items:center; margin-bottom: 10px;">
@@ -1376,15 +1753,22 @@
         <div class="form-grid">
           <div>
             <label for="fEntreprise">Entreprise *</label>
-            <input type="text" id="fEntreprise" required />
+            <div class="suggestions-container">
+              <input type="text" id="fEntreprise" required class="input-with-suggestions" autocomplete="off" />
+              <div class="suggestions-list" id="entrepriseSuggestions"></div>
+            </div>
           </div>
           <div>
             <label for="fNom">Nom & Prénom *</label>
-            <input type="text" id="fNom" required />
+            <div class="names-suggestions-container">
+              <input type="text" id="fNom" required autocomplete="off"/>
+              <div class="names-suggestions-list" id="nomSuggestions"></div>
+              <div class="name-error" id="nameError">⚠ Ce contact existe déjà</div>
+            </div>
           </div>
           <div>
             <label for="fPoste">Poste</label>
-            <input type="text" id="fPoste" />
+            <input type="text" id="fPoste" autocomplete="off"/>
           </div>
           <div>
             <label for="fDepart">Département</label>
@@ -1395,20 +1779,23 @@
               <option value="O&G">O&G</option>
               <option value="Industrie">Industrie</option>
               <option value="Water">Water</option>
-               <option value="Mesure/Projet">Mesure/Projet</option>
+              <option value="O&G/Projet">O&G/Projet</option>
+              <option value="Water/Projet">Water/Projet</option>
+              <option value="EPC/Projet">EPC/Projet</option>
+              <option value="Industrie/Projet">Industrie/Projet</option>
             </select>
           </div>
           <div>
             <label for="fPortable">Portable</label>
-            <input type="text" id="fPortable" />
+            <input type="text" id="fPortable" autocomplete="off" />
           </div>
           <div>
             <label for="fFixe">Fixe</label>
-            <input type="text" id="fFixe" />
+            <input type="text" id="fFixe" autocomplete="off"/>
           </div>
           <div>
             <label for="fEmail">Email</label>
-            <input type="email" id="fEmail" />
+            <input type="email" id="fEmail" autocomplete="off" />
           </div>
           <div>
             <label for="fProjet">Thème</label>
@@ -1434,16 +1821,80 @@
       </form>
     </div>
   </div>
+<!-- Bouton icône pour ouvrir/fermer la barre de référence -->
+<div class="reference-toggle-btn" id="referenceToggleBtn">
+    📋
+</div>
 
-<!-- libs for PDF -->
+<!-- Barre de référence latérale -->
+<div class="reference-sidebar" id="referenceSidebar">
+    <div class="reference-header">
+         Références Personnes
+        <button class="close-reference-btn" id="closeReferenceBtn">×</button>
+    </div>
+    <div class="reference-list" id="referenceList">
+        <!-- Les références seront générées dynamiquement -->
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-  // Bouton Retour en haut
+  // Remonter en haut au chargement de la page
+window.addEventListener('load', function() {
+    // Remonter en haut
+    window.scrollTo(0, 0);
+    
+    // S'assurer qu'on reste en haut même après le rendu
+    setTimeout(() => {
+        window.scrollTo(0, 0);
+    }, 100);
+});
+
+// Également au début du DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Forcer le scroll en haut
+    window.scrollTo(0, 0);
+    
+    // Votre code d'initialisation existant
+    loadContactsFromSupabase().then(() => {
+        // S'assurer qu'on est en haut après le chargement des données
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 200);
+    });
+    
+    // ... le reste de votre code d'initialisation ...
+});
+  // Remonter en haut au chargement de la page
+window.addEventListener('load', function() {
+    // Remonter en haut
+    window.scrollTo(0, 0);
+    
+    // S'assurer qu'on reste en haut même après le rendu
+    setTimeout(() => {
+        window.scrollTo(0, 0);
+    }, 100);
+});
+
+// Également au début du DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Forcer le scroll en haut
+    window.scrollTo(0, 0);
+    
+    // Votre code d'initialisation existant
+    loadContactsFromSupabase().then(() => {
+        // S'assurer qu'on est en haut après le chargement des données
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 200);
+    });
+    
+    // ... le reste de votre code d'initialisation ...
+});
+// Bouton Retour en haut
 const backToTopButton = document.getElementById('backToTop');
 
-// Afficher/masquer le bouton au défilement
 window.addEventListener('scroll', function() {
   if (window.pageYOffset > 300) {
     backToTopButton.classList.add('show');
@@ -1452,20 +1903,28 @@ window.addEventListener('scroll', function() {
   }
 });
 
-// Retour en haut quand on clique
 backToTopButton.addEventListener('click', function() {
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   });
 });
+
 /* ---------- CONFIGURATION SUPABASE ---------- */
-// ⚠️ REMPLACEZ CES VALEURS PAR LES VÔTRES
 const SUPABASE_URL = 'https://vzbpgtynmpxqrgxebjeb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6YnBndHlubXB4cXJneGViamViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzOTU4NDYsImV4cCI6MjA3Njk3MTg0Nn0.qyYtm8ohNmxeBW0oRHww68titENi1gA5IOoZjr3uzkk';
 
 // Initialiser Supabase
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ========== SUPPRESSION DE L'HISTORIQUE ========== */
+// VIDER le localStorage pour supprimer l'historique
+localStorage.removeItem('enterpriseHistory');
+localStorage.removeItem('nameHistory');
+
+// Variables toujours vides - pas d'historique
+let enterpriseHistory = [];
+let nameHistory = [];
 
 /* ---------- Data model & storage ---------- */
 const categories = {
@@ -1491,6 +1950,9 @@ let editingId = null;
 let activeContactId = null;
 let activeCategoryBtn = null;
 
+// Variable pour stocker la ligne cliquée
+let lastClickedRowElement = null;
+
 // LISTE DES NOMS POUR LES MENUS DÉROULANTS
 const nameList = [
   "Mohamed Bellatreche","M.Mostefaoui", "Timzit Fedoua", "Rabea Arab", "Camelya Benatmane", 
@@ -1501,7 +1963,7 @@ const nameList = [
 let discussionCounter = 0;
 let stepCounter = 0;
 
-/* ========== NOUVEAU : VARIABLES POUR LA RECHERCHE, FILTRES ET TRI ========== */
+/* ========== VARIABLES POUR LA RECHERCHE, FILTRES ET TRI ========== */
 let currentFilters = {
   globalSearch: '',
   entreprise: '',
@@ -1512,7 +1974,7 @@ let currentFilters = {
   projet: ''
 };
 
-let currentSort = 'entreprise-asc'; // Tri par défaut : entreprise A-Z
+let currentSort = 'entreprise-asc';
 let filteredContacts = [];
 
 /* ---------- FONCTIONS SUPABASE ---------- */
@@ -1705,7 +2167,256 @@ function showSyncIndicator(message, type = 'success') {
   }
 }
 
-/* ========== NOUVEAU : FONCTIONS DE TRI ALPHABÉTIQUE ========== */
+/* ========== FONCTIONS POUR LES SUGGESTIONS D'ENTREPRISES ========== */
+
+// Récupérer toutes les entreprises existantes
+function getAllExistingEnterprises() {
+  const entreprises = new Set();
+  
+  Object.keys(store.categories).forEach(cat => {
+    store.categories[cat].forEach(contact => {
+      if (contact.entreprise && contact.entreprise.trim() !== '') {
+        entreprises.add(contact.entreprise.trim());
+      }
+    });
+  });
+  
+  return Array.from(entreprises).sort();
+}
+
+// Récupérer tous les noms existants
+function getAllExistingNames() {
+  const names = new Set();
+  
+  Object.keys(store.categories).forEach(cat => {
+    store.categories[cat].forEach(contact => {
+      if (contact.nom && contact.nom.trim() !== '') {
+        names.add(contact.nom.trim());
+      }
+    });
+  });
+  
+  return Array.from(names).sort();
+}
+
+// Afficher les suggestions d'entreprises
+function showEnterpriseSuggestions(input, suggestions) {
+  const suggestionsList = document.getElementById('entrepriseSuggestions');
+  
+  if (suggestions.length === 0) {
+    suggestionsList.style.display = 'none';
+    input.classList.remove('input-with-suggestions');
+    return;
+  }
+  
+  suggestionsList.innerHTML = '';
+  
+  suggestions.forEach(entreprise => {
+    const div = document.createElement('div');
+    div.className = 'suggestion-item existing-suggestion';
+    div.textContent = entreprise;
+    
+    div.addEventListener('click', function() {
+      input.value = entreprise;
+      suggestionsList.style.display = 'none';
+      input.classList.remove('input-with-suggestions');
+    });
+    
+    suggestionsList.appendChild(div);
+  });
+  
+  suggestionsList.style.display = 'block';
+  input.classList.add('input-with-suggestions');
+}
+
+// Afficher les suggestions de noms
+// Afficher les suggestions de noms
+function showNameSuggestions(input, suggestions) {
+  const suggestionsList = document.getElementById('nomSuggestions');
+  
+  if (suggestions.length === 0) {
+    suggestionsList.style.display = 'none';
+    return;
+  }
+  
+  suggestionsList.innerHTML = '';
+  
+  suggestions.forEach(nom => {
+    const div = document.createElement('div');
+    div.className = 'name-suggestion-item existing-name-suggestion';
+    div.textContent = nom;
+    
+    div.addEventListener('click', function() {
+      input.value = nom;
+      suggestionsList.style.display = 'none';
+      
+      // 🔴 AJOUT : Vérifier si le nom existe déjà après sélection
+      if (!editingId) {
+        const nameExists = checkExistingName(nom);
+        toggleNameError(nameExists);
+      }
+    });
+    
+    suggestionsList.appendChild(div);
+  });
+  
+  suggestionsList.style.display = 'block';
+}
+
+// Filtrer les suggestions d'entreprises en fonction du texte saisi
+function filterEnterpriseSuggestions(inputText) {
+  const allEnterprises = getAllExistingEnterprises();
+  
+  if (!inputText || inputText.length < 2) {
+    return [];
+  }
+  
+  const searchTerm = inputText.toLowerCase();
+  
+  // 🔴 UNIQUEMENT les entreprises existantes - PAS d'historique
+  return allEnterprises.filter(entreprise => 
+    entreprise.toLowerCase().includes(searchTerm)
+  );
+}
+
+// Filtrer les suggestions de noms en fonction du texte saisi
+function filterNameSuggestions(inputText) {
+  const allNames = getAllExistingNames();
+  
+  if (!inputText || inputText.length < 2) {
+    return [];
+  }
+  
+  const searchTerm = inputText.toLowerCase();
+  
+  // 🔴 UNIQUEMENT les noms existants - PAS d'historique
+  return allNames.filter(nom => 
+    nom.toLowerCase().includes(searchTerm)
+  );
+}
+
+// Fonction pour normaliser et corriger le nom d'entreprise
+// Fonction de correction INTELLIGENTE - très tolérante
+// Fonction de correction PRÉCISE - seulement espaces et 1 caractère manquant
+function normalizeEnterpriseName(inputName, existingEnterprises) {
+  if (!inputName || inputName.trim() === '') return inputName;
+  
+  const cleanedInput = inputName.trim();
+  console.log('🔍 Correction entreprise - Input:', cleanedInput);
+  
+  if (!existingEnterprises || existingEnterprises.length === 0) {
+    return cleanedInput;
+  }
+
+  // Normalisation POUR LA COMPARAISON SEULEMENT
+  const normalizeForComparison = (name) => {
+    return name.toLowerCase()
+              .replace(/\s+/g, '')  // Supprimer tous les espaces pour comparaison
+              .replace(/-/g, '')    // Supprimer les tirets pour comparaison
+              .trim();
+  };
+
+  const normalizedInput = normalizeForComparison(cleanedInput);
+
+  // Chercher UNIQUEMENT les corrections autorisées
+  let bestMatch = null;
+
+  existingEnterprises.forEach(entreprise => {
+    const normalizedExisting = normalizeForComparison(entreprise);
+    
+    // 🔥 CORRECTION 1: Mêmes caractères mais problèmes d'espaces/tirets
+    if (normalizedExisting === normalizedInput) {
+      bestMatch = entreprise; // Correction d'espaces/tirets uniquement
+      return;
+    }
+    
+    // 🔥 CORRECTION 2: Exactement 1 caractère de différence
+    const distance = levenshteinDistance(normalizedExisting, normalizedInput);
+    const lengthDiff = Math.abs(normalizedExisting.length - normalizedInput.length);
+    
+    // Uniquement si distance = 1 ET différence de longueur <= 1
+    if (distance === 1 && lengthDiff <= 1) {
+      bestMatch = entreprise;
+      return;
+    }
+  });
+
+  if (bestMatch) {
+    console.log(`✅ Correction: "${cleanedInput}" → "${bestMatch}"`);
+    return bestMatch;
+  }
+
+  console.log('ℹ️ Aucune correction - Nouvelle entreprise');
+  return cleanedInput; // Garder l'original pour nouvelle entreprise
+}
+// Fonction distance de Levenshtein
+// Distance de Levenshtein précise
+function levenshteinDistance(str1, str2) {
+  if (!str1 || !str2) return Math.max(str1?.length || 0, str2?.length || 0);
+  
+  const matrix = [];
+  
+  // Initialisation
+  for (let i = 0; i <= str2.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= str1.length; j++) {
+    matrix[0][j] = j;
+  }
+  
+  // Calcul
+  for (let i = 1; i <= str2.length; i++) {
+    for (let j = 1; j <= str1.length; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          matrix[i][j - 1] + 1,     // insertion
+          matrix[i - 1][j] + 1      // deletion
+        );
+      }
+    }
+  }
+  
+  return matrix[str2.length][str1.length];
+}
+
+
+// Fonction pour calculer la similarité entre deux chaînes
+function calculateSimilarity(str1, str2) {
+  const longer = str1.length > str2.length ? str1 : str2;
+  const shorter = str1.length > str2.length ? str2 : str1;
+  
+  if (longer.length === 0) return 1.0;
+  
+  // Distance de Levenshtein
+  const distance = levenshteinDistance(longer, shorter);
+  return (longer.length - distance) / longer.length;
+}
+
+// Algorithme de distance de Levenshtein
+function levenshteinDistance(str1, str2) {
+  const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+  
+  for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
+  for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
+  
+  for (let j = 1; j <= str2.length; j++) {
+    for (let i = 1; i <= str1.length; i++) {
+      const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+      matrix[j][i] = Math.min(
+        matrix[j][i - 1] + 1, // deletion
+        matrix[j - 1][i] + 1, // insertion
+        matrix[j - 1][i - 1] + indicator // substitution
+      );
+    }
+  }
+  
+  return matrix[str2.length][str1.length];
+}
+
+/* ========== FONCTIONS DE TRI ALPHABÉTIQUE ========== */
 
 // Trier les contacts selon le critère sélectionné
 function sortContacts(contacts) {
@@ -1717,13 +2428,11 @@ function sortContacts(contacts) {
     let valueA = a[field] || '';
     let valueB = b[field] || '';
     
-    // Pour les champs texte, convertir en minuscules pour un tri insensible à la casse
     if (typeof valueA === 'string') {
       valueA = valueA.toLowerCase();
       valueB = valueB.toLowerCase();
     }
     
-    // Pour les dates
     if (field === 'created_at') {
       valueA = new Date(valueA);
       valueB = new Date(valueB);
@@ -1734,7 +2443,6 @@ function sortContacts(contacts) {
     if (valueA < valueB) result = -1;
     if (valueA > valueB) result = 1;
     
-    // Inverser le résultat pour le tri descendant
     if (direction === 'desc') {
       result = -result;
     }
@@ -1768,12 +2476,10 @@ function updateSortInfo() {
 
 // Mettre à jour les indicateurs visuels dans les en-têtes
 function updateSortIndicators() {
-  // Réinitialiser tous les indicateurs
   document.querySelectorAll('.sort-indicator').forEach(indicator => {
     indicator.textContent = '';
   });
   
-  // Mettre à jour l'indicateur de la colonne triée
   const [field] = currentSort.split('-');
   const header = document.querySelector(`th[data-sort="${field}"]`);
   if (header) {
@@ -1783,7 +2489,7 @@ function updateSortIndicators() {
   }
 }
 
-/* ========== NOUVEAU : FONCTIONS DE RECHERCHE ET FILTRES ========== */
+/* ========== FONCTIONS DE RECHERCHE ET FILTRES ========== */
 
 // Appliquer les filtres aux contacts
 function applyFilters() {
@@ -1792,7 +2498,6 @@ function applyFilters() {
   const contacts = store.categories[activeCat] || [];
   
   filteredContacts = contacts.filter(contact => {
-    // Filtre de recherche globale
     if (currentFilters.globalSearch) {
       const searchTerm = currentFilters.globalSearch.toLowerCase();
       const searchFields = [
@@ -1811,7 +2516,6 @@ function applyFilters() {
       if (!hasMatch) return false;
     }
     
-    // Filtres individuels
     if (currentFilters.entreprise && 
         (!contact.entreprise || !contact.entreprise.toLowerCase().includes(currentFilters.entreprise.toLowerCase()))) {
       return false;
@@ -1844,7 +2548,6 @@ function applyFilters() {
     return true;
   });
   
-  // Appliquer le tri aux contacts filtrés
   filteredContacts = sortContacts(filteredContacts);
   
   return filteredContacts;
@@ -1862,14 +2565,12 @@ function updateFilterResults() {
   resultsCount.textContent = filteredCount;
   totalCount.textContent = totalContacts;
   
-  // Afficher/masquer le message "Aucun résultat"
   if (filteredCount === 0 && totalContacts > 0) {
     noResults.style.display = 'block';
   } else {
     noResults.style.display = 'none';
   }
   
-  // Mettre à jour les indicateurs de filtres actifs
   updateFilterIndicators();
 }
 
@@ -1905,7 +2606,6 @@ function resetFilters() {
     projet: ''
   };
   
-  // Réinitialiser les champs de formulaire
   document.getElementById('globalSearch').value = '';
   document.getElementById('filterEntreprise').value = '';
   document.getElementById('filterNom').value = '';
@@ -1914,7 +2614,6 @@ function resetFilters() {
   document.getElementById('filterEmail').value = '';
   document.getElementById('filterProjet').value = '';
   
-  // Réappliquer les filtres (qui seront vides)
   applyFilters();
   renderTable();
   updateFilterResults();
@@ -1928,6 +2627,113 @@ function highlightText(text, searchTerm) {
   return text.replace(regex, '<span class="highlight">$1</span>');
 }
 
+/* ========== FONCTION POUR APPLIQUER LES FILTRES ET RE-RENDRE ========== */
+
+function applyFiltersAndRender() {
+  applyFilters();
+  renderTable();
+  updateFilterResults();
+}
+
+/* ========== FONCTION POUR VÉRIFIER SI UN NOM EXISTE DÉJÀ ========== */
+
+function checkExistingName(nom, currentId = null) {
+  if (!nom || nom.trim() === '') return { exists: false };
+  
+  const searchName = nom.trim().toLowerCase();
+  
+  // Fonction pour normaliser et inverser les noms
+  const normalizeName = (name) => {
+    if (!name) return [];
+    
+    const cleaned = name.trim().toLowerCase();
+    
+    // Séparer par espaces, virgules, points-virgules
+    const parts = cleaned.split(/[\s,;]+/).filter(part => part.length > 0);
+    
+    // Générer toutes les permutations possibles
+    const permutations = [];
+    
+    if (parts.length === 2) {
+      // Cas simple : deux parties (nom prénom)
+      permutations.push(parts.join(' ')); // "nom prenom"
+      permutations.push(parts.reverse().join(' ')); // "prenom nom"
+    } else if (parts.length > 2) {
+      // Cas complexe : plusieurs parties
+      // Essayer différentes combinaisons
+      permutations.push(parts.join(' ')); // ordre original
+      if (parts.length === 3) {
+        permutations.push(`${parts[1]} ${parts[0]} ${parts[2]}`);
+        permutations.push(`${parts[2]} ${parts[0]} ${parts[1]}`);
+      }
+    } else {
+      // Cas un seul mot
+      permutations.push(cleaned);
+    }
+    
+    return permutations;
+  };
+  
+  const searchPermutations = normalizeName(searchName);
+  
+  // 🔴 CORRECTION : Vérifier d'abord la correspondance exacte
+  for (const cat of Object.keys(store.categories)) {
+    for (const contact of store.categories[cat]) {
+      // Ignorer le contact actuel en mode édition
+      if (currentId && contact.id === currentId) continue;
+      
+      if (contact.nom && contact.nom.trim() !== '') {
+        const contactName = contact.nom.trim().toLowerCase();
+        
+        // 🔴 CORRECTION 1: Vérifier d'abord la correspondance exacte
+        if (contactName === searchName) {
+          return {
+            exists: true,
+            entreprise: contact.entreprise,
+            category: categories[cat],
+            existingName: contact.nom
+          };
+        }
+        
+        // 🔴 CORRECTION 2: Ensuite vérifier les permutations
+        const contactPermutations = normalizeName(contact.nom);
+        
+        // Vérifier si une permutation correspond
+        const hasMatch = searchPermutations.some(searchPerm => 
+          contactPermutations.some(contactPerm => contactPerm === searchPerm)
+        );
+        
+        if (hasMatch) {
+          return {
+            exists: true,
+            entreprise: contact.entreprise,
+            category: categories[cat],
+            existingName: contact.nom
+          };
+        }
+      }
+    }
+  }
+  
+  return { exists: false };
+}
+
+/* ========== FONCTION POUR AFFICHER/MASQUER L'ERREUR DE NOM EXISTANT ========== */
+
+function toggleNameError(show, message = "⚠ Ce contact existe déjà") {
+  const nameError = document.getElementById('nameError');
+  const nomInput = document.getElementById('fNom');
+  
+  if (show) {
+    nameError.textContent = message;
+    nameError.style.display = 'block';
+    nomInput.classList.add('invalid-field');
+  } else {
+    nameError.style.display = 'none';
+    nomInput.classList.remove('invalid-field');
+  }
+}
+
 /* ---------- FONCTIONS STATISTIQUES ---------- */
 
 function updateStatistics() {
@@ -1939,7 +2745,6 @@ function updateStatistics() {
   let totalDiscussions = 0;
   const statsByCategory = {};
 
-  // Initialiser les stats par catégorie
   Object.keys(categories).forEach(cat => {
     statsByCategory[cat] = {
       entreprises: new Set(),
@@ -1948,32 +2753,26 @@ function updateStatistics() {
     };
   });
 
-  // Calculer les statistiques
   Object.keys(store.categories).forEach(cat => {
     const contacts = store.categories[cat];
     
     contacts.forEach(contact => {
-      // Compter les entreprises uniques
       if (contact.entreprise) {
         statsByCategory[cat].entreprises.add(contact.entreprise);
       }
       
-      // Compter les contacts
       statsByCategory[cat].contacts++;
       
-      // Compter les discussions
       if (contact.discussions) {
         statsByCategory[cat].discussions += contact.discussions.length;
       }
     });
 
-    // Totaux globaux
     totalEntreprises += statsByCategory[cat].entreprises.size;
     totalContacts += statsByCategory[cat].contacts;
     totalDiscussions += statsByCategory[cat].discussions;
   });
 
-  // Générer le HTML des statistiques
   statsContainer.innerHTML = `
     <div class="stat-card">
       <div class="stat-number">${totalEntreprises}</div>
@@ -2000,7 +2799,6 @@ function updateStatistics() {
     </div>
   `;
 
-  // Ajouter les statistiques détaillées par personne
   const personStats = calculatePersonStatistics();
   if (personStats.length > 0) {
     statsContainer.innerHTML += `
@@ -2021,7 +2819,6 @@ function updateCharts() {
   const chartsContainer = document.getElementById('chartsContainer');
   if (!chartsContainer) return;
 
-  // Calculer les données pour les graphiques
   const contactsByCategory = {};
   const entreprisesByCategory = {};
   const discussionsByCategory = {};
@@ -2030,7 +2827,6 @@ function updateCharts() {
     const contacts = store.categories[cat];
     contactsByCategory[cat] = contacts.length;
     
-    // Compter les entreprises uniques
     const entreprises = new Set();
     let discussionsCount = 0;
     
@@ -2047,7 +2843,6 @@ function updateCharts() {
     discussionsByCategory[cat] = discussionsCount;
   });
 
-  // Graphique 1: Contacts par catégorie
   const maxContacts = Math.max(...Object.values(contactsByCategory));
   
   let contactsChartHTML = `
@@ -2068,7 +2863,6 @@ function updateCharts() {
   
   contactsChartHTML += `</div></div>`;
 
-  // Graphique 2: Entreprises par catégorie
   const maxEntreprises = Math.max(...Object.values(entreprisesByCategory));
   
   let entreprisesChartHTML = `
@@ -2089,7 +2883,6 @@ function updateCharts() {
   
   entreprisesChartHTML += `</div></div>`;
 
-  // Graphique 3: Discussions par catégorie
   const maxDiscussions = Math.max(...Object.values(discussionsByCategory));
   
   let discussionsChartHTML = `
@@ -2111,12 +2904,13 @@ function updateCharts() {
   discussionsChartHTML += `</div></div>`;
 
   chartsContainer.innerHTML = contactsChartHTML + entreprisesChartHTML + discussionsChartHTML;
+  
+  updatePersonChart();
 }
 
 function calculatePersonStatistics() {
   const personStats = {};
   
-  // Compter les discussions par personne
   Object.keys(store.categories).forEach(cat => {
     store.categories[cat].forEach(contact => {
       if (contact.discussions) {
@@ -2132,7 +2926,6 @@ function calculatePersonStatistics() {
     });
   });
 
-  // Convertir en tableau et trier par nombre de discussions
   return Object.keys(personStats)
     .map(name => ({ name, discussions: personStats[name] }))
     .sort((a, b) => b.discussions - a.discussions);
@@ -2200,12 +2993,16 @@ function initializeEventListeners() {
   
   // Événements du plan d'action
   document.getElementById('btnSavePlan').addEventListener('click', onSavePlan);
-  document.getElementById('btnClosePlan').addEventListener('click', () => { 
-    hidePlan();
+ document.getElementById('btnClosePlan').addEventListener('click', () => { 
+  hidePlan();
+  // Retourner à la ligne qui a été cliquée
+  if (lastClickedRowElement) {
     setTimeout(() => {
-      document.getElementById('tableWrap').scrollIntoView({ behavior: 'smooth' });
+      lastClickedRowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      lastClickedRowElement = null;
     }, 100);
-  });
+  }
+});
   document.getElementById('btnDeletePlan').addEventListener('click', onDeletePlan);
   
   // Événements PDF
@@ -2218,8 +3015,6 @@ function initializeEventListeners() {
   document.getElementById('btnAddStep').addEventListener('click', addStep);
   document.getElementById('lockRemark').addEventListener('click', toggleRemarkLock);
   document.getElementById('lockAllSteps').addEventListener('click', lockAllSteps);
-  
-  /* ========== NOUVEAU : ÉVÉNEMENTS POUR LA RECHERCHE, FILTRES ET TRI ========== */
   
   // Recherche globale
   document.getElementById('globalSearch').addEventListener('input', function() {
@@ -2281,7 +3076,6 @@ function initializeEventListeners() {
       const field = this.dataset.sort;
       if (!field) return;
       
-      // Déterminer la nouvelle direction
       const [currentField, currentDirection] = currentSort.split('-');
       let newDirection = 'asc';
       
@@ -2297,18 +3091,290 @@ function initializeEventListeners() {
       updateSortIndicators();
     });
   });
+  
+  // Événements pour les suggestions d'entreprises
+  document.getElementById('fEntreprise').addEventListener('input', function(e) {
+    const inputText = e.target.value;
+    const suggestions = filterEnterpriseSuggestions(inputText);
+    showEnterpriseSuggestions(this, suggestions);
+  });
+
+  // Cacher les suggestions quand on clique ailleurs
+  document.addEventListener('click', function(e) {
+    const suggestions = document.getElementById('entrepriseSuggestions');
+    const entrepriseInput = document.getElementById('fEntreprise');
+    
+    if (!entrepriseInput.contains(e.target) && suggestions && !suggestions.contains(e.target)) {
+      suggestions.style.display = 'none';
+      entrepriseInput.classList.remove('input-with-suggestions');
+    }
+  });
+
+  // Navigation au clavier dans les suggestions d'entreprises
+  document.getElementById('fEntreprise').addEventListener('keydown', function(e) {
+    const suggestions = document.getElementById('entrepriseSuggestions');
+    const items = suggestions.querySelectorAll('.suggestion-item');
+    let highlighted = suggestions.querySelector('.suggestion-item.highlighted');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      
+      if (!highlighted) {
+        items[0].classList.add('highlighted');
+      } else {
+        highlighted.classList.remove('highlighted');
+        const next = highlighted.nextElementSibling || items[0];
+        next.classList.add('highlighted');
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      
+      if (highlighted) {
+        highlighted.classList.remove('highlighted');
+        const prev = highlighted.previousElementSibling || items[items.length - 1];
+        prev.classList.add('highlighted');
+      }
+    } else if (e.key === 'Enter' && highlighted) {
+      e.preventDefault();
+      this.value = highlighted.textContent;
+      suggestions.style.display = 'none';
+      this.classList.remove('input-with-suggestions');
+    } else if (e.key === 'Escape') {
+      suggestions.style.display = 'none';
+      this.classList.remove('input-with-suggestions');
+    }
+  });
+
+  // Événements pour les suggestions de noms
+  // Événements pour les suggestions de noms
+document.getElementById('fNom').addEventListener('input', function(e) {
+  const inputText = e.target.value;
+  const suggestions = filterNameSuggestions(inputText);
+  showNameSuggestions(this, suggestions);
+  
+  // 🔴 CORRECTION : Vérifier si le nom existe déjà (uniquement en mode création)
+  if (!editingId && inputText.trim().length >= 2) {
+    const nameCheck = checkExistingName(inputText);
+    if (nameCheck.exists) {
+      const message = `⚠ ${nameCheck.existingName} existe déjà\nEntreprise: ${nameCheck.entreprise || 'Non renseignée'}`;
+      toggleNameError(true, message);
+    } else {
+      toggleNameError(false);
+    }
+  } else {
+    toggleNameError(false);
+  }
+});
+
+  // Cacher les suggestions de noms quand on clique ailleurs
+  document.addEventListener('click', function(e) {
+    const suggestions = document.getElementById('nomSuggestions');
+    const nomInput = document.getElementById('fNom');
+    
+    if (!nomInput.contains(e.target) && suggestions && !suggestions.contains(e.target)) {
+      suggestions.style.display = 'none';
+    }
+  });
+
+  // Navigation au clavier dans les suggestions de noms
+  document.getElementById('fNom').addEventListener('keydown', function(e) {
+    const suggestions = document.getElementById('nomSuggestions');
+    const items = suggestions.querySelectorAll('.name-suggestion-item');
+    let highlighted = suggestions.querySelector('.name-suggestion-item.highlighted');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      
+      if (!highlighted) {
+        items[0].classList.add('highlighted');
+      } else {
+        highlighted.classList.remove('highlighted');
+        const next = highlighted.nextElementSibling || items[0];
+        next.classList.add('highlighted');
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      
+      if (highlighted) {
+        highlighted.classList.remove('highlighted');
+        const prev = highlighted.previousElementSibling || items[items.length - 1];
+        prev.classList.add('highlighted');
+      }
+    } else if (e.key === 'Enter' && highlighted) {
+      e.preventDefault();
+      this.value = highlighted.textContent;
+      suggestions.style.display = 'none';
+      
+      // Vérifier si le nom existe déjà après sélection
+      if (!editingId) {
+        const nameExists = checkExistingName(this.value);
+        toggleNameError(nameExists);
+      }
+    } else if (e.key === 'Escape') {
+      suggestions.style.display = 'none';
+    }
+  });
+
+  // AJOUT : Événements pour la barre de référence
+    const toggleBtn = document.getElementById('referenceToggleBtn');
+    const closeBtn = document.getElementById('closeReferenceBtn');
+    
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleReferenceBar);
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeReferenceBar);
+    }
+    
+    // Fermer la barre en cliquant en dehors
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('referenceSidebar');
+        const toggleBtn = document.getElementById('referenceToggleBtn');
+        
+        if (isReferenceOpen && 
+            !sidebar.contains(e.target) && 
+            !toggleBtn.contains(e.target)) {
+            closeReferenceBar();
+        }
+    });
+    
+    // Initialiser les références
+    generateAllReferences();
 }
 
-/* ========== NOUVEAU : FONCTION POUR APPLIQUER LES FILTRES ET RE-RENDRE ========== */
+/* ========== FONCTIONS POUR LE DOUBLE CLIC ========== */
 
-function applyFiltersAndRender() {
-  applyFilters();
-  renderTable();
-  updateFilterResults();
+let clickTimer = null;
+let lastClickedRow = null;
+
+function handleContactRowClick(contactId, rowElement) {
+  if (clickTimer === null) {
+    clickTimer = setTimeout(() => {
+      rowElement.classList.add('double-click-hint');
+      setTimeout(() => {
+        rowElement.classList.remove('double-click-hint');
+      }, 1000);
+      
+      clickTimer = null;
+      lastClickedRow = null;
+    }, 300);
+    lastClickedRow = rowElement;
+  } else {
+    clearTimeout(clickTimer);
+    clickTimer = null;
+    
+    // Stocker la référence de la ligne cliquée
+    lastClickedRowElement = rowElement;
+    
+    openPlan(contactId);
+    
+    if (lastClickedRow) {
+      lastClickedRow.classList.remove('double-click-hint');
+    }
+    lastClickedRow = null;
+  }
+
+  
 }
 
 /* ---------- FONCTIONS NOUVELLES ---------- */
+// Variables pour la barre de référence
+let isReferenceOpen = false;
 
+// Fonction pour ouvrir/fermer la barre de référence
+function toggleReferenceBar() {
+    const sidebar = document.getElementById('referenceSidebar');
+    const toggleBtn = document.getElementById('referenceToggleBtn');
+    
+    if (!sidebar) return;
+    
+    if (isReferenceOpen) {
+        // Fermer la barre
+        sidebar.classList.remove('open');
+        toggleBtn.textContent = '📋';
+        isReferenceOpen = false;
+    } else {
+        // Ouvrir la barre
+        sidebar.classList.add('open');
+        toggleBtn.textContent = '📋';
+        isReferenceOpen = true;
+        
+        // S'assurer que les références sont à jour
+        updateReferences();
+    }
+}
+
+// Fonction pour fermer la barre
+function closeReferenceBar() {
+    const sidebar = document.getElementById('referenceSidebar');
+    const toggleBtn = document.getElementById('referenceToggleBtn');
+    
+    if (sidebar) {
+        sidebar.classList.remove('open');
+        toggleBtn.textContent = '📋';
+        isReferenceOpen = false;
+    }
+}
+
+// Fonction pour générer toutes les références
+// Fonction pour générer toutes les références avec les bonnes couleurs
+// Fonction pour générer la barre de référence avec nouvelles couleurs
+function generateAllReferences() {
+    const referenceList = document.getElementById('referenceList');
+    if (!referenceList) return;
+    
+    const allPersons = [
+        "Mohamed Bellatreche",    // ORANGE
+        "Mostefaoui ",           // VIOLET
+        "Fedoua Timzit",          // ROUGE  
+        "Rabea Arab",             // ROSE
+         "Camelya Benatmane",      // VERT
+        "Tinhinane Dahmani",      // CYAN
+        "Nadia Khicha",           // MARRON
+        "Lamia Attou"             // BLEU INDIGO
+    ];
+    
+    let referenceHTML = '';
+    
+    allPersons.forEach(personName => {
+        const initials = getInitialsFromName(personName);
+        const colorClass = getPersonColorClass(personName);
+        
+        referenceHTML += `
+            <div class="reference-item">
+                <div class="reference-color ${colorClass}"></div>
+                <div class="reference-initials">${initials}</div>
+               
+            </div>
+        `;
+    });
+    
+    referenceList.innerHTML = referenceHTML;
+}
+// Fonction pour extraire les initiales
+function getInitialsFromName(fullName) {
+    if (!fullName) return '';
+    
+    const parts = fullName.split(' ').filter(part => part.length > 0);
+    
+    if (parts.length === 1) {
+        return parts[0].substring(0, 2).toUpperCase();
+    } else {
+        return parts.map(part => part.charAt(0).toUpperCase()).join('.');
+    }
+}
+
+// Fonction pour mettre à jour les références
+function updateReferences() {
+    if (isReferenceOpen) {
+        generateAllReferences();
+    }
+}
 // Ajouter une discussion
 function addDiscussion() {
   discussionCounter++;
@@ -2403,15 +3469,17 @@ function openPlan(id) {
   planContact.textContent = c.nom || '';
   planPoste.textContent = c.poste || '';
   
-  // Afficher le plan
   plan.style.display = 'block';
+
+  lastClickedRowElement = document.querySelector(`tr[data-id="${id}"]`);
   
-  // DESCENDRE AUTOMATIQUEMENT VERS LE PLAN
+  setTimeout(() => {
+    plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
   setTimeout(() => {
     plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
   
-  // Réinitialiser les discussions
   discussionCounter = 0;
   const discussionsContainer = document.getElementById('discussionsContainer');
   discussionsContainer.innerHTML = '';
@@ -2453,7 +3521,6 @@ function openPlan(id) {
     addDiscussion();
   }
   
-  // Réinitialiser les étapes (renommées en Actions)
   stepCounter = 0;
   const stepsContainer = document.getElementById('stepsContainer');
   stepsContainer.innerHTML = '';
@@ -2475,7 +3542,6 @@ function openPlan(id) {
     addStep();
   }
   
-  // Charger la remarque
   document.getElementById('remarkText').value = c.remark || '';
   if (c.remarkLocked) {
     document.getElementById('lockRemark').classList.remove('unlocked');
@@ -2491,7 +3557,6 @@ function openPlan(id) {
     document.getElementById('remarkText').disabled = false;
   }
   
-  // Gérer le verrouillage des étapes
   const lockBtn = document.getElementById('lockAllSteps');
   if (c.stepsLocked) {
     lockAllSteps();
@@ -2508,7 +3573,6 @@ async function onSavePlan() {
   const c = store.categories[activeCat].find(x => x.id === activeContactId);
   if (!c) return;
   
-  // Sauvegarder les discussions
   c.discussions = [];
   const discussionItems = document.querySelectorAll('.discussion-item');
   discussionItems.forEach(item => {
@@ -2523,7 +3587,6 @@ async function onSavePlan() {
     });
   });
   
-  // Sauvegarder les étapes (renommées en Actions)
   c.steps = {};
   const stepItems = document.querySelectorAll('.step-card');
   stepItems.forEach((item, index) => {
@@ -2531,13 +3594,11 @@ async function onSavePlan() {
     c.steps[(index + 1).toString()] = textarea.value;
   });
   
-  // Sauvegarder la remarque
   c.remark = document.getElementById('remarkText').value;
   c.remarkLocked = document.getElementById('lockRemark').classList.contains('locked');
   c.stepsLocked = document.getElementById('lockAllSteps').disabled;
   
   try {
-    // Sauvegarder dans Supabase
     await saveContactToSupabase(c);
     alert('Plan sauvegardé !');
   } catch (error) {
@@ -2554,23 +3615,40 @@ function openCategory(cat){
   board.style.display = 'block';
   boardTitle.textContent = categories[cat];
   
-  // Afficher la section de recherche et filtres
   document.getElementById('searchFiltersContainer').style.display = 'block';
   
-  // Réinitialiser les filtres mais conserver le tri
   resetFilters();
   
-  // Mettre à jour les informations de tri
   updateSortInfo();
   updateSortIndicators();
   
   renderTable();
 }
-
+// Fonction pour sélectionner un contact par simple clic
+function selectContactForPDF(id, rowElement) {
+    activeContactId = id;
+    
+    // Retirer la sélection précédente
+    document.querySelectorAll('.contact-row').forEach(row => {
+        row.classList.remove('selected');
+    });
+    
+    // Ajouter la sélection visuelle
+    rowElement.classList.add('selected');
+    
+    // Afficher un message d'aide
+    const syncIndicator = document.getElementById('syncIndicator');
+    syncIndicator.textContent = `✅ Client sélectionné - Prêt pour PDF`;
+    syncIndicator.style.display = 'block';
+    syncIndicator.style.background = '#28a745';
+    
+    setTimeout(() => {
+        syncIndicator.style.display = 'none';
+    }, 3000);
+}
 function renderTable(){
   contactsBody.innerHTML = '';
   
-  // Appliquer les filtres et obtenir les contacts filtrés
   const items = applyFilters();
   
   const groups = {};
@@ -2581,7 +3659,6 @@ function renderTable(){
     groups[k].items.push(i);
   });
   
-  // Trier les groupes d'entreprises par ordre alphabétique
   const sortedGroups = Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name));
   
   sortedGroups.forEach(k=>{
@@ -2599,41 +3676,77 @@ function renderTable(){
       tr.className='contact-row';
       tr.dataset.id = c.id;
       const dep = (c.departement||'').toLowerCase();
-      // MODIFICATION: Appliquer les couleurs selon le département
       if(dep === 'projet') tr.setAttribute('data-dept','Projet');
       else if(dep === 'epc') tr.setAttribute('data-dept','EPC');
       else if(dep === 'o&g') tr.setAttribute('data-dept','O&G');
       else if(dep === 'industrie') tr.setAttribute('data-dept','Industrie');
       else if(dep === 'water') tr.setAttribute('data-dept','Water');
-      else if(dep === 'Mesure/Projet') tr.setAttribute('data-dept','Mesure/Projet'); 
+      else if(dep === 'o&g/projet') tr.setAttribute('data-dept','O&G/Projet');
+      else if(dep === 'water/projet') tr.setAttribute('data-dept','Water/Projet');
+      else if(dep === 'epc/projet') tr.setAttribute('data-dept','EPC/Projet');
+      else if(dep === 'industrie/projet') tr.setAttribute('data-dept','Industrie/Projet');
+
+      const hasDiscussions = c.discussions && c.discussions.length > 0;
+
+      // MODIFICATION : Afficher TOUS les points colorés des discussions
+      let personColorIndicators = '';
+      if (hasDiscussions) {
+          // Prendre les 8 dernières discussions maximum pour éviter le débordement
+          const recentDiscussions = c.discussions.slice(-8);
+          recentDiscussions.forEach(discussion => {
+              if (discussion && discussion.name) {
+                  const colorClass = getPersonColorClass(discussion.name);
+                  personColorIndicators += `<span class="person-color-indicator ${colorClass}" title="${discussion.name}"></span>`;
+              }
+          });
+          
+          // Si plus de 4 discussions, ajouter un indicateur
+          if (c.discussions.length > 4) {
+              personColorIndicators += `<span class="person-more-indicator" title="${c.discussions.length} discussions">+${c.discussions.length - 4}</span>`;
+          }
+      }
 
       tr.innerHTML = `
-        <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
-        <td>${highlightText(escape(c.nom), currentFilters.globalSearch)}</td>
-        <td>${highlightText(escape(c.poste), currentFilters.globalSearch)}</td>
-        <td>${escape(c.portable)}</td>
-        <td>${escape(c.fixe)}</td>
-        <td>${highlightText(escape(c.email), currentFilters.globalSearch)}</td>
-        <td>${highlightText(escape(c.departement), currentFilters.globalSearch)}</td>
-        <td>${highlightText(escape(c.projet), currentFilters.globalSearch)}</td>
-        <td class="actions-td">
-          <button class="btn-small btn-edit" data-id="${c.id}" title="Modifier">✎</button>
-          <button class="btn-small btn-delete" data-id="${c.id}" title="Supprimer">🗑</button>
-        </td>
+          <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
+          <td>
+              <div class="color-indicators-container">
+                  ${personColorIndicators}
+                  ${highlightText(escape(c.nom), currentFilters.globalSearch)}
+              </div>
+          </td>
+          <td>${highlightText(escape(c.poste), currentFilters.globalSearch)}</td>
+          <td>${escape(c.portable)}</td>
+          <td>${escape(c.fixe)}</td>
+          <td>${highlightText(escape(c.email), currentFilters.globalSearch)}</td>
+          <td>${highlightText(escape(c.departement), currentFilters.globalSearch)}</td>
+          <td>${highlightText(escape(c.projet), currentFilters.globalSearch)}</td>
+          <td class="actions-td">
+              <button class="btn-small btn-edit" data-id="${c.id}" title="Modifier">✎</button>
+              <button class="btn-small btn-delete" data-id="${c.id}" title="Supprimer">🗑</button>
+          </td>
       `;
       
+      // Le reste du code reste inchangé...
       tr.addEventListener('click', (e)=>{
-        if(e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
+    if(e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
+    
+    // Simple clic pour sélection PDF
+    if (e.detail === 1) { // Simple clic
+        selectContactForPDF(c.id, tr);
+    }
+    // Double clic pour ouvrir le plan d'action
+    else if (e.detail === 2) {
         openPlan(c.id);
-      });
+    }
+});
       
       tr.querySelector('.btn-edit').addEventListener('click', (ev)=>{ 
-        ev.stopPropagation(); 
-        openModalForEdit(c.id); 
+          ev.stopPropagation(); 
+          openModalForEdit(c.id); 
       });
       tr.querySelector('.btn-delete').addEventListener('click', async (ev)=>{ 
-        ev.stopPropagation(); 
-        await onDeleteContact(c.id); 
+          ev.stopPropagation(); 
+          await onDeleteContact(c.id); 
       });
       contactsBody.appendChild(tr);
     });
@@ -2645,10 +3758,8 @@ function renderTable(){
     contactsBody.appendChild(tr);
   }
   
-  // Mettre à jour les résultats des filtres
   updateFilterResults();
 }
-
 function openModalForNew(){
   editingId = null;
   document.getElementById('modalTitle').textContent = 'Nouveau contact';
@@ -2656,6 +3767,16 @@ function openModalForNew(){
   fDepart.value = '';
   fCategory.value = '';
   modal.style.display = 'flex';
+  
+  const suggestions = document.getElementById('entrepriseSuggestions');
+  suggestions.style.display = 'none';
+  document.getElementById('fEntreprise').classList.remove('input-with-suggestions');
+  
+  const nomSuggestions = document.getElementById('nomSuggestions');
+  nomSuggestions.style.display = 'none';
+  
+  // Masquer l'erreur de nom existant
+  toggleNameError(false);
 }
 
 function openModalForEdit(id){
@@ -2672,7 +3793,6 @@ function openModalForEdit(id){
   fEmail.value = c.email||'';
   fProjet.value = c.projet||'';
   
-  // Trouver la catégorie actuelle
   let currentCategory = activeCat;
   if (!currentCategory) {
     for (const [cat, contacts] of Object.entries(store.categories)) {
@@ -2685,27 +3805,83 @@ function openModalForEdit(id){
   fCategory.value = currentCategory || '';
   
   modal.style.display = 'flex';
+  
+  const suggestions = document.getElementById('entrepriseSuggestions');
+  suggestions.style.display = 'none';
+  document.getElementById('fEntreprise').classList.remove('input-with-suggestions');
+  
+  const nomSuggestions = document.getElementById('nomSuggestions');
+  nomSuggestions.style.display = 'none';
+  
+  // Masquer l'erreur de nom existant en mode édition
+  toggleNameError(false);
 }
 
 function closeModal(){
   modal.style.display = 'none';
   contactForm.reset();
   editingId = null;
+  
+  const suggestions = document.getElementById('entrepriseSuggestions');
+  suggestions.style.display = 'none';
+  document.getElementById('fEntreprise').classList.remove('input-with-suggestions');
+  
+  const nomSuggestions = document.getElementById('nomSuggestions');
+  nomSuggestions.style.display = 'none';
+  
+  // Masquer l'erreur de nom existant
+  toggleNameError(false);
 }
 
 async function onSaveContact(e){
   e.preventDefault();
   
+  // Validation basique
   const category = fCategory.value;
   if (!category) {
     alert('Veuillez sélectionner une catégorie');
     return;
   }
 
+  const entreprise = fEntreprise.value.trim();
+  const nom = fNom.value.trim();
+  
+  if (!entreprise || !nom) {
+    alert('Veuillez remplir au moins l\'entreprise et le nom');
+    return;
+  }
+
+  // 🔥 CORRECTION AUTOMATIQUE PRÉCISE
+  const existingEnterprises = getAllExistingEnterprises();
+  const entrepriseCorrigee = normalizeEnterpriseName(entreprise, existingEnterprises);
+  
+  // Afficher notification si correction
+  if (entreprise !== entrepriseCorrigee) {
+    showSyncIndicator(`🔍 Correction: "${entreprise}" → "${entrepriseCorrigee}"`, 'syncing');
+  }
+
+  // RÉCUPÉRER LES DONNÉES EXISTANTES SI MODIFICATION
+  let existingData = {};
+  if (editingId) {
+    Object.keys(store.categories).forEach(cat => {
+      const existingContact = store.categories[cat].find(x => x.id === editingId);
+      if (existingContact) {
+        existingData = {
+          discussions: existingContact.discussions || [],
+          remark: existingContact.remark || '',
+          remarkLocked: existingContact.remarkLocked || false,
+          steps: existingContact.steps || {},
+          stepsLocked: existingContact.stepsLocked || false,
+          created_at: existingContact.created_at
+        };
+      }
+    });
+  }
+
   const obj = {
     id: editingId || uid(),
-    entreprise: fEntreprise.value.trim(),
-    nom: fNom.value.trim(),
+    entreprise: entrepriseCorrigee,
+    nom: nom,
     poste: fPoste.value.trim(),
     departement: fDepart.value,
     portable: fPortable.value.trim(),
@@ -2713,60 +3889,124 @@ async function onSaveContact(e){
     email: fEmail.value.trim(),
     projet: fProjet.value.trim(),
     category: category,
-    discussions: [],
-    remark: '',
-    remarkLocked: false,
-    steps: {},
-    stepsLocked: false
+    discussions: editingId ? existingData.discussions : [],
+    remark: editingId ? existingData.remark : '',
+    remarkLocked: editingId ? existingData.remarkLocked : false,
+    steps: editingId ? existingData.steps : {},
+    stepsLocked: editingId ? existingData.stepsLocked : false,
+    created_at: editingId ? existingData.created_at : new Date().toISOString()
   };
   
   try {
-    // Sauvegarder dans Supabase
+    showSyncIndicator('🔄 Sauvegarde en cours...', 'syncing');
+    
     const savedContact = await saveContactToSupabase(obj);
     
-    // Mettre à jour le store local avec l'ID de Supabase
     if (savedContact) {
       obj.id = savedContact.id;
     }
     
-    // Mettre à jour l'interface
-    if(editingId){
-      // Supprimer l'ancien contact de sa catégorie précédente
-      Object.keys(store.categories).forEach(cat => {
-        store.categories[cat] = store.categories[cat].filter(x => x.id !== editingId);
-      });
-      // Ajouter à la nouvelle catégorie
-      store.categories[category].push(obj);
-    } else {
-      store.categories[category].push(obj);
-    }
+    // FORCER LE RECHARGEMENT
+    await loadContactsFromSupabase();
     
     closeModal();
     
-    // Si on est dans la catégorie modifiée, re-rendre le tableau
-    if (activeCat === category) {
+    if (activeCat) {
       renderTable();
-    } else if (editingId && activeCat) {
-      // Si on a changé de catégorie, fermer le tableau actuel
-      board.style.display = 'none';
-      activeCat = null;
-      if (activeCategoryBtn) {
-        activeCategoryBtn.classList.remove('active');
-      }
     }
     
+    updateStatistics();
+    updateCharts();
+    
+    showSyncIndicator('✅ Contact sauvegardé!', 'success');
+    
   } catch (error) {
-    alert('Erreur lors de la sauvegarde du contact');
+    console.error('Erreur sauvegarde:', error);
+    showSyncIndicator('❌ Erreur sauvegarde', 'error');
   }
 }
+// Fonction de correction ULTRA-TOLÉRANTE - jamais de blocage
 
+// Fonction pour obtenir la couleur selon le nom
+function getPersonColor(personName) {
+    const colorMap = {
+        "Camelya Benatmane": "camelya",
+        "Fedoua": "fedoua",
+        "Mohamed": "mohamed",
+        "Mohamed Bellatreche": "bellatreche",
+        "M.Mostefaoui": "mostefaoui",
+        "Timzit Fedoua": "timzit",
+        "Rabea Arab": "rabea",
+        "Tinhinane Dahmani": "tinhinane",
+        "Nadia Khicha": "nadia",
+        "Lamia Attou": "lamia"
+    };
+    
+    // Chercher une correspondance (partielle ou exacte)
+    for (const [key, value] of Object.entries(colorMap)) {
+        if (personName && personName.toLowerCase().includes(key.toLowerCase())) {
+            return value;
+        }
+    }
+    
+    return "default"; // Couleur par défaut si non trouvé
+}
+
+// Fonction pour obtenir la classe CSS selon la personne
+// Fonction pour obtenir la classe CSS selon la personne (VERSION CORRIGÉE)
+// Fonction pour obtenir la classe CSS selon la personne (NOUVELLES COULEURS)
+function getPersonColorClass(personName) {
+    const colorMap = {
+        "Camelya Benatmane": "camelya",
+        "Camelya": "camelya",
+        "Fedoua Timzit": "fedoua", 
+        "Fedoua": "fedoua",
+        "Timzit Fedoua": "fedoua",
+        "Mohamed Bellatreche": "bellatreche", // ORANGE
+        "Mohamed": "bellatreche",
+        "Bellatreche": "bellatreche", 
+        "M.Mostefaoui": "mostefaoui", // VIOLET
+        "Mostefaoui": "mostefaoui",
+        "Rabea Arab": "rabea", // ROSE
+        "Rabea": "rabea",
+        "Tinhinane Dahmani": "tinhinane", // CYAN
+        "Tinhinane": "tinhinane",
+        "Nadia Khicha": "nadia", // MARRON
+        "Nadia": "nadia",
+        "Lamia Attou": "lamia", // BLEU INDIGO
+        "Lamia": "lamia"
+    };
+    
+    if (!personName) return "person-default";
+    
+    // Chercher une correspondance exacte d'abord
+    if (colorMap[personName]) {
+        return `person-${colorMap[personName]}`;
+    }
+    
+    // Chercher une correspondance partielle
+    const normalizedInput = personName.toLowerCase();
+    for (const [key, value] of Object.entries(colorMap)) {
+        if (normalizedInput.includes(key.toLowerCase()) || 
+            key.toLowerCase().includes(normalizedInput)) {
+            return `person-${value}`;
+        }
+    }
+    
+    return "person-default";
+}
+
+// Fonction pour obtenir la classe CSS pour les options
+function getOptionColorClass(personName) {
+    const colorKey = getPersonColor(personName);
+    return `option-${colorKey}`;
+}
 async function onDeleteContact(id){
   if(!confirm('Supprimer ce contact ?')) return;
   
   try {
     await deleteContactFromSupabase(id);
     
-    // Supprimer du store local
     Object.keys(store.categories).forEach(cat => {
       store.categories[cat] = store.categories[cat].filter(x => x.id !== id);
     });
@@ -2805,15 +4045,33 @@ function hidePlan(){
   
   addDiscussion();
   addStep();
+  
+  // AJOUT : Remonter à la ligne qui a été cliquée
+  if (lastClickedRowElement) {
+    setTimeout(() => {
+      lastClickedRowElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+      // Optionnel : surligner brièvement la ligne
+      lastClickedRowElement.classList.add('double-click-hint');
+      setTimeout(() => {
+        lastClickedRowElement.classList.remove('double-click-hint');
+      }, 1000);
+      
+      lastClickedRowElement = null;
+    }, 100);
+  }
 }
 
 async function onDeletePlan(){
   if(!activeContactId) return;
-  if(!confirm('Supprimer le plan (efface discussions, remarques et actions) ?')) return;
+  if(!confirm('Vider tout le contenu de ce plan ?\n\n• Discussions\n• Actions\n• Remarques\n\nLe contact restera ouvert.')) return;
   
   const c = store.categories[activeCat].find(x=>x.id===activeContactId);
   if(!c) return;
   
+  // VIDER le contenu
   c.discussions = [];
   c.remark = '';
   c.remarkLocked = false;
@@ -2822,23 +4080,47 @@ async function onDeletePlan(){
   
   try {
     await saveContactToSupabase(c);
-    hidePlan();
-    renderTable();
+    
+    // SIMPLE : Réinitialiser l'affichage directement
+    discussionCounter = 0;
+    stepCounter = 0;
+    
+    document.getElementById('discussionsContainer').innerHTML = '';
+    document.getElementById('stepsContainer').innerHTML = '';
+    document.getElementById('remarkText').value = '';
+    
+    // Remettre les verrous en état déverrouillé
+    document.getElementById('lockRemark').classList.remove('locked');
+    document.getElementById('lockRemark').classList.add('unlocked');
+    document.getElementById('lockRemark').textContent = '🔓';
+    document.getElementById('lockRemark').disabled = false;
+    document.getElementById('remarkText').disabled = false;
+    
+    const lockBtn = document.getElementById('lockAllSteps');
+    lockBtn.disabled = false;
+    lockBtn.textContent = '🔒 Verrouiller toutes les actions';
+    lockBtn.style.background = '#4caf50';
+    
+    // Ajouter des champs vides
+    addDiscussion();
+    addStep();
+    
+    // Message simple
+    showSyncIndicator('✅ Plan vidé', 'success');
+    
   } catch (error) {
-    alert('Erreur lors de la suppression du plan');
+    alert('Erreur lors de la suppression');
   }
 }
 
-/* ---------- FONCTIONS PDF (inchangées) ---------- */
-
-/* ---------- FONCTIONS PDF CORRIGÉES ---------- */
+/* ---------- FONCTIONS PDF ---------- */
 
 async function downloadClientPDF() {
-  if (!activeContactId) {
-    alert('Veuillez d\'abord sélectionner un client en cliquant sur une ligne du tableau');
-    return;
-  }
 
+ if (!activeContactId) {
+        alert('Veuillez d\'abord sélectionner un client en cliquant 1 fois sur une ligne du tableau');
+        return;
+    }
   try {
     const c = store.categories[activeCat].find(x => x.id === activeContactId);
     if (!c) return;
@@ -2848,16 +4130,13 @@ async function downloadClientPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Configuration
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 20;
     let yPosition = margin;
     
-    // Couleurs
-    const primaryColor = [0, 82, 156]; // Bleu NAPEC
-    const secondaryColor = [40, 167, 69]; // Vert
+    const primaryColor = [0, 82, 156];
+    const secondaryColor = [40, 167, 69];
     
-    // En-tête
     doc.setFillColor(...primaryColor);
     doc.rect(0, 0, pageWidth, 40, 'F');
     
@@ -2869,13 +4148,11 @@ async function downloadClientPDF() {
     doc.setFontSize(12);
     doc.text('NAPE C - Marketing Plateforme', pageWidth / 2, 25, { align: 'center' });
     
-    // Date
     const today = new Date().toLocaleDateString('fr-FR');
     doc.text(`Généré le: ${today}`, pageWidth - margin, 35, { align: 'right' });
     
     yPosition = 60;
     
-    // Informations client
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
@@ -2909,7 +4186,6 @@ async function downloadClientPDF() {
     
     yPosition += 10;
     
-    // Discussions
     if (c.discussions && c.discussions.length > 0) {
       if (yPosition > 250) {
         doc.addPage();
@@ -2952,7 +4228,6 @@ async function downloadClientPDF() {
     
     yPosition += 5;
     
-    // Plan d'action
     if (c.steps && Object.keys(c.steps).length > 0) {
       if (yPosition > 250) {
         doc.addPage();
@@ -2995,7 +4270,6 @@ async function downloadClientPDF() {
     
     yPosition += 5;
     
-    // Remarques
     if (c.remark) {
       if (yPosition > 250) {
         doc.addPage();
@@ -3023,7 +4297,6 @@ async function downloadClientPDF() {
       });
     }
     
-    // Pied de page
     const totalPages = doc.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
@@ -3032,7 +4305,6 @@ async function downloadClientPDF() {
       doc.text(`Page ${i} / ${totalPages} - NAPEC Marketing Plateforme`, pageWidth / 2, 285, { align: 'center' });
     }
     
-    // Téléchargement
     const fileName = `Client_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}_${(c.nom || 'SansContact').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
     doc.save(fileName);
     
@@ -3070,7 +4342,6 @@ async function downloadAllClientsPDF() {
       const margin = 20;
       let yPosition = margin;
       
-      // En-tête
       doc.setFillColor(0, 82, 156);
       doc.rect(0, 0, pageWidth, 40, 'F');
       
@@ -3083,7 +4354,6 @@ async function downloadAllClientsPDF() {
       
       yPosition = 60;
       
-      // Informations client
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
@@ -3103,14 +4373,12 @@ async function downloadAllClientsPDF() {
       
       yPosition += 5;
       
-      // Discussions résumées
       if (c.discussions && c.discussions.length > 0) {
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
         doc.text(`Discussions: ${c.discussions.length}`, margin, yPosition);
         yPosition += 15;
         
-        // Première discussion seulement pour le résumé
         const firstDiscussion = c.discussions[0];
         doc.setFont('helvetica', 'normal');
         doc.text(`Dernière discussion: ${firstDiscussion.name || 'Non spécifié'}`, margin, yPosition);
@@ -3124,16 +4392,13 @@ async function downloadAllClientsPDF() {
         });
       }
       
-      // Pied de page
       doc.setFontSize(8);
       doc.setTextColor(128, 128, 128);
       doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} - NAPEC Marketing`, pageWidth / 2, 285, { align: 'center' });
       
-      // Sauvegarder
       const fileName = `Client_${activeCat}_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
       doc.save(fileName);
       
-      // Petite pause entre les générations
       if (i < contacts.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
@@ -3171,7 +4436,6 @@ async function exportTablePDF() {
     const margin = 15;
     let yPosition = margin;
 
-    // === EN-TÊTE ===
     doc.setFillColor(0, 82, 156);
     doc.rect(0, 0, pageWidth, 25, 'F');
     
@@ -3185,7 +4449,6 @@ async function exportTablePDF() {
     
     yPosition = 35;
 
-    // === INFORMATIONS ===
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(8);
     const today = new Date().toLocaleDateString('fr-FR');
@@ -3193,19 +4456,17 @@ async function exportTablePDF() {
     
     yPosition += 10;
 
-    // === CONFIGURATION DES COLONNES - THÈME ÉLARGI ===
     const totalTableWidth = pageWidth - (2 * margin);
     const columns = [
-      { header: 'Entreprise', width: totalTableWidth * 0.18 },  // Réduit
-      { header: 'Nom', width: totalTableWidth * 0.16 },         // Réduit
-      { header: 'Poste', width: totalTableWidth * 0.18 },       // Réduit
-      { header: 'Portable', width: totalTableWidth * 0.12 },    // Même
-      { header: 'Email', width: totalTableWidth * 0.14 },       // Réduit
-      { header: 'Département', width: totalTableWidth * 0.07 }, // Réduit
-      { header: 'Thème', width: totalTableWidth * 0.15 }        // AUGMENTÉ à 15%
+      { header: 'Entreprise', width: totalTableWidth * 0.18 },
+      { header: 'Nom', width: totalTableWidth * 0.16 },
+      { header: 'Poste', width: totalTableWidth * 0.18 },
+      { header: 'Portable', width: totalTableWidth * 0.12 },
+      { header: 'Email', width: totalTableWidth * 0.14 },
+      { header: 'Département', width: totalTableWidth * 0.07 },
+      { header: 'Thème', width: totalTableWidth * 0.15 }
     ];
 
-    // === EN-TÊTES DU TABLEAU ===
     doc.setFillColor(240, 248, 255);
     doc.rect(margin, yPosition - 4, totalTableWidth, 7, 'F');
     
@@ -3227,7 +4488,6 @@ async function exportTablePDF() {
     
     yPosition += 9;
 
-    // === ORGANISATION DES DONNÉES ===
     const groups = {};
     contacts.forEach(contact => {
       const entreprise = contact.entreprise || '[Sans entreprise]';
@@ -3237,26 +4497,22 @@ async function exportTablePDF() {
 
     const sortedEntreprises = Object.keys(groups).sort();
 
-    // === CONTENU DU TABLEAU ===
     let currentPage = 1;
     const maxY = pageHeight - 20;
 
     for (const entreprise of sortedEntreprises) {
       const contactsEntreprise = groups[entreprise];
       
-      // Vérifier espace disponible
       const spaceNeeded = 8 + (contactsEntreprise.length * 8) + 5;
       if (yPosition + spaceNeeded > maxY) {
         doc.addPage();
         currentPage++;
         yPosition = margin;
         
-        // Redessiner les en-têtes
         drawTableHeaders(doc, margin, yPosition, totalTableWidth, columns);
         yPosition += 9;
       }
       
-      // === LIGNE ENTREPRISE ===
       doc.setFillColor(245, 251, 255);
       doc.rect(margin, yPosition - 3, totalTableWidth, 6, 'F');
       
@@ -3268,7 +4524,6 @@ async function exportTablePDF() {
       
       yPosition += 7;
 
-      // === LIGNES DES CONTACTS ===
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(0, 0, 0);
@@ -3276,7 +4531,6 @@ async function exportTablePDF() {
       for (let i = 0; i < contactsEntreprise.length; i++) {
         const contact = contactsEntreprise[i];
         
-        // Vérifier espace pour chaque ligne
         if (yPosition > maxY - 10) {
           doc.addPage();
           currentPage++;
@@ -3285,7 +4539,6 @@ async function exportTablePDF() {
           yPosition += 9;
         }
 
-        // Fond alterné
         if (i % 2 === 0) {
           doc.setFillColor(255, 255, 255);
         } else {
@@ -3293,13 +4546,10 @@ async function exportTablePDF() {
         }
         doc.rect(margin, yPosition - 3, totalTableWidth, 6, 'F');
 
-        // === DONNÉES DU CONTACT ===
         let currentX = margin;
         
-        // Entreprise (vide car déjà dans le groupe)
         currentX += columns[0].width;
         
-        // Nom
         const nom = contact.nom || '';
         const nomLines = doc.splitTextToSize(nom, columns[1].width - 6);
         nomLines.forEach((line, index) => {
@@ -3311,7 +4561,6 @@ async function exportTablePDF() {
         });
         currentX += columns[1].width;
         
-        // Poste
         const poste = contact.poste || '';
         const posteLines = doc.splitTextToSize(poste, columns[2].width - 6);
         posteLines.forEach((line, index) => {
@@ -3323,12 +4572,10 @@ async function exportTablePDF() {
         });
         currentX += columns[2].width;
         
-        // Portable
         const portable = contact.portable || '';
         doc.text(portable, currentX + 3, yPosition);
         currentX += columns[3].width;
         
-        // Email
         const email = contact.email || '';
         const emailLines = doc.splitTextToSize(email, columns[4].width - 6);
         emailLines.forEach((line, index) => {
@@ -3340,12 +4587,10 @@ async function exportTablePDF() {
         });
         currentX += columns[4].width;
         
-        // Département
         const departement = contact.departement || '';
         doc.text(departement, currentX + 3, yPosition);
         currentX += columns[5].width;
         
-        // THÈME - MAINTENANT AVEC PLUS D'ESPACE
         const theme = contact.projet || '';
         const themeLines = doc.splitTextToSize(theme, columns[6].width - 6);
         themeLines.forEach((line, index) => {
@@ -3356,7 +4601,6 @@ async function exportTablePDF() {
           }
         });
 
-        // Calculer la hauteur maximale pour cette ligne
         const maxLines = Math.max(
           nomLines.length,
           posteLines.length,
@@ -3367,16 +4611,13 @@ async function exportTablePDF() {
         
         yPosition += (maxLines * 3) + 2;
         
-        // Ligne séparatrice
         doc.setDrawColor(245, 245, 245);
         doc.line(margin, yPosition - 1, margin + totalTableWidth, yPosition - 1);
       }
       
-      // Espace après chaque groupe
       yPosition += 5;
     }
 
-    // === PIED DE PAGE ===
     const totalPages = doc.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
@@ -3390,7 +4631,6 @@ async function exportTablePDF() {
       );
     }
 
-    // === TÉLÉCHARGEMENT ===
     const fileName = `Liste_${categories[activeCat].replace(/[^a-zA-Z0-9]/g, '_')}_${today.replace(/\//g, '-')}.pdf`;
     doc.save(fileName);
     
@@ -3419,26 +4659,11 @@ function drawTableHeaders(doc, margin, yPosition, totalTableWidth, columns) {
   columns.forEach(column => {
     let headerText = column.header;
     if (column.header === 'Département') headerText = 'Départ.';
-    
+      
     doc.text(headerText, xPosition + 3, yPosition);
     xPosition += column.width;
   });
 }
-
-function escape(s){ if(!s) return ''; return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// Variables pour les éléments du modal
-const modal = document.getElementById('modal');
-const contactForm = document.getElementById('contactForm');
-const fEntreprise = document.getElementById('fEntreprise');
-const fNom = document.getElementById('fNom');
-const fPoste = document.getElementById('fPoste');
-const fDepart = document.getElementById('fDepart');
-const fPortable = document.getElementById('fPortable');
-const fFixe = document.getElementById('fFixe');
-const fEmail = document.getElementById('fEmail');
-const fProjet = document.getElementById('fProjet');
-const fCategory = document.getElementById('fCategory');
 
 /* ---------- FONCTION POUR LE GRAPHIQUE DES DISCUSSIONS PAR PERSONNE ---------- */
 
@@ -3448,7 +4673,6 @@ function updatePersonChart() {
   
   if (!container) return;
   
-  // Créer le conteneur parent si nécessaire
   const parentContainer = document.getElementById('personChartContainer');
   if (!parentContainer) {
     const chartsContainer = document.getElementById('chartsContainer');
@@ -3466,7 +4690,6 @@ function updatePersonChart() {
     chartsContainer.parentNode.insertBefore(newContainer, chartsContainer.nextSibling);
   }
   
-  // Vider le conteneur
   container.innerHTML = '';
   
   if (personStats.length === 0) {
@@ -3474,11 +4697,9 @@ function updatePersonChart() {
     return;
   }
   
-  // Calculer la hauteur maximale pour l'échelle
   const maxDiscussions = Math.max(...personStats.map(p => p.discussions));
   const maxHeight = 160;
   
-  // Générer les barres
   personStats.forEach(person => {
     const height = maxDiscussions > 0 ? (person.discussions / maxDiscussions) * maxHeight : 0;
     const bar = document.createElement('div');
@@ -3489,7 +4710,6 @@ function updatePersonChart() {
       <div class="bar-label">${person.name}</div>
     `;
     
-    // Ajouter un effet au survol avec plus d'informations
     bar.addEventListener('mouseenter', function() {
       this.style.transform = 'scale(1.05)';
       this.style.boxShadow = '0 4px 8px rgba(0, 82, 156, 0.3)';
@@ -3503,7 +4723,6 @@ function updatePersonChart() {
     container.appendChild(bar);
   });
   
-  // Ajouter une légende si beaucoup de données
   if (personStats.length > 8) {
     const legend = document.createElement('div');
     legend.style.cssText = 'margin-top: 20px; font-size: 12px; color: #666; text-align: center;';
@@ -3512,106 +4731,21 @@ function updatePersonChart() {
   }
 }
 
-/* ---------- MODIFICATION DE LA FONCTION updateCharts ---------- */
+function escape(s){ if(!s) return ''; return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function updateCharts() {
-  const chartsContainer = document.getElementById('chartsContainer');
-  if (!chartsContainer) return;
-
-  // Calculer les données pour les graphiques
-  const contactsByCategory = {};
-  const entreprisesByCategory = {};
-  const discussionsByCategory = {};
-  
-  Object.keys(categories).forEach(cat => {
-    const contacts = store.categories[cat];
-    contactsByCategory[cat] = contacts.length;
-    
-    // Compter les entreprises uniques
-    const entreprises = new Set();
-    let discussionsCount = 0;
-    
-    contacts.forEach(contact => {
-      if (contact.entreprise) {
-        entreprises.add(contact.entreprise);
-      }
-      if (contact.discussions) {
-        discussionsCount += contact.discussions.length;
-      }
-    });
-    
-    entreprisesByCategory[cat] = entreprises.size;
-    discussionsByCategory[cat] = discussionsCount;
-  });
-
-  // Graphique 1: Contacts par catégorie
-  const maxContacts = Math.max(...Object.values(contactsByCategory));
-  
-  let contactsChartHTML = `
-    <div class="chart-card">
-      <div class="chart-title">Contacts par Catégorie</div>
-      <div class="bar-container">
-  `;
-  
-  Object.keys(categories).forEach(cat => {
-    const height = maxContacts > 0 ? (contactsByCategory[cat] / maxContacts) * 140 : 0;
-    contactsChartHTML += `
-      <div class="bar" style="height: ${height}px">
-        <div class="bar-value">${contactsByCategory[cat]}</div>
-        <div class="bar-label">${chartCategories[cat]}</div>
-      </div>
-    `;
-  });
-  
-  contactsChartHTML += `</div></div>`;
-
-  // Graphique 2: Entreprises par catégorie
-  const maxEntreprises = Math.max(...Object.values(entreprisesByCategory));
-  
-  let entreprisesChartHTML = `
-    <div class="chart-card">
-      <div class="chart-title">Entreprises par Catégorie</div>
-      <div class="bar-container">
-  `;
-  
-  Object.keys(categories).forEach(cat => {
-    const height = maxEntreprises > 0 ? (entreprisesByCategory[cat] / maxEntreprises) * 140 : 0;
-    entreprisesChartHTML += `
-      <div class="bar" style="height: ${height}px">
-        <div class="bar-value">${entreprisesByCategory[cat]}</div>
-        <div class="bar-label">${chartCategories[cat]}</div>
-      </div>
-    `;
-  });
-  
-  entreprisesChartHTML += `</div></div>`;
-
-  // Graphique 3: Discussions par catégorie
-  const maxDiscussions = Math.max(...Object.values(discussionsByCategory));
-  
-  let discussionsChartHTML = `
-    <div class="chart-card">
-      <div class="chart-title">Discussions par Catégorie</div>
-      <div class="bar-container">
-  `;
-  
-  Object.keys(categories).forEach(cat => {
-    const height = maxDiscussions > 0 ? (discussionsByCategory[cat] / maxDiscussions) * 140 : 0;
-    discussionsChartHTML += `
-      <div class="bar" style="height: ${height}px">
-        <div class="bar-value">${discussionsByCategory[cat]}</div>
-        <div class="bar-label">${chartCategories[cat]}</div>
-      </div>
-    `;
-  });
-  
-  discussionsChartHTML += `</div></div>`;
-
-  chartsContainer.innerHTML = contactsChartHTML + entreprisesChartHTML + discussionsChartHTML;
-  
-  // METTRE À JOUR LE NOUVEAU GRAPHIQUE DES PERSONNES
-  updatePersonChart();
-}
+// Variables pour les éléments du modal
+const modal = document.getElementById('modal');
+const contactForm = document.getElementById('contactForm');
+const fEntreprise = document.getElementById('fEntreprise');
+const fNom = document.getElementById('fNom');
+const fPoste = document.getElementById('fPoste');
+const fDepart = document.getElementById('fDepart');
+const fPortable = document.getElementById('fPortable');
+const fFixe = document.getElementById('fFixe');
+const fEmail = document.getElementById('fEmail');
+const fProjet = document.getElementById('fProjet');
+const fCategory = document.getElementById('fCategory');
 </script>
+
 </body>
 </html>
