@@ -869,7 +869,7 @@
     --person-tinhinane: #20c997;
     --person-nadia: #6c757d;
     --person-lamia: #6610f2;
-    --person-default: #6c757d;
+    --person-Partenaire: #124f84;
 }
 .search-input {
   flex: 1;
@@ -1179,6 +1179,7 @@
 .person-color-indicator.person-tinhinane { background-color: #e0dd1e; } /* CYAN */
 .person-color-indicator.person-nadia { background-color: #000000; } /* MARRON */
 .person-color-indicator.person-lamia { background-color: #7be4f7; } /* BLEU INDIGO */
+.person-color-indicator.person-Partenaire { background-color: #656203; } /* BLEU INDIGO */ 
 
 /* Mêmes couleurs pour la barre de référence */
 .reference-color.person-camelya { background-color: #4c54ea; }
@@ -1189,7 +1190,7 @@
 .reference-color.person-tinhinane { background-color: #e0dd1e; }
 .reference-color.person-nadia {background-color: #000000; }
 .reference-color.person-lamia { background-color:  #7be4f7;  }
-
+.reference-color.person-Partenaire { background-color: #656203;  } /* BLEU INDIGO */ 
 /* Barre de code couleur dans le tableau */
 .color-code-bar {
     display: inline-block;
@@ -1956,7 +1957,7 @@ let lastClickedRowElement = null;
 // LISTE DES NOMS POUR LES MENUS DÉROULANTS
 const nameList = [
   "Mohamed Bellatreche","M.Mostefaoui", "Timzit Fedoua", "Rabea Arab", "Camelya Benatmane", 
-  "Tinhinane Dahmani", "Nadia Khicha", "Lamia Attou", 
+  "Tinhinane Dahmani", "Nadia Khicha", "Lamia Attou", "Partenaire",
 ];
 
 // COMPTEURS
@@ -3336,7 +3337,8 @@ function generateAllReferences() {
          "Camelya Benatmane",      // VERT
         "Tinhinane Dahmani",      // CYAN
         "Nadia Khicha",           // MARRON
-        "Lamia Attou"             // BLEU INDIGO
+        "Lamia Attou" ,            // BLEU INDIGO
+        "Partenaire",             // BLEU INDIGO
     ];
     
     let referenceHTML = '';
@@ -3939,7 +3941,8 @@ function getPersonColor(personName) {
         "Rabea Arab": "rabea",
         "Tinhinane Dahmani": "tinhinane",
         "Nadia Khicha": "nadia",
-        "Lamia Attou": "lamia"
+        "Lamia Attou": "lamia", 
+        "Partenaire": "Partenaire",
     };
     
     // Chercher une correspondance (partielle ou exacte)
@@ -3974,7 +3977,8 @@ function getPersonColorClass(personName) {
         "Nadia Khicha": "nadia", // MARRON
         "Nadia": "nadia",
         "Lamia Attou": "lamia", // BLEU INDIGO
-        "Lamia": "lamia"
+        "Lamia": "lamia", 
+        "Partenaire": "Partenaire", 
     };
     
     if (!personName) return "person-default";
