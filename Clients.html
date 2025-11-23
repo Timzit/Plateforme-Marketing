@@ -1898,7 +1898,7 @@ tr.company-row td:nth-child(1) { /* NOM ENTREPRISE */
 
   <div class="wrap">
     <header>
-      <p style="color: #00529c;font-weight: bolder; font-size: 30px; margin-top: 30px ;">Gestion des contacts | NAPEC 2025</p>
+      <p style="color: #00529c;font-weight: bolder; font-size: 30px; margin-top: 30px ;">Gestion des contacts |  2025</p>
       <div class="top-actions">
         <div class="pdf-buttons">
           <button id="btnExport" class="pdf-btn" title="Télécharger liste affichée en PDF">📊 PDF Liste</button>
@@ -5159,7 +5159,7 @@ async function downloadClientPDF() {
     doc.text('FICHE CLIENT', pageWidth / 2, 15, { align: 'center' });
     
     doc.setFontSize(12);
-    doc.text('NAPEC 2025 - Marketing Plateforme', pageWidth / 2, 25, { align: 'center' });
+    doc.text('2025 - Gestion des contacts', pageWidth / 2, 25, { align: 'center' });
     
     const today = new Date().toLocaleDateString('fr-FR');
     doc.text(`Généré le: ${today}`, pageWidth - margin, 35, { align: 'right' });
@@ -5329,7 +5329,7 @@ async function downloadClientPDF() {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(128, 128, 128);
-      doc.text(`Page ${i} / ${totalPages} - NAPEC Marketing Plateforme`, pageWidth / 2, 285, { align: 'center' });
+      doc.text(`Page ${i} / ${totalPages} - Gestion des contacts`, pageWidth / 2, 285, { align: 'center' });
     }
     
     const fileName = `Client_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}_${(c.nom || 'SansContact').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
@@ -5422,7 +5422,7 @@ async function downloadAllClientsPDF() {
       
       doc.setFontSize(8);
       doc.setTextColor(128, 128, 128);
-      doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} - NAPEC Marketing`, pageWidth / 2, 285, { align: 'center' });
+      doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} - Gestion des contacts`, pageWidth / 2, 285, { align: 'center' });
       
       const fileName = `Client_${activeCat}_${(c.entreprise || 'SansNom').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
       doc.save(fileName);
@@ -5474,7 +5474,7 @@ async function exportTablePDF() {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
-    doc.text('Gestion des contacts | NAPEC 2025', pageWidth / 2, 10, { align: 'center' });
+    doc.text('Gestion des contacts |  2025', pageWidth / 2, 10, { align: 'center' });
     
     doc.setFontSize(10);
     doc.text(`Catégorie: ${categories[activeCat]}`, pageWidth / 2, 18, { align: 'center' });
@@ -5662,7 +5662,7 @@ async function exportTablePDF() {
       doc.setFontSize(7);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `Page ${i}/${totalPages} • NAPEC 2025 _STC Co • ${categories[activeCat]} • ${contacts.length} contact(s)`,
+        `Page ${i}/${totalPages} • 2025 _STC Co • ${categories[activeCat]} • ${contacts.length} contact(s)`,
         pageWidth / 2,
         pageHeight - 8,
         { align: 'center' }
