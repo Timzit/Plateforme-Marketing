@@ -341,9 +341,9 @@
   }
   
   table{width:100%;border-collapse:collapse;font-size:14px}
-  thead th{position:sticky;top:0;background:linear-gradient(180deg,#fff,#f7fbff);padding:10px;border-bottom:1px solid #e6eefc;text-align:left}
-  tbody td{padding:10px;border-bottom:1px solid #f0f6ff}
-  tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff}
+  thead th{position:sticky;top:0;background:linear-gradient(180deg,#fff,#f7fbff);padding:10px;border-bottom:1px solid #e6eefc;text-align:center}
+  tbody td{padding:10px;border-bottom:1px solid #f0f6ff; text-align: center}
+  tr.company-row td{background:#f5fbff;font-weight:700;padding:10px;border-bottom:1px solid #dfefff; }
   
   tr.contact-row[data-dept="Projet"] {
     background: var(--blue-projet) !important;
@@ -433,7 +433,7 @@
 
   label { 
       font-size: 14px; 
-      font-weight: 600; 
+      fontWeight: 600; 
       color: #555; 
       margin-bottom: 6px; 
       display: block; 
@@ -1169,6 +1169,7 @@
     margin-left: 2px;
     font-weight: bold;
 }
+/* Spécifique pour les contacts */
 
 /* COULEURS REVISÉES - Plus distinctes */
 .person-color-indicator.person-camelya { background-color: #4c54ea; } /* VERT FONCÉ */
@@ -1485,7 +1486,61 @@
     flex: 1;
 }
 
+/* NOUVEAU : Styles pour la réorganisation du plan d'action */
+.plan-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
 
+.plan-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+}
+
+.plan-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.plan-column-content {
+    flex: 1;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e6f2ff;
+    overflow-y: auto;
+    min-height: 250px;
+}
+
+.plan-add-row-btn {
+    background: #00529c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+}
+
+.plan-add-row-btn:hover {
+    background: #003d75;
+}
 
 /* Animation d'apparition */
 @keyframes slideInReference {
@@ -1498,6 +1553,322 @@
         transform: translateY(-50%) translateX(0);
     }
 }
+
+/* NOUVEAUX STYLES POUR LES COLONNES ÉLARGIES */
+.table-wrap {
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    min-width: 1200px; /* Largeur minimale pour forcer le défilement horizontal si nécessaire */
+    width: 100%;
+}
+
+th, td {
+    min-width: 120px; /* Largeur minimale pour chaque colonne */
+    max-width: 300px; /* Largeur maximale pour éviter que les colonnes ne deviennent trop larges */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 12px 8px;
+}
+
+/* Colonnes spécifiques avec des largeurs différentes */
+th:nth-child(1), td:nth-child(1) { /* Entreprise */
+    min-width: 180px;
+}
+
+th:nth-child(2), td:nth-child(2) { /* Nom */
+    min-width: 150px;
+}
+
+th:nth-child(3), td:nth-child(3) { /* Poste */
+    min-width: 140px;
+}
+
+th:nth-child(6), td:nth-child(6) { /* Email */
+    min-width: 180px;
+}
+
+th:nth-child(9), td:nth-child(9) { /* Thème */
+    min-width: 160px;
+}
+
+th:nth-child(10), td:nth-child(10) { /* Actions */
+    min-width: 140px;
+    max-width: 140px;
+}
+
+/* Styles pour les sections Action du plan et Suite/Remarque */
+.action-plan-item, .suite-remarque-item {
+    background: white;
+    padding: 8px;
+    margin: 6px 0;
+    border-radius: 6px;
+    border: 1px solid #cce0ff;
+    position: relative;
+}
+
+.action-plan-header, .suite-remarque-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    gap: 8px;
+}
+
+.action-plan-select, .suite-remarque-select {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #00529c;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #00529c;
+    font-size: 12px;
+}
+
+.action-plan-text, .suite-remarque-text {
+    width: 100%;
+    min-height: 80px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 12px;
+}
+
+/* Suppression des styles de verrouillage */
+.lock-btn {
+    display: none !important;
+}
+
+.global-lock-container {
+    display: none !important;
+}
+
+.locked-field {
+    background-color: transparent !important;
+    color: inherit !important;
+    cursor: auto !important;
+}
+
+/* Styles pour les champs désactivés */
+.discussion-select:disabled,
+.discussion-text:disabled,
+.step-input:disabled,
+.remark-text:disabled {
+    background-color: transparent !important;
+    color: inherit !important;
+    cursor: auto !important;
+    opacity: 1 !important;
+}
+/* Conteneur principal des lignes */
+#planRowsContainer {
+    width: 100%;
+}
+
+/* Chaque ligne prend toute la largeur */
+.plan-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    border: 2px solid #e6f2ff;
+    box-shadow: 0 2px 8px rgba(0, 82, 156, 0.1);
+}
+
+/* Chaque colonne dans la ligne */
+.plan-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 250px;
+}
+
+/* En-têtes colorés */
+.plan-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Contenu des colonnes */
+.plan-column-content {
+    flex: 1;
+    background: #f8fbff;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e6f2ff;
+    overflow-y: auto;
+}
+
+/* Zones de couleur */
+.zone-1 { 
+    background: #e6f2ff; 
+    border: 2px solid #00529c; 
+    color: #00529c;
+}
+.zone-2 { 
+    background: #fff3e6; 
+    border: 2px solid #ff9800; 
+    color: #ff9800;
+}
+.zone-3 { 
+    background: #e6ffe6; 
+    border: 2px solid #4caf50; 
+    color: #4caf50;
+}
+
+/* Style des éléments à l'intérieur */
+.discussion-item,
+.action-plan-item,
+.suite-remarque-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.discussion-header,
+.action-plan-header,
+.suite-remarque-header {
+    margin-bottom: 8px;
+}
+
+.discussion-select,
+.action-plan-select,
+.suite-remarque-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #00529c;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #00529c;
+}
+
+.discussion-text,
+.action-plan-text,
+.suite-remarque-text {
+    flex: 1;
+    width: 100%;
+    min-height: 110px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 12px;
+}
+/* Actions de ligne */
+.row-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.delete-row-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s ease;
+}
+
+.delete-row-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.plan-row {
+    position: relative; /* Pour positionner le bouton */
+    padding-top: 50px; /* Espace pour le bouton */
+}
+/* STYLES POUR LES BOUTONS DE VERROU INDÉVÉROUILLABLES */
+.lock-btn-discussion, 
+.lock-btn-action, 
+.lock-btn-remark {
+    background: none;
+    border: 2px solid #dc3545;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lock-btn-discussion.locked, 
+.lock-btn-action.locked, 
+.lock-btn-remark.locked {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    cursor: not-allowed;
+}
+
+.lock-btn-discussion:hover:not(.locked), 
+.lock-btn-action:hover:not(.locked), 
+.lock-btn-remark:hover:not(.locked) {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Champs verrouillés */
+.discussion-select:disabled,
+.discussion-text:disabled,
+.action-plan-select:disabled, 
+.action-plan-text:disabled,
+.suite-remarque-select:disabled,
+.suite-remarque-text:disabled {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    border-color: #dee2e6 !important;
+}
+tr.company-row td:nth-child(1) { /* NOM ENTREPRISE */
+    position: sticky;
+    left: 0;
+    min-width: 200px;
+    max-width: 400px;
+ 
+}
+.lock-date {
+    font-size: 10px;
+    color: #888;
+    font-style: italic;
+    margin-top: 4px;
+    text-align: right;
+    padding-right: 5px;
+  }
+
+  .lock-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+  }
+
+  .lock-date-small {
+    font-size: 9px;
+    color: #999;
+    font-style: italic;
+  }
+
   </style>
   
 </head>
@@ -1594,16 +1965,45 @@
                 <option value="Industrie/Projet">Industrie/Projet</option>
               </select>
             </div>
+            <!-- AJOUT : Filtre par région -->
+            <div class="filter-group">
+              <label class="filter-label">Région</label>
+              <select id="filterRegion" class="filter-select">
+                <option value="">Toutes les régions</option>
+                <option value="nord est">Nord Est</option>
+                <option value="nord ouest">Nord Ouest</option>
+                <option value="sud est">Sud Est</option>
+                <option value="sud ouest">Sud Ouest</option>
+              </select>
+            </div><div class="filter-group">
+        <label class="filter-label">
+            Personne (discussions)
+            <span class="filter-indicator" id="indicatorPerson" style="display: none;"></span>
+        </label>
+        <select id="filterPerson" class="filter-select">
+            <option value="">Toutes les personnes</option>
+            <option value="Mohamed Bellatreche">Mohamed Bellatreche</option>
+            <option value="M.Mostefaoui">M.Mostefaoui</option>
+            <option value="Timzit Fedoua">Timzit Fedoua</option>
+            <option value="Rabea Arab">Rabea Arab</option>
+            <option value="Camelya Benatmane">Camelya Benatmane</option>
+            <option value="Tinhinane Dahmani">Tinhinane Dahmani</option>
+            <option value="Nadia Khicha">Nadia Khicha</option>
+            <option value="Lamia Attou">Lamia Attou</option>
+            <option value="Partenaire">Partenaire</option>
+        </select>
+    </div>
             <div class="filter-group">
               <label class="filter-label">Email</label>
               <input type="text" id="filterEmail" class="filter-input" placeholder="Filtrer par email..." />
             </div>
             <div class="filter-group">
-              <label class="filter-label">Projet/Mesure</label>
+              <label class="filter-label">Thème</label>
               <input type="text" id="filterProjet" class="filter-input" placeholder="Filtrer par projet..." />
             </div>
           </div>
-          
+          <!-- AJOUT : Filtre par personne dans les discussions -->
+    
           <div class="sort-controls">
             <span class="sort-label">Trier par :</span>
             <select id="sortSelect" class="sort-select">
@@ -1611,6 +2011,8 @@
               <option value="entreprise-desc">Entreprise (Z-A)</option>
               <option value="nom-asc">Nom (A-Z)</option>
               <option value="nom-desc">Nom (Z-A)</option>
+              <option value="region-asc">Région (A-Z)</option>
+              <option value="region-desc">Région (Z-A)</option>
               <option value="date-desc">Date de création (récent)</option>
               <option value="date-asc">Date de création (ancien)</option>
             </select>
@@ -1657,6 +2059,11 @@
                 Département
                 <span class="filter-indicator" id="indicatorDepartement" style="display: none;"></span>
               </th>
+              <!-- AJOUT : Colonne Région -->
+              <th class="table-header-with-filter" data-sort="region">
+                Région
+                <span class="filter-indicator" id="indicatorRegion" style="display: none;"></span>
+              </th>
               <th class="table-header-with-filter" data-sort="projet">
                 Thème
                 <span class="filter-indicator" id="indicatorProjet" style="display: none;"></span>
@@ -1684,35 +2091,16 @@
           <div class="small-muted">Éditez les discussions et les actions, puis Sauvegarder.</div>
         </div>
 
-        <div class="zone-1">
-          <div class="zone-header">
-            <span>🟦 Discussions dynamiques</span>
-            <button class="add-discussion-btn" id="btnAddDiscussion">+ Ajouter</button>
-          </div>
-          <div id="discussionsContainer"></div>
-        </div>
-
-        <div class="zone-3">
-          <div class="zone-header">
-            <span>🟩 Actions du plan</span>
-            <button class="add-discussion-btn" id="btnAddStep">+ Action</button>
-          </div>
-          <div class="steps-container" id="stepsContainer">
-          </div>
-          <div class="global-lock-container">
-            <button class="global-lock-btn" id="lockAllSteps">🔒 Verrouiller toutes les actions</button>
-          </div>
-        </div>
-
-        <div class="zone-2">
-          <div class="zone-header">
-            <span>🟧 Suite / Remarque</span>
-          </div>
-          <div class="remark-container">
-            <textarea id="remarkText" class="remark-text" placeholder="Remarques complémentaires..."></textarea>
-            <button class="lock-btn unlocked" id="lockRemark">🔓</button>
-          </div>
-        </div>
+        <!-- NOUVEAU : Structure réorganisée en ligne -->
+        
+      <div id="planRowsContainer">
+    <!-- Les lignes complètes seront ajoutées ici -->
+</div>
+        <!-- NOUVEAU : Bouton unique pour ajouter une ligne -->
+        <!-- APRÈS (corrigé) -->
+<button class="plan-add-row-btn" id="btnAddPlanRow">
+    ➕ Ajouter une ligne (Discussion + Action + Suite)
+</button>
 
         <div class="plan-actions">
           <button id="btnDeletePlan" class="btn-small btn-delete">🗑 Supprimer</button>
@@ -1798,6 +2186,17 @@
             <label for="fEmail">Email</label>
             <input type="email" id="fEmail" autocomplete="off" />
           </div>
+          <!-- AJOUT : Champ Région dans le formulaire -->
+          <div>
+            <label for="fRegion">Région</label>
+            <select id="fRegion">
+              <option value="">-- choisir --</option>
+              <option value="nord est">Nord Est</option>
+              <option value="nord ouest">Nord Ouest</option>
+              <option value="sud est">Sud Est</option>
+              <option value="sud ouest">Sud Ouest</option>
+            </select>
+          </div>
           <div>
             <label for="fProjet">Thème</label>
             <input type="text" id="fProjet" />
@@ -1841,6 +2240,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+  
+  function verifierMotDePasse(action) {
+    const password = prompt(`🔒 Mot de passe requis pour ${action} :`);
+    return password === "Simba";
+}
   // Remonter en haut au chargement de la page
 window.addEventListener('load', function() {
     // Remonter en haut
@@ -1962,7 +2366,8 @@ const nameList = [
 
 // COMPTEURS
 let discussionCounter = 0;
-let stepCounter = 0;
+let actionCounter = 0;
+let remarkCounter = 0;
 
 /* ========== VARIABLES POUR LA RECHERCHE, FILTRES ET TRI ========== */
 let currentFilters = {
@@ -1971,8 +2376,10 @@ let currentFilters = {
   nom: '',
   poste: '',
   departement: '',
+  region: '', // AJOUT : Filtre région
   email: '',
-  projet: ''
+  projet: '', 
+  person: '' // AJOUT : Filtre par personne
 };
 
 let currentSort = 'entreprise-asc';
@@ -1981,6 +2388,7 @@ let filteredContacts = [];
 /* ---------- FONCTIONS SUPABASE ---------- */
 
 // Charger tous les contacts depuis Supabase
+// CORRECTION COMPLÈTE de loadContactsFromSupabase
 async function loadContactsFromSupabase() {
   try {
     showSyncIndicator('🔄 Chargement...', 'syncing');
@@ -2008,6 +2416,7 @@ async function loadContactsFromSupabase() {
     if (data) {
       data.forEach(contact => {
         if (contact.category && store.categories[contact.category]) {
+          // CORRECTION : Mapping correct des colonnes jsonb
           store.categories[contact.category].push({
             id: contact.id,
             entreprise: contact.entreprise,
@@ -2017,12 +2426,13 @@ async function loadContactsFromSupabase() {
             portable: contact.portable,
             fixe: contact.fixe,
             email: contact.email,
+            region: contact.region,
             projet: contact.projet,
             discussions: contact.discussions || [],
-            remark: contact.remark || '',
-            remarkLocked: contact.remark_locked || false,
-            steps: contact.steps || {},
-            stepsLocked: contact.steps_locked || false,
+            // 'steps' (Supabase) → 'actions' (App)
+            actions: Array.isArray(contact.steps) ? contact.steps : [],
+            // 'remark' (Supabase) → 'remarks' (App)  
+            remarks: Array.isArray(contact.remark) ? contact.remark : [],
             created_at: contact.created_at,
             updated_at: contact.updated_at
           });
@@ -2034,7 +2444,6 @@ async function loadContactsFromSupabase() {
     updateStatistics();
     updateCharts();
     
-    // Si une catégorie est active, re-rendre le tableau
     if (activeCat) {
       renderTable();
     }
@@ -2045,82 +2454,81 @@ async function loadContactsFromSupabase() {
   }
 }
 
-// Sauvegarder un contact dans Supabase
+// CORRECTION COMPLÈTE de saveContactToSupabase
 async function saveContactToSupabase(contactData) {
-  try {
-    showSyncIndicator('🔄 Sauvegarde...', 'syncing');
-    
-    const contactToSave = {
-      entreprise: contactData.entreprise,
-      nom: contactData.nom,
-      poste: contactData.poste,
-      departement: contactData.departement,
-      portable: contactData.portable,
-      fixe: contactData.fixe,
-      email: contactData.email,
-      projet: contactData.projet,
-      category: contactData.category,
-      discussions: contactData.discussions || [],
-      remark: contactData.remark || '',
-      remark_locked: contactData.remarkLocked || false,
-      steps: contactData.steps || {},
-      steps_locked: contactData.stepsLocked || false,
-      updated_at: new Date().toISOString()
-    };
+    try {
+        showSyncIndicator('🔄 Sauvegarde...', 'syncing');
+        
+        // CORRECTION : Format jsonb correct pour Supabase avec dates de verrouillage
+        const contactToSave = {
+            entreprise: contactData.entreprise,
+            nom: contactData.nom,
+            poste: contactData.poste,
+            departement: contactData.departement,
+            portable: contactData.portable,
+            fixe: contactData.fixe,
+            email: contactData.email,
+            region: contactData.region,
+            projet: contactData.projet,
+            category: contactData.category,
+            // Discussions avec verrouillage et dates
+            discussions: Array.isArray(contactData.discussions) ? contactData.discussions.map(disc => ({
+                name: disc.name || '',
+                text: disc.text || '',
+                locked: disc.locked || false,
+                lockDate: disc.lockDate || null
+            })) : [],
+            // Actions avec verrouillage et dates
+            steps: Array.isArray(contactData.actions) ? contactData.actions.map(action => ({
+                name: action.name || '',
+                text: action.text || '',
+                locked: action.locked || false,
+                lockDate: action.lockDate || null
+            })) : [],
+            // Remarques avec verrouillage et dates
+            remark: Array.isArray(contactData.remarks) ? contactData.remarks.map(remark => ({
+                name: remark.name || '',
+                text: remark.text || '',
+                locked: remark.locked || false,
+                lockDate: remark.lockDate || null
+            })) : [],
+            updated_at: new Date().toISOString()
+        };
 
-    let result;
-    
-    if (contactData.id && contactData.id.startsWith('c_')) {
-      // Nouveau contact (ID local)
-      result = await supabase
-        .from('contacts')
-        .insert([contactToSave])
-        .select();
-    } else {
-      // Mise à jour de contact existant
-      result = await supabase
-        .from('contacts')
-        .update(contactToSave)
-        .eq('id', contactData.id)
-        .select();
+        console.log('💾 Données pour Supabase (avec verrous):', contactToSave);
+        
+        let result;
+        
+        if (contactData.id && contactData.id.startsWith('c_')) {
+            result = await supabase
+                .from('contacts')
+                .insert([contactToSave])
+                .select();
+        } else {
+            result = await supabase
+                .from('contacts')
+                .update(contactToSave)
+                .eq('id', contactData.id)
+                .select();
+        }
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        showSyncIndicator('🟢 Sauvegardé', 'success');
+        return result.data[0];
+        
+    } catch (error) {
+        console.error('Erreur sauvegarde:', error);
+        showSyncIndicator('❌ Erreur sauvegarde', 'error');
+        throw error;
     }
-
-    if (result.error) {
-      throw result.error;
-    }
-
-    showSyncIndicator('🟢 Sauvegardé', 'success');
-    return result.data[0];
-    
-  } catch (error) {
-    console.error('Erreur sauvegarde:', error);
-    showSyncIndicator('❌ Erreur sauvegarde', 'error');
-    throw error;
   }
-}
 
-// Supprimer un contact de Supabase
-async function deleteContactFromSupabase(contactId) {
-  try {
-    showSyncIndicator('🔄 Suppression...', 'syncing');
-    
-    const { error } = await supabase
-      .from('contacts')
-      .delete()
-      .eq('id', contactId);
 
-    if (error) {
-      throw error;
-    }
 
-    showSyncIndicator('🟢 Supprimé', 'success');
-    
-  } catch (error) {
-    console.error('Erreur suppression:', error);
-    showSyncIndicator('❌ Erreur suppression', 'error');
-    throw error;
-  }
-}
+
 
 // Écouter les changements en temps réel
 function setupRealtimeSubscription() {
@@ -2331,15 +2739,15 @@ function normalizeEnterpriseName(inputName, existingEnterprises) {
       return;
     }
     
-    // 🔥 CORRECTION 2: Exactement 1 caractère de différence
-    const distance = levenshteinDistance(normalizedExisting, normalizedInput);
-    const lengthDiff = Math.abs(normalizedExisting.length - normalizedInput.length);
+    // // 🔥 CORRECTION 2: Exactement 1 caractère de différence
+    // const distance = levenshteinDistance(normalizedExisting, normalizedInput);
+    // const lengthDiff = Math.abs(normalizedExisting.length - normalizedInput.length);
     
-    // Uniquement si distance = 1 ET différence de longueur <= 1
-    if (distance === 1 && lengthDiff <= 1) {
-      bestMatch = entreprise;
-      return;
-    }
+    // // Uniquement si distance = 1 ET différence de longueur <= 1
+    // if (distance === 1 && lengthDiff <= 1) {
+    //   bestMatch = entreprise;
+    //   return;
+    // }
   });
 
   if (bestMatch) {
@@ -2463,6 +2871,7 @@ function updateSortInfo() {
     'poste': 'Poste',
     'email': 'Email',
     'departement': 'Département',
+    'region': 'Région', // AJOUT : Nom pour la région
     'projet': 'Projet',
     'created_at': 'Date de création'
   };
@@ -2506,6 +2915,7 @@ function applyFilters() {
         contact.nom,
         contact.poste,
         contact.departement,
+        contact.region, // AJOUT : Recherche dans la région
         contact.email,
         contact.projet
       ];
@@ -2536,6 +2946,11 @@ function applyFilters() {
       return false;
     }
     
+    // AJOUT : Filtre par région
+    if (currentFilters.region && contact.region !== currentFilters.region) {
+      return false;
+    }
+    
     if (currentFilters.email && 
         (!contact.email || !contact.email.toLowerCase().includes(currentFilters.email.toLowerCase()))) {
       return false;
@@ -2544,6 +2959,14 @@ function applyFilters() {
     if (currentFilters.projet && 
         (!contact.projet || !contact.projet.toLowerCase().includes(currentFilters.projet.toLowerCase()))) {
       return false;
+    }
+      if (currentFilters.person) {
+      const hasPersonInDiscussions = contact.discussions && 
+        contact.discussions.some(discussion => 
+          discussion.name && discussion.name === currentFilters.person
+        );
+      
+      if (!hasPersonInDiscussions) return false;
     }
     
     return true;
@@ -2582,6 +3005,7 @@ function updateFilterIndicators() {
     nom: document.getElementById('indicatorNom'),
     poste: document.getElementById('indicatorPoste'),
     departement: document.getElementById('indicatorDepartement'),
+    region: document.getElementById('indicatorRegion'), // AJOUT : Indicateur région
     email: document.getElementById('indicatorEmail'),
     projet: document.getElementById('indicatorProjet')
   };
@@ -2603,8 +3027,10 @@ function resetFilters() {
     nom: '',
     poste: '',
     departement: '',
+    region: '', // AJOUT : Réinitialiser filtre région
     email: '',
-    projet: ''
+    projet: '', 
+     person: '' // AJOUT
   };
   
   document.getElementById('globalSearch').value = '';
@@ -2612,9 +3038,11 @@ function resetFilters() {
   document.getElementById('filterNom').value = '';
   document.getElementById('filterPoste').value = '';
   document.getElementById('filterDepartement').value = '';
+  document.getElementById('filterRegion').value = ''; // AJOUT : Réinitialiser sélecteur région
   document.getElementById('filterEmail').value = '';
   document.getElementById('filterProjet').value = '';
-  
+    // ... réinitialisation des autres champs ...
+  document.getElementById('filterPerson').value = '';
   applyFilters();
   renderTable();
   updateFilterResults();
@@ -2953,9 +3381,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Initialiser les écouteurs d'événements
   initializeEventListeners();
   
-  // Ajouter une discussion et une étape par défaut
-  addDiscussion();
-  addStep();
+ 
 });
 
 function initializeEventListeners() {
@@ -2975,7 +3401,10 @@ function initializeEventListeners() {
       openCategory(this.dataset.cat);
     });
   });
-
+// Dans initializeEventListeners(), ajoutez :
+document.getElementById('filterPerson').addEventListener('change', function() {
+  currentFilters.person = this.value;
+});
   // Événements des boutons principaux
   document.getElementById('btnAdd').addEventListener('click', () => openModalForNew());
   document.getElementById('btnBack').addEventListener('click', () => { 
@@ -3012,10 +3441,7 @@ function initializeEventListeners() {
   document.getElementById('btnDownloadClient').addEventListener('click', downloadClientPDF);
   
   // Événements des nouvelles fonctionnalités
-  document.getElementById('btnAddDiscussion').addEventListener('click', addDiscussion);
-  document.getElementById('btnAddStep').addEventListener('click', addStep);
-  document.getElementById('lockRemark').addEventListener('click', toggleRemarkLock);
-  document.getElementById('lockAllSteps').addEventListener('click', lockAllSteps);
+initializePlanButtons();
   
   // Recherche globale
   document.getElementById('globalSearch').addEventListener('input', function() {
@@ -3044,6 +3470,11 @@ function initializeEventListeners() {
   
   document.getElementById('filterDepartement').addEventListener('change', function() {
     currentFilters.departement = this.value;
+  });
+  
+  // AJOUT : Filtre par région
+  document.getElementById('filterRegion').addEventListener('change', function() {
+    currentFilters.region = this.value;
   });
   
   document.getElementById('filterEmail').addEventListener('input', function() {
@@ -3243,7 +3674,9 @@ document.getElementById('fNom').addEventListener('input', function(e) {
             closeReferenceBar();
         }
     });
-    
+      setTimeout(() => {
+        initializeLockButtons();
+    }, 500);
     // Initialiser les références
     generateAllReferences();
 }
@@ -3377,237 +3810,785 @@ function updateReferences() {
         generateAllReferences();
     }
 }
-// Ajouter une discussion
-function addDiscussion() {
-  discussionCounter++;
-  const container = document.getElementById('discussionsContainer');
-  
-  const discussionDiv = document.createElement('div');
-  discussionDiv.className = 'discussion-item';
-  discussionDiv.innerHTML = `
-    <div class="discussion-header">
-      <select class="discussion-select" data-discussion="${discussionCounter}">
-        <option value="">Choisir un nom...</option>
-        ${nameList.map(name => `<option value="${name}">${name}</option>`).join('')}
-      </select>
-      <button class="lock-btn unlocked" data-discussion="${discussionCounter}">🔓</button>
-    </div>
-    <textarea class="discussion-text" data-discussion="${discussionCounter}" 
-              placeholder="Texte de la discussion..."></textarea>
-  `;
-  
-  container.appendChild(discussionDiv);
-  
-  const lockBtn = discussionDiv.querySelector('.lock-btn');
-  lockBtn.addEventListener('click', function() {
-    toggleDiscussionLock(this);
-  });
+
+// AJOUT : Fonction pour ajouter une ligne complète (discussion + action + suite)
+// REMPLACER la fonction addPlanRow existante
+// CORRECTION 1: Rendre la fonction globale et la corriger
+// REMPLACER la fonction deletePlanRow existante
+
+// CORRECTION : Fonction pour supprimer une ligne
+// CORRECTION : Fonction de suppression des lignes
+// REMPLACER la fonction deletePlanRow existante
+window.deletePlanRow = function(rowId) {
+  if (!verifierMotDePasse("la suppression d'une ligne du plan")) {
+        alert('❌ Mot de passe incorrect');
+        return;
+    }
+
+    console.log('🔴 Suppression ligne:', rowId);
+    
+    const row = document.querySelector(`.plan-row[data-row-id="${rowId}"]`);
+    
+    if (row && confirm('Voulez-vous vraiment supprimer cette ligne ?')) {
+        row.remove();
+        console.log('✅ Ligne supprimée');
+        
+        // Vérifier s'il reste des lignes
+        const remainingRows = document.querySelectorAll('.plan-row');
+        if (remainingRows.length === 0) {
+            console.log('📝 Aucune ligne restante, création nouvelle ligne');
+            addPlanRow();
+        }
+    } else {
+        console.error('❌ Ligne non trouvée avec ID:', rowId);
+    }
+}
+// CORRECTION : Fonction pour ajouter UNE SEULE ligne
+// CORRECTION : Fonction pour ajouter UNE SEULE ligne
+// CORRECTION : Fonction pour ajouter UNE SEULE ligne
+// CORRECTION : Fonction pour ajouter UNE SEULE ligne avec champs MODIFIABLES
+ function addPlanRow() {
+    const planContainer = document.getElementById('planRowsContainer');
+    const rowId = 'row_' + Date.now();
+    
+    console.log('➕ Création UNE ligne avec ID:', rowId);
+    
+    const row = document.createElement('div');
+    row.className = 'plan-row';
+    row.dataset.rowId = rowId;
+    
+    // COLONNE DISCUSSION - AVEC BOUTON VERROU (champs MODIFIABLES)
+    row.innerHTML = `
+        <!-- COLONNE DISCUSSION -->
+        <div class="plan-column">
+            <div class="plan-column-header zone-1">
+                <span>🟦 Discussions</span>
+                <button type="button" class="lock-btn-discussion" data-row="${rowId}" title="Verrouiller la discussion">
+                    🔓
+                </button>
+            </div>
+            <div class="plan-column-content">
+                <div class="discussion-item">
+                    <div class="discussion-header">
+                        <select class="discussion-select">
+                            <option value="">Choisir un nom...</option>
+                            ${nameList.map(name => `<option value="${name}">${name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <textarea class="discussion-text" placeholder="Texte de la discussion..."></textarea>
+                    <div class="lock-date" id="discussionLockDate_${rowId}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- COLONNE ACTION - AVEC BOUTON VERROU (champs MODIFIABLES) -->
+        <div class="plan-column">
+            <div class="plan-column-header zone-3">
+                <span>🟩 Actions</span>
+                <button type="button" class="lock-btn-action" data-row="${rowId}" title="Verrouiller l'action">
+                    🔓
+                </button>
+            </div>
+            <div class="plan-column-content">
+                <div class="action-plan-item">
+                    <div class="action-plan-header">
+                        <select class="action-plan-select">
+                            <option value="">Choisir un nom...</option>
+                            ${nameList.map(name => `<option value="${name}">${name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <textarea class="action-plan-text" placeholder="Détail de l'action..."></textarea>
+                    <div class="lock-date" id="actionLockDate_${rowId}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- COLONNE SUITE - AVEC BOUTON VERROU (champs MODIFIABLES) -->
+        <div class="plan-column">
+            <div class="plan-column-header zone-2">
+                <span>🟧 Suite / Remarque</span>
+                <button type="button" class="lock-btn-remark" data-row="${rowId}" title="Verrouiller la remarque">
+                    🔓
+                </button>
+            </div>
+            <div class="plan-column-content">
+                <div class="suite-remarque-item">
+                    <div class="suite-remarque-header">
+                        <select class="suite-remarque-select">
+                            <option value="">Choisir un nom...</option>
+                            ${nameList.map(name => `<option value="${name}">${name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <textarea class="suite-remarque-text" placeholder="Remarque complémentaire..."></textarea>
+                    <div class="lock-date" id="remarkLockDate_${rowId}"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BOUTON SUPPRIMER -->
+        <div class="row-actions">
+            <button type="button" class="delete-row-btn" onclick="deletePlanRow('${rowId}')">
+                🗑️ Supprimer
+            </button>
+        </div>
+    `;-
+    
+   planContainer.appendChild(row);
+    console.log('✅ 1 ligne ajoutée - ID:', rowId);
+    
+    // ✅ RETOURNER L'ID POUR DÉBOGAGE
+    return rowId;
+  }
+
+// CORRECTION : Fonction pour supprimer une ligne
+window.deletePlanRow = function(rowId) {
+    if (!verifierMotDePasse("la suppression d'une ligne du plan")) {
+        alert('❌ Mot de passe incorrect');
+        return;
+    }
+    console.log('🔴 Suppression ligne:', rowId);
+    
+    const row = document.querySelector(`.plan-row[data-row-id="${rowId}"]`);
+    
+    if (row && confirm('Voulez-vous vraiment supprimer cette ligne ?')) {
+        row.remove();
+        console.log('✅ Ligne supprimée');
+        
+        // Vérifier s'il reste des lignes
+        const remainingRows = document.querySelectorAll('.plan-row');
+        if (remainingRows.length === 0) {
+            console.log('📝 Aucune ligne restante, création nouvelle ligne');
+            addPlanRow();
+        }
+    } else {
+        console.error('❌ Ligne non trouvée avec ID:', rowId);
+    }
 }
 
-// Ajouter une étape (renommée en Action)
-function addStep() {
-  stepCounter++;
-  const container = document.getElementById('stepsContainer');
-  
-  const stepDiv = document.createElement('div');
-  stepDiv.className = 'step-card';
-  stepDiv.innerHTML = `
-    <div class="label">Action ${stepCounter}</div>
-    <textarea class="step-input" data-step="${stepCounter}" 
-              placeholder="Détail action ${stepCounter}..."></textarea>
-  `;
-  
-  container.appendChild(stepDiv);
+// CORRECTION : Fonction pour supprimer TOUT le plan
+async function onDeletePlan() {
+      if (!verifierMotDePasse("la suppression du plan général")) {
+        alert('❌ Mot de passe incorrect');
+        return;
+    }
+    console.log('🔴 SUPPRIMER TOUT LE PLAN');
+    
+    if (!activeContactId) {
+        alert('❌ Aucun contact sélectionné');
+        return;
+    }
+    
+    if (!confirm('🗑️ SUPPRIMER TOUT LE PLAN ?\n\nCette action est irréversible !')) {
+        return;
+    }
+    
+    try {
+        const container = document.getElementById('planRowsContainer');
+        
+        // 1. VIDER toutes les lignes
+        container.innerHTML = '';
+        console.log('✅ Toutes les lignes supprimées');
+        
+        // 2. SAUVEGARDER les données vides
+        const contact = store.categories[activeCat].find(x => x.id === activeContactId);
+        if (contact) {
+            contact.discussions = [];
+            contact.actions = [];
+            contact.remarks = [];
+            
+            showSyncIndicator('🔄 Sauvegarde plan vide...', 'syncing');
+            await saveContactToSupabase(contact);
+            
+            // Mettre à jour le store local
+            const contactIndex = store.categories[activeCat].findIndex(x => x.id === activeContactId);
+            if (contactIndex !== -1) {
+                store.categories[activeCat][contactIndex] = { ...contact };
+            }
+        }
+        
+        // 3. AJOUTER UNE SEULE LIGNE VIDE
+        addPlanRow();
+        
+        // 4. CONFIRMATION
+        showSyncIndicator('✅ Plan vidé !', 'success');
+        alert('✅ Plan entièrement supprimé !\nUne nouvelle ligne vide a été créée.');
+        
+    } catch (error) {
+        console.error('❌ Erreur:', error);
+        showSyncIndicator('❌ Erreur', 'error');
+        alert('❌ Erreur: ' + error.message);
+    }
 }
+function lockSection(sectionType, rowId) {
+    console.log(`🔒 Début verrouillage ${sectionType} pour ligne ${rowId}`);
+    
+    const row = document.querySelector(`.plan-row[data-row-id="${rowId}"]`);
+    if (!row) {
+        console.error('❌ Ligne non trouvée:', rowId);
+        return;
+    }
+    
+    let selectElement, textElement, lockBtn, dateElement;
+    const lockDate = new Date().toLocaleDateString('fr-FR');
+    
+    switch(sectionType) {
+        case 'discussion':
+            selectElement = row.querySelector('.discussion-select');
+            textElement = row.querySelector('.discussion-text');
+            lockBtn = row.querySelector('.lock-btn-discussion');
+            dateElement = document.getElementById(`discussionLockDate_${rowId}`);
+            break;
+        case 'action':
+            selectElement = row.querySelector('.action-plan-select');
+            textElement = row.querySelector('.action-plan-text');
+            lockBtn = row.querySelector('.lock-btn-action');
+            dateElement = document.getElementById(`actionLockDate_${rowId}`);
+            break;
+        case 'remark':
+            selectElement = row.querySelector('.suite-remarque-select');
+            textElement = row.querySelector('.suite-remarque-text');
+            lockBtn = row.querySelector('.lock-btn-remark');
+            dateElement = document.getElementById(`remarkLockDate_${rowId}`);
+            break;
+    }
+    
+    if (!selectElement || !textElement || !lockBtn || !dateElement) {
+        console.error('❌ Éléments non trouvés pour le verrouillage');
+        return null;
+    }
+    
+    console.log(`✅ Éléments trouvés, verrouillage ${sectionType}...`);
+    
+    // VERROUILLER les champs
+    selectElement.disabled = true;
+    textElement.disabled = true;
+    
+    // AJOUTER LA DATE DE VERROUILLAGE AU-DESSUS
+    dateElement.textContent = `Verrouillé le: ${lockDate}`;
+    
+    // VERROUILLER DÉFINITIVEMENT le bouton
+    lockBtn.textContent = '🔒';
+    lockBtn.classList.add('locked');
+    lockBtn.title = `${sectionType.charAt(0).toUpperCase() + sectionType.slice(1)} verrouillée le ${lockDate}`;
+    lockBtn.style.pointerEvents = 'none';
+    lockBtn.style.cursor = 'not-allowed';
+    
+    console.log(`✅ ${sectionType} verrouillée avec succès le ${lockDate}`);
+    
+    // Message de confirmation
+    showSyncIndicator(`✅ ${sectionType} verrouillée`, 'success');
+    
+    return lockDate;
+}
+// CORRECTION : Initialisation des boutons du plan
+// CORRECTION : Initialisation des boutons du plan
+function initializePlanButtons() {
+    console.log('🔄 Initialisation des boutons du plan...');
+    
+    // BOUTON "AJOUTER UNE LIGNE" - SOLUTION DÉFINITIVE
+    const addBtn = document.getElementById('btnAddPlanRow');
+    if (addBtn) {
+        // Supprimer TOUS les écouteurs existants
+        const newAddBtn = addBtn.cloneNode(true);
+        addBtn.parentNode.replaceChild(newAddBtn, addBtn);
+        
+        // Réattacher UN seul écouteur au nouveau bouton
+        document.getElementById('btnAddPlanRow').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('➕ Bouton "Ajouter une ligne" cliqué');
+            addPlanRow();
+            
+            // Réinitialiser les boutons de verrouillage pour la nouvelle ligne
+            setTimeout(() => {
+                initializeLockButtons();
+            }, 100);
+        });
+    }
+    
+    // Initialiser les boutons de verrouillage
+    initializeLockButtons();
+    
+    console.log('✅ Boutons du plan initialisés');
+}
+// Initialiser les événements de verrouillage
+function initializeLockButtons() {
+    console.log('🔄 Initialisation des boutons de verrouillage...');
+    
+    // Réinitialiser tous les écouteurs d'abord
+    document.querySelectorAll('.lock-btn-discussion').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+    document.querySelectorAll('.lock-btn-action').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+    document.querySelectorAll('.lock-btn-remark').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+    });
+    
+    // Discussion - UNIQUEMENT les boutons DÉVERROUILLÉS
+    document.querySelectorAll('.lock-btn-discussion:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            console.log('🔓 Clic sur verrou discussion, ligne:', rowId);
+            const lockDate = lockSection('discussion', rowId);
+        });
+    });
+    
+    // Action - UNIQUEMENT les boutons DÉVERROUILLÉS
+    document.querySelectorAll('.lock-btn-action:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            console.log('🔓 Clic sur verrou action, ligne:', rowId);
+            const lockDate = lockSection('action', rowId);
+        });
+    });
+    
+    // Remarque - UNIQUEMENT les boutons DÉVERROUILLÉS
+    document.querySelectorAll('.lock-btn-remark:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            console.log('🔓 Clic sur verrou remarque, ligne:', rowId);
+            const lockDate = lockSection('remark', rowId);
+        });
+    });
+    
+    console.log('✅ Boutons de verrouillage initialisés - Prêts à utiliser');
+}
+// MODIFICATION DANS LA FONCTION addPlanRow() - Mettre à jour le bouton de suppression
+// CORRECTION 2: Fonction pour ajouter une nouvelle ligne
 
-// Verrouiller définitivement une discussion
-function toggleDiscussionLock(lockButton) {
-  const discussionId = lockButton.dataset.discussion;
-  
-  lockButton.classList.remove('unlocked');
-  lockButton.classList.add('locked');
-  lockButton.textContent = '🔒';
-  lockButton.disabled = true;
-  
-  document.querySelector(`.discussion-select[data-discussion="${discussionId}"]`).disabled = true;
-  document.querySelector(`.discussion-text[data-discussion="${discussionId}"]`).disabled = true;
-}
 
-// Verrouiller définitivement la remarque
-function toggleRemarkLock() {
-  const remarkText = document.getElementById('remarkText');
-  const lockBtn = document.getElementById('lockRemark');
-  
-  lockBtn.classList.remove('unlocked');
-  lockBtn.classList.add('locked');
-  lockBtn.textContent = '🔒';
-  lockBtn.disabled = true;
-  remarkText.disabled = true;
-}
-
-// Verrouiller définitivement toutes les étapes
-function lockAllSteps() {
-  const stepInputs = document.querySelectorAll('.step-input');
-  const lockBtn = document.getElementById('lockAllSteps');
-  
-  stepInputs.forEach(input => {
-    input.disabled = true;
-    input.classList.add('locked-field');
-  });
-  
-  lockBtn.disabled = true;
-  lockBtn.textContent = '🔒 Verrouillé';
-  lockBtn.style.background = '#9e9e9e';
-}
 
 /* ---------- FONCTIONS EXISTANTES MODIFIÉES ---------- */
-
+// CORRECTION 5: Fonction pour ouvrir le plan d'action
 function openPlan(id) {
-  const c = store.categories[activeCat].find(x => x.id === id);
-  if (!c) return;
-  
-  activeContactId = id;
-  planCompany.textContent = c.entreprise || '';
-  planContact.textContent = c.nom || '';
-  planPoste.textContent = c.poste || '';
-  
-  plan.style.display = 'block';
-
-  lastClickedRowElement = document.querySelector(`tr[data-id="${id}"]`);
-  
-  setTimeout(() => {
-    plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-  setTimeout(() => {
-    plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-  
-  discussionCounter = 0;
-  const discussionsContainer = document.getElementById('discussionsContainer');
-  discussionsContainer.innerHTML = '';
-  
-  if (c.discussions && c.discussions.length > 0) {
-    c.discussions.forEach((discussion, index) => {
-      discussionCounter = index + 1;
-      const discussionDiv = document.createElement('div');
-      discussionDiv.className = 'discussion-item';
-      discussionDiv.innerHTML = `
-        <div class="discussion-header">
-          <select class="discussion-select" data-discussion="${discussionCounter}" 
-                  ${discussion.locked ? 'disabled' : ''}>
-            <option value="">Choisir un nom...</option>
-            ${nameList.map(name => 
-              `<option value="${name}" ${name === discussion.name ? 'selected' : ''}>${name}</option>`
-            ).join('')}
-          </select>
-          <button class="lock-btn ${discussion.locked ? 'locked' : 'unlocked'}" 
-                  data-discussion="${discussionCounter}"
-                  ${discussion.locked ? 'disabled' : ''}>
-            ${discussion.locked ? '🔒' : '🔓'}
-          </button>
-        </div>
-        <textarea class="discussion-text" data-discussion="${discussionCounter}" 
-                  ${discussion.locked ? 'disabled' : ''}
-                  placeholder="Texte de la discussion...">${discussion.text || ''}</textarea>
-      `;
-      discussionsContainer.appendChild(discussionDiv);
-      
-      if (!discussion.locked) {
-        const lockBtn = discussionDiv.querySelector('.lock-btn');
-        lockBtn.addEventListener('click', function() {
-          toggleDiscussionLock(this);
-        });
-      }
-    });
-  } else {
-    addDiscussion();
-  }
-  
-  stepCounter = 0;
-  const stepsContainer = document.getElementById('stepsContainer');
-  stepsContainer.innerHTML = '';
-  
-  if (c.steps && Object.keys(c.steps).length > 0) {
-    Object.keys(c.steps).forEach(stepKey => {
-      stepCounter++;
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-card';
-      stepDiv.innerHTML = `
-        <div class="label">Action ${stepCounter}</div>
-        <textarea class="step-input" data-step="${stepCounter}" 
-                  ${c.stepsLocked ? 'disabled' : ''}
-                  placeholder="Détail action ${stepCounter}...">${c.steps[stepKey] || ''}</textarea>
-      `;
-      stepsContainer.appendChild(stepDiv);
-    });
-  } else {
-    addStep();
-  }
-  
-  document.getElementById('remarkText').value = c.remark || '';
-  if (c.remarkLocked) {
-    document.getElementById('lockRemark').classList.remove('unlocked');
-    document.getElementById('lockRemark').classList.add('locked');
-    document.getElementById('lockRemark').textContent = '🔒';
-    document.getElementById('lockRemark').disabled = true;
-    document.getElementById('remarkText').disabled = true;
-  } else {
-    document.getElementById('lockRemark').classList.remove('locked');
-    document.getElementById('lockRemark').classList.add('unlocked');
-    document.getElementById('lockRemark').textContent = '🔓';
-    document.getElementById('lockRemark').disabled = false;
-    document.getElementById('remarkText').disabled = false;
-  }
-  
-  const lockBtn = document.getElementById('lockAllSteps');
-  if (c.stepsLocked) {
-    lockAllSteps();
-  } else {
-    lockBtn.disabled = false;
-    lockBtn.textContent = '🔒 Verrouiller toutes les actions';
-    lockBtn.style.background = '#4caf50';
-  }
-}
-
-async function onSavePlan() {
-  if (!activeContactId) return alert('Aucun contact actif.');
-
-  const c = store.categories[activeCat].find(x => x.id === activeContactId);
-  if (!c) return;
-  
-  c.discussions = [];
-  const discussionItems = document.querySelectorAll('.discussion-item');
-  discussionItems.forEach(item => {
-    const select = item.querySelector('.discussion-select');
-    const textarea = item.querySelector('.discussion-text');
-    const lockBtn = item.querySelector('.lock-btn');
+    console.log('📖 Ouverture plan pour contact ID:', id);
     
-    c.discussions.push({
-      name: select.value,
-      text: textarea.value,
-      locked: lockBtn.classList.contains('locked')
+    const c = store.categories[activeCat].find(x => x.id === id);
+    if (!c) {
+        console.error('❌ Contact non trouvé');
+        return;
+    }
+    
+    activeContactId = id;
+    planCompany.textContent = c.entreprise || '';
+    planContact.textContent = c.nom || '';
+    planPoste.textContent = c.poste || '';
+    
+    plan.style.display = 'block';
+
+    lastClickedRowElement = document.querySelector(`tr[data-id="${id}"]`);
+    
+    setTimeout(() => {
+        plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    
+    // VIDER le conteneur des lignes
+    const planContainer = document.getElementById('planRowsContainer');
+    planContainer.innerHTML = '';
+    
+    console.log('📊 Vérification données existantes:', {
+        discussions: c.discussions?.length || 0,
+        actions: c.actions?.length || 0,
+        remarks: c.remarks?.length || 0
     });
-  });
-  
-  c.steps = {};
-  const stepItems = document.querySelectorAll('.step-card');
-  stepItems.forEach((item, index) => {
-    const textarea = item.querySelector('.step-input');
-    c.steps[(index + 1).toString()] = textarea.value;
-  });
-  
-  c.remark = document.getElementById('remarkText').value;
-  c.remarkLocked = document.getElementById('lockRemark').classList.contains('locked');
-  c.stepsLocked = document.getElementById('lockAllSteps').disabled;
-  
-  try {
-    await saveContactToSupabase(c);
-    alert('Plan sauvegardé !');
-  } catch (error) {
-    alert('Erreur lors de la sauvegarde du plan');
-  }
+    
+    // Charger les données existantes ou créer une ligne vide
+    if ((c.discussions && c.discussions.length > 0) || 
+        (c.actions && c.actions.length > 0) || 
+        (c.remarks && c.remarks.length > 0)) {
+        
+        console.log('🔄 Chargement données existantes');
+        loadExistingPlanData(c);
+    } else {
+        // Créer une ligne vide par défaut
+        console.log('🆕 Création nouvelle ligne vide');
+        addPlanRow();
+    }
+    
+    // ✅ INITIALISER LES BOUTONS IMMÉDIATEMENT APRÈS CRÉATION DU PLAN
+    setTimeout(() => {
+        initializeLockButtons();
+        console.log('🎯 Boutons de verrouillage activés pour le nouveau plan');
+    }, 200);
+    
+    console.log('✅ Plan ouvert avec succès');
+}
+// CORRECTION 7: Fonction pour initialiser les événements
+// CORRECTION : Initialisation des boutons
+// CORRECTION de la fonction d'initialisation
+
+
+// Appeler dans DOMContentLoaded
+document.addEventListener('DOMContentLoaded', async function() {
+    // ... votre code existant ...
+    
+    // AJOUTER CETTE LIGNE :
+    initializePlanButtons();
+});
+
+// Appeler cette fonction à la fin de DOMContentLoaded
+
+// CORRECTION 3: Fonction pour charger les données existantes
+ function loadExistingPlanData(contact) {
+    const planContainer = document.getElementById('planRowsContainer');
+    planContainer.innerHTML = '';
+    
+    console.log('📥 Chargement données existantes avec verrous:', {
+        discussions: contact.discussions?.filter(d => d.locked).length || 0 + ' verrouillées',
+        actions: contact.actions?.filter(a => a.locked).length || 0 + ' verrouillées',
+        remarks: contact.remarks?.filter(r => r.locked).length || 0 + ' verrouillées'
+    });
+    
+    const maxRows = Math.max(
+        contact.discussions ? contact.discussions.length : 0,
+        contact.actions ? contact.actions.length : 0, 
+        contact.remarks ? contact.remarks.length : 0
+    );
+    
+    for (let i = 0; i < maxRows; i++) {
+        const discussion = contact.discussions?.[i] || {};
+        const action = contact.actions?.[i] || {};
+        const remark = contact.remarks?.[i] || {};
+        
+        const rowId = 'row_existing_' + i + '_' + Date.now();
+        
+        const row = document.createElement('div');
+        row.className = 'plan-row';
+        row.dataset.rowId = rowId;
+        
+        // CORRECTION : Utiliser les données exactes de Supabase
+        const discussionLocked = discussion.locked === true;
+        const actionLocked = action.locked === true;
+        const remarkLocked = remark.locked === true;
+        
+        console.log(`📝 Ligne ${i} - État verrous:`, {
+            discussion: discussionLocked + ' date:' + discussion.lockDate,
+            action: actionLocked + ' date:' + action.lockDate,
+            remark: remarkLocked + ' date:' + remark.lockDate
+        });
+        
+        row.innerHTML = `
+            <!-- COLONNE DISCUSSION -->
+            <div class="plan-column">
+                <div class="plan-column-header zone-1">
+                    <span>🟦 Discussions</span>
+                    <button type="button" class="lock-btn-discussion ${discussionLocked ? 'locked' : ''}" 
+                            data-row="${rowId}" 
+                            title="${discussionLocked ? `Discussion verrouillée le ${discussion.lockDate || ''}` : 'Verrouiller la discussion'}"
+                            ${discussionLocked ? 'style="pointer-events: none; cursor: not-allowed;"' : ''}>
+                        ${discussionLocked ? '🔒' : '🔓'}
+                    </button>
+                </div>
+                <div class="plan-column-content">
+                    <div class="discussion-item">
+                        <div class="discussion-header">
+                            <select class="discussion-select" ${discussionLocked ? 'disabled' : ''}>
+                                <option value="">Choisir un nom...</option>
+                                ${nameList.map(name => 
+                                    `<option value="${name}" ${name === discussion.name ? 'selected' : ''}>${name}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <!-- CORRECTION : Afficher la date si verrouillée -->
+                        ${discussionLocked ? 
+                          `<div class="lock-date">Verrouillé le: ${discussion.lockDate || new Date().toLocaleDateString('fr-FR')}</div>` : 
+                          '<div class="lock-date" id="discussionLockDate_' + rowId + '"></div>'}
+                        <textarea class="discussion-text" placeholder="Texte de la discussion..." 
+                                  ${discussionLocked ? 'disabled' : ''}>${discussion.text || ''}</textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLONNE ACTION -->
+            <div class="plan-column">
+                <div class="plan-column-header zone-3">
+                    <span>🟩 Actions</span>
+                    <button type="button" class="lock-btn-action ${actionLocked ? 'locked' : ''}" 
+                            data-row="${rowId}" 
+                            title="${actionLocked ? `Action verrouillée le ${action.lockDate || ''}` : 'Verrouiller l action'}"
+                            ${actionLocked ? 'style="pointer-events: none; cursor: not-allowed;"' : ''}>
+                        ${actionLocked ? '🔒' : '🔓'}
+                    </button>
+                </div>
+                <div class="plan-column-content">
+                    <div class="action-plan-item">
+                        <div class="action-plan-header">
+                            <select class="action-plan-select" ${actionLocked ? 'disabled' : ''}>
+                                <option value="">Choisir un nom...</option>
+                                ${nameList.map(name => 
+                                    `<option value="${name}" ${name === action.name ? 'selected' : ''}>${name}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        ${actionLocked ? 
+                          `<div class="lock-date">Verrouillé le: ${action.lockDate || new Date().toLocaleDateString('fr-FR')}</div>` : 
+                          '<div class="lock-date" id="actionLockDate_' + rowId + '"></div>'}
+                        <textarea class="action-plan-text" placeholder="Détail de l'action..." 
+                                  ${actionLocked ? 'disabled' : ''}>${action.text || ''}</textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLONNE SUITE -->
+            <div class="plan-column">
+                <div class="plan-column-header zone-2">
+                    <span>🟧 Suite / Remarque</span>
+                    <button type="button" class="lock-btn-remark ${remarkLocked ? 'locked' : ''}" 
+                            data-row="${rowId}" 
+                            title="${remarkLocked ? `Remarque verrouillée le ${remark.lockDate || ''}` : 'Verrouiller la remarque'}"
+                            ${remarkLocked ? 'style="pointer-events: none; cursor: not-allowed;"' : ''}>
+                        ${remarkLocked ? '🔒' : '🔓'}
+                    </button>
+                </div>
+                <div class="plan-column-content">
+                    <div class="suite-remarque-item">
+                        <div class="suite-remarque-header">
+                            <select class="suite-remarque-select" ${remarkLocked ? 'disabled' : ''}>
+                                <option value="">Choisir un nom...</option>
+                                ${nameList.map(name => 
+                                    `<option value="${name}" ${name === remark.name ? 'selected' : ''}>${name}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        ${remarkLocked ? 
+                          `<div class="lock-date">Verrouillé le: ${remark.lockDate || new Date().toLocaleDateString('fr-FR')}</div>` : 
+                          '<div class="lock-date" id="remarkLockDate_' + rowId + '"></div>'}
+                        <textarea class="suite-remarque-text" placeholder="Remarque complémentaire..." 
+                                  ${remarkLocked ? 'disabled' : ''}>${remark.text || ''}</textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BOUTON SUPPRIMER -->
+            <div class="row-actions">
+                <button type="button" class="delete-row-btn" onclick="deletePlanRow('${rowId}')">
+                    🗑️ Supprimer
+                </button>
+            </div>
+        `;
+        
+        planContainer.appendChild(row);
+    }
+    
+     // ✅ INITIALISER LES BOUTONS APRÈS LE CHARGEMENT
+    setTimeout(() => {
+        initializeLockButtons();
+        console.log('🎯 Boutons de verrouillage activés pour le plan existant');
+    }, 200);
 }
 
+  // MODIFICATION : Fonction pour initialiser les boutons de verrouillage avec dates
+  function initializeLockButtons() {
+    console.log('🔄 Initialisation des boutons de verrouillage...');
+    
+    // Discussion
+    document.querySelectorAll('.lock-btn-discussion:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            const lockDate = lockSection('discussion', rowId);
+            
+            // Sauvegarder automatiquement après verrouillage
+            if (lockDate && activeContactId) {
+                setTimeout(() => {
+                    onSavePlan();
+                }, 1000);
+            }
+        });
+    });
+    
+    // Action
+    document.querySelectorAll('.lock-btn-action:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            const lockDate = lockSection('action', rowId);
+            
+            // Sauvegarder automatiquement après verrouillage
+            if (lockDate && activeContactId) {
+                setTimeout(() => {
+                    onSavePlan();
+                }, 1000);
+            }
+        });
+    });
+    
+    // Remarque
+    document.querySelectorAll('.lock-btn-remark:not(.locked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const rowId = this.dataset.row;
+            const lockDate = lockSection('remark', rowId);
+            
+            // Sauvegarder automatiquement après verrouillage
+            if (lockDate && activeContactId) {
+                setTimeout(() => {
+                    onSavePlan();
+                }, 1000);
+            }
+        });
+    });
+    
+    console.log('✅ Boutons de verrouillage initialisés');
+  }
+
+  // MODIFICATION : Fonction de sauvegarde pour inclure les dates de verrouillage
+  async function onSavePlan() {
+    if (!activeContactId) {
+        alert('❌ Aucun contact actif.');
+        return;
+    }
+
+    const c = store.categories[activeCat].find(x => x.id === activeContactId);
+    if (!c) {
+        alert('❌ Contact non trouvé.');
+        return;
+    }
+    
+    console.log('💾 Début sauvegarde plan...');
+    
+    // Récupérer TOUTES les lignes
+    const planRows = document.querySelectorAll('.plan-row');
+    console.log('📋 Nombre de lignes trouvées:', planRows.length);
+    
+    // RÉCUPÉRER LES DONNÉES EXISTANTES POUR PRÉSERVER LES VERROUS
+    const existingDiscussions = c.discussions || [];
+    const existingActions = c.actions || [];
+    const existingRemarks = c.remarks || [];
+    
+    // Réinitialiser les tableaux
+    c.discussions = [];
+    c.actions = [];
+    c.remarks = [];
+    
+    // Parcourir chaque ligne
+    planRows.forEach((row, index) => {
+        console.log(`📝 Traitement ligne ${index + 1}`);
+        
+        // Récupérer les données de DISCUSSION
+        const discussionSelect = row.querySelector('.discussion-select');
+        const discussionText = row.querySelector('.discussion-text');
+        const discussionLockBtn = row.querySelector('.lock-btn-discussion');
+        const discussionLockDateEl = row.querySelector('#discussionLockDate_' + row.dataset.rowId);
+        
+        // DÉTERMINER L'ÉTAT DE VERROUILLAGE
+        const discussionLocked = discussionLockBtn?.classList.contains('locked') || false;
+        let discussionLockDate = discussionLockDateEl?.textContent?.replace('Verrouillé le: ', '') || null;
+        
+        // Si verrouillé mais pas de date, utiliser la date existante ou créer une nouvelle
+        if (discussionLocked && !discussionLockDate) {
+            discussionLockDate = existingDiscussions[index]?.lockDate || new Date().toLocaleDateString('fr-FR');
+        }
+        
+        if (discussionSelect && discussionText) {
+            c.discussions.push({
+                name: discussionSelect.value || '',
+                text: discussionText.value || '',
+                locked: discussionLocked,
+                lockDate: discussionLocked ? discussionLockDate : null
+            });
+            console.log(`💬 Discussion ${index + 1}:`, discussionLocked ? `VERROUILLÉE (${discussionLockDate})` : 'DÉVERROUILLÉE');
+        }
+        
+        // Récupérer les données d'ACTION
+        const actionSelect = row.querySelector('.action-plan-select');
+        const actionText = row.querySelector('.action-plan-text');
+        const actionLockBtn = row.querySelector('.lock-btn-action');
+        const actionLockDateEl = row.querySelector('#actionLockDate_' + row.dataset.rowId);
+        
+        const actionLocked = actionLockBtn?.classList.contains('locked') || false;
+        let actionLockDate = actionLockDateEl?.textContent?.replace('Verrouillé le: ', '') || null;
+        
+        if (actionLocked && !actionLockDate) {
+            actionLockDate = existingActions[index]?.lockDate || new Date().toLocaleDateString('fr-FR');
+        }
+        
+        if (actionSelect && actionText) {
+            c.actions.push({
+                name: actionSelect.value || '',
+                text: actionText.value || '',
+                locked: actionLocked,
+                lockDate: actionLocked ? actionLockDate : null
+            });
+            console.log(`🎯 Action ${index + 1}:`, actionLocked ? `VERROUILLÉE (${actionLockDate})` : 'DÉVERROUILLÉE');
+        }
+        
+        // Récupérer les données de REMARQUE
+        const remarkSelect = row.querySelector('.suite-remarque-select');
+        const remarkText = row.querySelector('.suite-remarque-text');
+        const remarkLockBtn = row.querySelector('.lock-btn-remark');
+        const remarkLockDateEl = row.querySelector('#remarkLockDate_' + row.dataset.rowId);
+        
+        const remarkLocked = remarkLockBtn?.classList.contains('locked') || false;
+        let remarkLockDate = remarkLockDateEl?.textContent?.replace('Verrouillé le: ', '') || null;
+        
+        if (remarkLocked && !remarkLockDate) {
+            remarkLockDate = existingRemarks[index]?.lockDate || new Date().toLocaleDateString('fr-FR');
+        }
+        
+        if (remarkSelect && remarkText) {
+            c.remarks.push({
+                name: remarkSelect.value || '',
+                text: remarkText.value || '',
+                locked: remarkLocked,
+                lockDate: remarkLocked ? remarkLockDate : null
+            });
+            console.log(`📝 Remarque ${index + 1}:`, remarkLocked ? `VERROUILLÉE (${remarkLockDate})` : 'DÉVERROUILLÉE');
+        }
+    });
+    
+    console.log('📊 Résumé sauvegarde:', {
+        discussions: c.discussions.filter(d => d.locked).length + '/' + c.discussions.length + ' verrouillées',
+        actions: c.actions.filter(a => a.locked).length + '/' + c.actions.length + ' verrouillées', 
+        remarks: c.remarks.filter(r => r.locked).length + '/' + c.remarks.length + ' verrouillées'
+    });
+    
+    try {
+        showSyncIndicator('🔄 Sauvegarde du plan...', 'syncing');
+        
+        // Sauvegarder dans Supabase
+        await saveContactToSupabase(c);
+        
+        console.log('✅ Sauvegarde Supabase réussie');
+        
+        // Mettre à jour le store local
+        const contactIndex = store.categories[activeCat].findIndex(x => x.id === activeContactId);
+        if (contactIndex !== -1) {
+            store.categories[activeCat][contactIndex] = { ...c };
+        }
+        
+        showSyncIndicator('✅ Plan sauvegardé !', 'success');
+        
+        // NE PAS RECRÉER LE PLAN - juste mettre à jour les données
+        console.log('🔄 Mise à jour de l affichage après sauvegarde');
+        
+    } catch (error) {
+        console.error('❌ Erreur sauvegarde:', error);
+        showSyncIndicator('❌ Erreur sauvegarde', 'error');
+        alert('❌ Erreur lors de la sauvegarde: ' + error.message);
+    }
+}
+// Ajouter ces fonctions pour sauvegarder/récupérer l'état
+function savePlanState(contactId, discussions, actions, remarks) {
+    const state = {
+        discussions: discussions,
+        actions: actions,
+        remarks: remarks,
+        timestamp: Date.now()
+    };
+    localStorage.setItem(`planState_${contactId}`, JSON.stringify(state));
+}
+
+function loadPlanState(contactId) {
+    const saved = localStorage.getItem(`planState_${contactId}`);
+    if (saved) {
+        return JSON.parse(saved);
+    }
+    return null;
+}
+
+function clearPlanState(contactId) {
+    localStorage.removeItem(`planState_${contactId}`);
+}
 /* ---------- FONCTIONS EXISTANTES ---------- */
 
 function uid(){ return 'c_' + Date.now() + '_' + Math.floor(Math.random()*999); }
@@ -3624,7 +4605,14 @@ function openCategory(cat){
   updateSortInfo();
   updateSortIndicators();
   
-  renderTable();
+  renderTable();// 🔥 FORCER LE SCROLL À GAUCHE AUTOMATIQUEMENT
+  setTimeout(() => {
+    const tableWrap = document.getElementById('tableWrap');
+    if (tableWrap) {
+      tableWrap.scrollLeft = 0; // Scroll tout à gauche
+      console.log('🔄 Tableau scrollé à gauche automatiquement');
+    }
+  }, 100);
 }
 // Fonction pour sélectionner un contact par simple clic
 function selectContactForPDF(id, rowElement) {
@@ -3663,14 +4651,34 @@ function renderTable(){
   
   const sortedGroups = Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name));
   
-  sortedGroups.forEach(k=>{
+sortedGroups.forEach(k=>{
     const grp = groups[k];
     const trg = document.createElement('tr'); 
     trg.className='company-row';
-    const tdg = document.createElement('td'); 
-    tdg.setAttribute('colspan',9); 
-    tdg.innerHTML = highlightText(grp.name, currentFilters.globalSearch);
-    trg.appendChild(tdg); 
+  
+     const tdEntreprise = document.createElement('td'); 
+    tdEntreprise.innerHTML = `
+        <strong style="font-size: 14px; display: block; padding: 8px 12px; ">
+            ${highlightText(grp.name, currentFilters.globalSearch)}
+        </strong>
+    `;
+    trg.appendChild(tdEntreprise);
+    
+    // CELLULE 2 : COMPTEUR DE CONTACTS (fixe)
+    const tdCompteur = document.createElement('td'); 
+    tdCompteur.innerHTML = `
+        <span style="font-size: 11px; color: #00529c; background: #e6f2ff; padding: 4px 10px; border-radius: 8px; white-space: nowrap;">
+            ${grp.items.length} contact${grp.items.length > 1 ? 's' : ''}
+        </span>
+    `;
+    trg.appendChild(tdCompteur);
+    // Ajouter des cellules vides pour le colspan visuel
+    for (let i = 0; i < 8; i++) {
+        const emptyTd = document.createElement('td');
+        emptyTd.style.background = '#f5fbff';
+        trg.appendChild(emptyTd);
+    }
+    
     contactsBody.appendChild(trg);
     
     grp.items.forEach(c=>{
@@ -3721,6 +4729,8 @@ function renderTable(){
           <td>${escape(c.fixe)}</td>
           <td>${highlightText(escape(c.email), currentFilters.globalSearch)}</td>
           <td>${highlightText(escape(c.departement), currentFilters.globalSearch)}</td>
+          <!-- AJOUT : Colonne Région -->
+          <td>${escape(c.region)}</td>
           <td>${highlightText(escape(c.projet), currentFilters.globalSearch)}</td>
           <td class="actions-td">
               <button class="btn-small btn-edit" data-id="${c.id}" title="Modifier">✎</button>
@@ -3756,7 +4766,7 @@ function renderTable(){
   
   if(Object.keys(groups).length === 0){
     const tr = document.createElement('tr'); 
-    tr.innerHTML = `<td colspan="9" class="small-muted" style="padding:18px">Aucun contact — cliquez sur "Nouveau contact".</td>`;
+    tr.innerHTML = `<td colspan="10" class="small-muted" style="padding:18px">Aucun contact — cliquez sur "Nouveau contact".</td>`;
     contactsBody.appendChild(tr);
   }
   
@@ -3767,6 +4777,7 @@ function openModalForNew(){
   document.getElementById('modalTitle').textContent = 'Nouveau contact';
   contactForm.reset();
   fDepart.value = '';
+  fRegion.value = ''; // AJOUT : Réinitialiser région
   fCategory.value = '';
   modal.style.display = 'flex';
   
@@ -3793,6 +4804,7 @@ function openModalForEdit(id){
   fPortable.value = c.portable||'';
   fFixe.value = c.fixe||'';
   fEmail.value = c.email||'';
+  fRegion.value = c.region||''; // AJOUT : Charger la région
   fProjet.value = c.projet||'';
   
   let currentCategory = activeCat;
@@ -3870,10 +4882,8 @@ async function onSaveContact(e){
       if (existingContact) {
         existingData = {
           discussions: existingContact.discussions || [],
-          remark: existingContact.remark || '',
-          remarkLocked: existingContact.remarkLocked || false,
-          steps: existingContact.steps || {},
-          stepsLocked: existingContact.stepsLocked || false,
+          actions: existingContact.actions || [],
+          remarks: existingContact.remarks || [],
           created_at: existingContact.created_at
         };
       }
@@ -3889,13 +4899,12 @@ async function onSaveContact(e){
     portable: fPortable.value.trim(),
     fixe: fFixe.value.trim(),
     email: fEmail.value.trim(),
+    region: fRegion.value, // AJOUT : Sauvegarder la région
     projet: fProjet.value.trim(),
     category: category,
     discussions: editingId ? existingData.discussions : [],
-    remark: editingId ? existingData.remark : '',
-    remarkLocked: editingId ? existingData.remarkLocked : false,
-    steps: editingId ? existingData.steps : {},
-    stepsLocked: editingId ? existingData.stepsLocked : false,
+    actions: editingId ? existingData.actions : [],
+    remarks: editingId ? existingData.remarks : [],
     created_at: editingId ? existingData.created_at : new Date().toISOString()
   };
   
@@ -4029,94 +5038,94 @@ async function onDeleteContact(id){
 }
 
 function hidePlan(){ 
-  plan.style.display = 'none'; 
-  activeContactId = null; 
-  discussionCounter = 0;
-  stepCounter = 0;
-  document.getElementById('discussionsContainer').innerHTML = '';
-  document.getElementById('stepsContainer').innerHTML = '';
-  document.getElementById('remarkText').value = '';
-  document.getElementById('lockRemark').classList.remove('locked');
-  document.getElementById('lockRemark').classList.add('unlocked');
-  document.getElementById('lockRemark').textContent = '🔓';
-  document.getElementById('lockRemark').disabled = false;
-  document.getElementById('remarkText').disabled = false;
-  
-  const lockBtn = document.getElementById('lockAllSteps');
-  lockBtn.disabled = false;
-  lockBtn.textContent = '🔒 Verrouiller toutes les actions';
-  lockBtn.style.background = '#4caf50';
-  
-  addDiscussion();
-  addStep();
-  
-  // AJOUT : Remonter à la ligne qui a été cliquée
-  if (lastClickedRowElement) {
-    setTimeout(() => {
-      lastClickedRowElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      });
-      // Optionnel : surligner brièvement la ligne
-      lastClickedRowElement.classList.add('double-click-hint');
-      setTimeout(() => {
-        lastClickedRowElement.classList.remove('double-click-hint');
-      }, 1000);
-      
-      lastClickedRowElement = null;
-    }, 100);
-  }
+    plan.style.display = 'none'; 
+    activeContactId = null; 
+    
+    // NE PAS réinitialiser les compteurs et conteneurs ici
+    // Cette fonction est appelée trop souvent
+    // discussionCounter = 0;
+    // actionCounter = 0;
+    // remarkCounter = 0;
+    
+    // NE PAS vider les conteneurs non plus
+    // document.getElementById('discussionsContainer').innerHTML = '';
+    // document.getElementById('actionsContainer').innerHTML = '';
+    // document.getElementById('remarksContainer').innerHTML = '';
+    
+ 
+    
+    // AJOUT : Remonter à la ligne qui a été cliquée
+    if (lastClickedRowElement) {
+        setTimeout(() => {
+            lastClickedRowElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            lastClickedRowElement.classList.add('double-click-hint');
+            setTimeout(() => {
+                lastClickedRowElement.classList.remove('double-click-hint');
+            }, 1000);
+            
+            lastClickedRowElement = null;
+        }, 100);
+    }
 }
 
-async function onDeletePlan(){
-  if(!activeContactId) return;
-  if(!confirm('Vider tout le contenu de ce plan ?\n\n• Discussions\n• Actions\n• Remarques\n\nLe contact restera ouvert.')) return;
-  
-  const c = store.categories[activeCat].find(x=>x.id===activeContactId);
-  if(!c) return;
-  
-  // VIDER le contenu
-  c.discussions = [];
-  c.remark = '';
-  c.remarkLocked = false;
-  c.steps = {};
-  c.stepsLocked = false;
-  
-  try {
-    await saveContactToSupabase(c);
+// CORRECTION 4: Fonction pour supprimer TOUT le plan
+// CORRECTION : Fonction pour supprimer TOUT le plan
+async function onDeletePlan() {
+      if (!verifierMotDePasse("la suppression du plan général")) {
+        alert('❌ Mot de passe incorrect');
+        return;
+    }
+    console.log('🔴 SUPPRIMER TOUT LE PLAN');
     
-    // SIMPLE : Réinitialiser l'affichage directement
-    discussionCounter = 0;
-    stepCounter = 0;
+    if (!activeContactId) {
+        alert('❌ Aucun contact sélectionné');
+        return;
+    }
     
-    document.getElementById('discussionsContainer').innerHTML = '';
-    document.getElementById('stepsContainer').innerHTML = '';
-    document.getElementById('remarkText').value = '';
+    if (!confirm('🗑️ SUPPRIMER TOUT LE PLAN ?\n\nCette action est irréversible !')) {
+        return;
+    }
     
-    // Remettre les verrous en état déverrouillé
-    document.getElementById('lockRemark').classList.remove('locked');
-    document.getElementById('lockRemark').classList.add('unlocked');
-    document.getElementById('lockRemark').textContent = '🔓';
-    document.getElementById('lockRemark').disabled = false;
-    document.getElementById('remarkText').disabled = false;
-    
-    const lockBtn = document.getElementById('lockAllSteps');
-    lockBtn.disabled = false;
-    lockBtn.textContent = '🔒 Verrouiller toutes les actions';
-    lockBtn.style.background = '#4caf50';
-    
-    // Ajouter des champs vides
-    addDiscussion();
-    addStep();
-    
-    // Message simple
-    showSyncIndicator('✅ Plan vidé', 'success');
-    
-  } catch (error) {
-    alert('Erreur lors de la suppression');
-  }
+    try {
+        const container = document.getElementById('planRowsContainer');
+        
+        // 1. VIDER toutes les lignes
+        container.innerHTML = '';
+        console.log('✅ Toutes les lignes supprimées');
+        
+        // 2. SAUVEGARDER les données vides
+        const contact = store.categories[activeCat].find(x => x.id === activeContactId);
+        if (contact) {
+            contact.discussions = [];
+            contact.actions = [];
+            contact.remarks = [];
+            
+            showSyncIndicator('🔄 Sauvegarde plan vide...', 'syncing');
+            await saveContactToSupabase(contact);
+            
+            // Mettre à jour le store local
+            const contactIndex = store.categories[activeCat].findIndex(x => x.id === activeContactId);
+            if (contactIndex !== -1) {
+                store.categories[activeCat][contactIndex] = { ...contact };
+            }
+        }
+        
+        // 3. AJOUTER UNE SEULE LIGNE VIDE
+        addPlanRow();
+        
+        // 4. CONFIRMATION
+        showSyncIndicator('✅ Plan vidé !', 'success');
+        alert('✅ Plan entièrement supprimé !\nUne nouvelle ligne vide a été créée.');
+        
+    } catch (error) {
+        console.error('❌ Erreur:', error);
+        showSyncIndicator('❌ Erreur', 'error');
+        alert('❌ Erreur: ' + error.message);
+    }
 }
-
 /* ---------- FONCTIONS PDF ---------- */
 
 async function downloadClientPDF() {
@@ -4172,6 +5181,7 @@ async function downloadClientPDF() {
       `Contact: ${c.nom || 'Non renseigné'}`,
       `Poste: ${c.poste || 'Non renseigné'}`,
       `Département: ${c.departement || 'Non renseigné'}`,
+      `Région: ${c.region || 'Non renseigné'}`, // AJOUT : Afficher la région
       `Email: ${c.email || 'Non renseigné'}`,
       `Portable: ${c.portable || 'Non renseigné'}`,
       `Fixe: ${c.fixe || 'Non renseigné'}`,
@@ -4232,7 +5242,7 @@ async function downloadClientPDF() {
     
     yPosition += 5;
     
-    if (c.steps && Object.keys(c.steps).length > 0) {
+    if (c.actions && c.actions.length > 0) {
       if (yPosition > 250) {
         doc.addPage();
         yPosition = margin;
@@ -4241,25 +5251,25 @@ async function downloadClientPDF() {
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...secondaryColor);
-      doc.text('PLAN D\'ACTION', margin, yPosition);
+      doc.text('ACTIONS DU PLAN', margin, yPosition);
       yPosition += 10;
       
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
       
-      Object.keys(c.steps).forEach(stepKey => {
+      c.actions.forEach((action, index) => {
         if (yPosition > 270) {
           doc.addPage();
           yPosition = margin;
         }
         
         doc.setFont('helvetica', 'bold');
-        doc.text(`Action ${stepKey}:`, margin, yPosition);
+        doc.text(`Action ${index + 1}: ${action.name || 'Non spécifié'}`, margin, yPosition);
         yPosition += 6;
         
         doc.setFont('helvetica', 'normal');
-        const lines = doc.splitTextToSize(c.steps[stepKey] || 'Aucun détail', pageWidth - 2 * margin);
+        const lines = doc.splitTextToSize(action.text || 'Aucun détail', pageWidth - 2 * margin);
         lines.forEach(line => {
           if (yPosition > 270) {
             doc.addPage();
@@ -4274,7 +5284,7 @@ async function downloadClientPDF() {
     
     yPosition += 5;
     
-    if (c.remark) {
+    if (c.remarks && c.remarks.length > 0) {
       if (yPosition > 250) {
         doc.addPage();
         yPosition = margin;
@@ -4290,14 +5300,27 @@ async function downloadClientPDF() {
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(0, 0, 0);
       
-      const lines = doc.splitTextToSize(c.remark, pageWidth - 2 * margin);
-      lines.forEach(line => {
+      c.remarks.forEach((remark, index) => {
         if (yPosition > 270) {
           doc.addPage();
           yPosition = margin;
         }
-        doc.text(line, margin, yPosition);
-        yPosition += 5;
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Remarque ${index + 1}: ${remark.name || 'Non spécifié'}`, margin, yPosition);
+        yPosition += 6;
+        
+        doc.setFont('helvetica', 'normal');
+        const lines = doc.splitTextToSize(remark.text || 'Aucun texte', pageWidth - 2 * margin);
+        lines.forEach(line => {
+          if (yPosition > 270) {
+            doc.addPage();
+            yPosition = margin;
+          }
+          doc.text(line, margin + 5, yPosition);
+          yPosition += 5;
+        });
+        yPosition += 8;
       });
     }
     
@@ -4366,6 +5389,7 @@ async function downloadAllClientsPDF() {
         `Entreprise: ${c.entreprise || 'Non renseigné'}`,
         `Contact: ${c.nom || 'Non renseigné'}`,
         `Poste: ${c.poste || 'Non renseigné'}`,
+        `Région: ${c.region || 'Non renseigné'}`, // AJOUT : Afficher la région
         `Email: ${c.email || 'Non renseigné'}`,
         `Thème: ${c.projet || 'Non renseigné'}`
       ];
@@ -4418,11 +5442,15 @@ async function downloadAllClientsPDF() {
 }
 
 async function exportTablePDF() {
+
   if (!activeCat) {
     alert('Veuillez d\'abord sélectionner une catégorie');
     return;
   }
-
+    if (!verifierMotDePasse("la suppression d'une ligne du plan")) {
+        alert('❌ Mot de passe incorrect');
+        return;
+    }
   try {
     showSyncIndicator('🔄 Génération PDF liste...', 'syncing');
 
@@ -4462,13 +5490,14 @@ async function exportTablePDF() {
 
     const totalTableWidth = pageWidth - (2 * margin);
     const columns = [
-      { header: 'Entreprise', width: totalTableWidth * 0.18 },
-      { header: 'Nom', width: totalTableWidth * 0.16 },
-      { header: 'Poste', width: totalTableWidth * 0.18 },
-      { header: 'Portable', width: totalTableWidth * 0.12 },
-      { header: 'Email', width: totalTableWidth * 0.14 },
+      { header: 'Entreprise', width: totalTableWidth * 0.16 },
+      { header: 'Nom', width: totalTableWidth * 0.14 },
+      { header: 'Poste', width: totalTableWidth * 0.16 },
+      { header: 'Portable', width: totalTableWidth * 0.10 },
+      { header: 'Email', width: totalTableWidth * 0.12 },
       { header: 'Département', width: totalTableWidth * 0.07 },
-      { header: 'Thème', width: totalTableWidth * 0.15 }
+      { header: 'Région', width: totalTableWidth * 0.08 }, // AJOUT : Colonne région
+      { header: 'Thème', width: totalTableWidth * 0.17 }
     ];
 
     doc.setFillColor(240, 248, 255);
@@ -4595,8 +5624,13 @@ async function exportTablePDF() {
         doc.text(departement, currentX + 3, yPosition);
         currentX += columns[5].width;
         
+        // AJOUT : Afficher la région
+        const region = contact.region || '';
+        doc.text(region, currentX + 3, yPosition);
+        currentX += columns[6].width;
+        
         const theme = contact.projet || '';
-        const themeLines = doc.splitTextToSize(theme, columns[6].width - 6);
+        const themeLines = doc.splitTextToSize(theme, columns[7].width - 6);
         themeLines.forEach((line, index) => {
           if (index === 0) {
             doc.text(line, currentX + 3, yPosition);
@@ -4747,6 +5781,7 @@ const fDepart = document.getElementById('fDepart');
 const fPortable = document.getElementById('fPortable');
 const fFixe = document.getElementById('fFixe');
 const fEmail = document.getElementById('fEmail');
+const fRegion = document.getElementById('fRegion'); // AJOUT : Variable pour région
 const fProjet = document.getElementById('fProjet');
 const fCategory = document.getElementById('fCategory');
 </script>
