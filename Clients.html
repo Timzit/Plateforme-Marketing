@@ -2560,23 +2560,23 @@ function blockPrinting() {
     };
 }
 
-// BLOQUER LE COPIAGE (version corrigée)
-  // function blockCopying() {
-  //         document.addEventListener('keydown', function(e) {
-  //         if ((e.ctrlKey) && e.key === 'c') {
-  //             const isInTable = e.target.closest('table') || 
-  //                             e.target.closest('.table-wrap');
-  //             const isEditable = e.target.closest('input') || 
-  //                               e.target.closest('textarea');
+BLOQUER LE COPIAGE (version corrigée)
+  function blockCopying() {
+          document.addEventListener('keydown', function(e) {
+          if ((e.ctrlKey) && e.key === 'c') {
+              const isInTable = e.target.closest('table') || 
+                              e.target.closest('.table-wrap');
+              const isEditable = e.target.closest('input') || 
+                                e.target.closest('textarea');
               
-  //             if (isInTable && !isEditable) {
-  //                 e.preventDefault();
-  //                 showTempMessage('🚫 Copie désactivée');
-  //                 return false;
-  //             }
-  //         }
-  //     });   
-  //   }
+              if (isInTable && !isEditable) {
+                  e.preventDefault();
+                  showTempMessage('🚫 Copie désactivée');
+                  return false;
+              }
+          }
+      });   
+    }
 
 // 3. APPLIQUER LES STYLES DE PROTECTION
 function applyProtectionStyles() {
