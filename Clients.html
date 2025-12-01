@@ -1890,11 +1890,110 @@ tr.company-row td:nth-child(1) { /* NOM ENTREPRISE */
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
 }
+/* Styles pour la protection par mot de passe */
+.password-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#globalPassword {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #e6f2ff;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fbfeff;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+#globalPassword:focus {
+    border-color: #00529c;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 82, 156, 0.2);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+    background: #f0f0f0;
+    color: #00529c;
+}
+/* Styles pour les symboles de validation */
+.validation-symbol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.validation-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    background: #28a745;
+    color: white;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    padding: 0 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.validation-container {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+}
   </style>
   
 </head>
 <body>
-
+<div id="passwordProtection" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #00529c; z-index: 9999; display: flex; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
+        <h2 style="color: #00529c; margin-bottom: 20px;">🔒 Accès Protégé - NAPEC</h2>
+        <p style="color: #666; margin-bottom: 20px;">Accès réservé au personnel autorisé</p>
+        
+        <div class="password-container" style="margin-bottom: 20px;">
+            <input type="password" id="globalPassword" class="password-input" placeholder="Mot de passe d'accès" style="width: 100%; padding: 12px; border: 2px solid #e6f2ff; border-radius: 8px; font-size: 16px;">
+            <button type="button" class="toggle-password" onclick="toggleGlobalPassword()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">👁️</button>
+        </div>
+        
+        <button onclick="checkGlobalPassword()" style="background: #00529c; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">Accéder à la plateforme</button>
+        
+        <div id="passwordError" style="color: #dc3545; margin-top: 10px; display: none;">❌ Mot de passe incorrect</div>
+        
+        <div style="margin-top: 20px; font-size: 12px; color: #999;">
+            🔍 Accès surveillé - Toute connexion est enregistrée dans Supabase
+        </div>
+    </div>
+</div>
   <div class="sync-indicator" id="syncIndicator">🟢 Connecté</div>
   
   <header>
@@ -2266,7 +2365,314 @@ tr.company-row td:nth-child(1) { /* NOM ENTREPRISE */
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-  
+/* ========== PROTECTION PAR EMPREINTE NAVIGATEUR ========== */
+const AUTHORIZED_DEVICES = [
+    "device_5ab8e779",
+];
+
+const GLOBAL_PASSWORD = "NAPEEC2025";
+
+// Générer une empreinte unique du device
+function generateDeviceFingerprint() {
+    const components = [
+        navigator.userAgent,
+        navigator.platform,
+        navigator.language,
+        navigator.hardwareConcurrency || 'unknown',
+        screen.width + 'x' + screen.height,
+        new Date().getTimezoneOffset(),
+        !!navigator.pdfViewerEnabled,
+        navigator.deviceMemory || 'unknown'
+    ];
+    
+    let hash = 0;
+    const str = components.join('|');
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    
+    return 'device_' + Math.abs(hash).toString(16);
+}
+
+// Protection principale - CORRIGÉE
+function initializeAccessProtection() {
+    const protectionDiv = document.getElementById('passwordProtection');
+    const deviceFingerprint = generateDeviceFingerprint();
+    
+    console.log('🔍 Empreinte device:', deviceFingerprint);
+    
+    // 1. VÉRIFIER SI DÉJÀ AUTHENTIFIÉ DANS CETTE SESSION
+    if (sessionStorage.getItem('napec_authenticated') === 'true') {
+        protectionDiv.style.display = 'none';
+        console.log('✅ Session déjà authentifiée - accès direct');
+        return;
+    }
+    
+    // 2. VÉRIFIER SI APPAREIL AUTORISÉ
+    if (AUTHORIZED_DEVICES.length === 0) {
+        // Liste vide = tous appareils autorisés mais mot de passe requis
+        protectionDiv.style.display = 'flex';
+        console.log('📝 Liste vide - mot de passe requis');
+    } 
+    else if (AUTHORIZED_DEVICES.includes(deviceFingerprint)) {
+        // Appareil autorisé mais mot de passe requis
+        protectionDiv.style.display = 'flex';
+        console.log('✅ Appareil autorisé - mot de passe requis');
+    }
+    else {
+        // Appareil NON autorisé - bloquer complètement
+        showDeviceBlockMessage(deviceFingerprint);
+        console.log('❌ Appareil NON autorisé - accès bloqué');
+    }
+}
+
+// Message de blocage appareil non autorisé
+function showDeviceBlockMessage(fingerprint) {
+    const protectionDiv = document.getElementById('passwordProtection');
+    protectionDiv.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 500px; width: 90%;">
+            <h2 style="color: #dc3545;">🚫 Appareil Non Autorisé</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Cet appareil n'est pas reconnu dans la liste des appareils autorisés.
+            </p>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                <strong>Code appareil :</strong><br>
+                <code style="font-size: 12px; color: #666;">${fingerprint}</code>
+            </div>
+            <p style="color: #999; font-size: 12px;">
+                Contactez l'administrateur pour autoriser cet appareil.
+            </p>
+            <button onclick="location.reload()" style="background: #00529c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 15px;">
+                🔄 Réessayer
+            </button>
+        </div>
+    `;
+    protectionDiv.style.display = 'flex';
+}
+
+// Vérification mot de passe
+function checkGlobalPassword() {
+    const passwordInput = document.getElementById('globalPassword');
+    const errorDiv = document.getElementById('passwordError');
+    const enteredPassword = passwordInput.value.trim();
+    
+    if (enteredPassword === GLOBAL_PASSWORD) {
+        // ✅ MARQUER COMME AUTHENTIFIÉ POUR CETTE SESSION
+        sessionStorage.setItem('napec_authenticated', 'true');
+        
+        document.getElementById('passwordProtection').style.display = 'none';
+        showSyncIndicator('✅ Accès autorisé', 'success');
+    } else {
+        errorDiv.style.display = 'block';
+        passwordInput.style.borderColor = '#dc3545';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+            passwordInput.style.borderColor = '#e6f2ff';
+        }, 3000);
+    }
+}
+
+// Basculer visibilité mot de passe
+function toggleGlobalPassword() {
+    const passwordInput = document.getElementById('globalPassword');
+    const toggleBtn = event.target;
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁️';
+    }
+}
+
+// ========== OUTIL ADMIN ==========
+function setupDeviceRegistration() {
+    const adminBtn = document.createElement('button');
+    adminBtn.textContent = '🔧 ADMIN - Générer Code';
+    adminBtn.style.cssText = `
+        position: fixed; 
+        bottom: 20px; 
+        right: 20px; 
+        z-index: 10000; 
+        background: #00529c; 
+        color: white; 
+        padding: 12px 16px; 
+        border: none; 
+        border-radius: 8px; 
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    
+    adminBtn.onclick = function() {
+        const fingerprint = generateDeviceFingerprint();
+        const codeToAdd = `"${fingerprint}"`;
+        
+        alert(`🖥️ CODE POUR CET APPAREIL :\n\n${fingerprint}\n\n📋 Code à copier :\n${codeToAdd}\n\n➡️ Ajoutez cette ligne à AUTHORIZED_DEVICES`);
+        
+        // Copier automatiquement
+        navigator.clipboard.writeText(codeToAdd).then(() => {
+            console.log('✅ Code copié dans le presse-papier');
+        });
+    };
+    
+    document.body.appendChild(adminBtn);
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAccessProtection();
+    setupDeviceRegistration();
+});
+/* ========== PROTECTION CONTRE LA COPIE ET IMPRESSION ========== */
+function enableDataProtection() {
+    blockPrinting();
+    blockCopying();
+    applyProtectionStyles();
+}
+
+// 1. BLOQUER L'IMPRESSION
+function blockPrinting() {
+    // Intercepter Ctrl+P
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+            e.preventDefault();
+            showProtectionMessage('🚫 Impression désactivée');
+            return false;
+        }
+        
+        // Bloquer F12 (DevTools)
+        if (e.key === 'F12') {
+            e.preventDefault();
+            showProtectionMessage('🚫 Outils développeurs désactivés');
+            return false;
+        }
+    });
+    
+    // Désactiver l'impression via le menu
+    window.onbeforeprint = function(event) {
+        event.preventDefault();
+        showProtectionMessage('🚫 Impression désactivée');
+        return false;
+    };
+}
+
+// BLOQUER LE COPIAGE (version corrigée)
+  // function blockCopying() {
+  //         document.addEventListener('keydown', function(e) {
+  //         if ((e.ctrlKey) && e.key === 'c') {
+  //             const isInTable = e.target.closest('table') || 
+  //                             e.target.closest('.table-wrap');
+  //             const isEditable = e.target.closest('input') || 
+  //                               e.target.closest('textarea');
+              
+  //             if (isInTable && !isEditable) {
+  //                 e.preventDefault();
+  //                 showTempMessage('🚫 Copie désactivée');
+  //                 return false;
+  //             }
+  //         }
+  //     });   
+  //   }
+
+// 3. APPLIQUER LES STYLES DE PROTECTION
+function applyProtectionStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Bloquer la sélection */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Autoriser sélection dans champs texte */
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        
+        /* Cacher à l'impression */
+        @media print {
+            body * {
+                visibility: hidden !important;
+                display: none !important;
+            }
+            
+            body::before {
+                content: "🚫 PLATEFORME CONFIDENTIELLE - IMPRESSION DÉSACTIVÉE";
+                visibility: visible !important;
+                display: block;
+                text-align: center;
+                font-size: 24px;
+                color: #dc3545;
+                margin-top: 100px;
+                font-weight: bold;
+            }
+        }
+        
+        /* Effet visuel sur les tableaux */
+        table {
+            position: relative;
+        }
+        
+        table::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            pointer-events: none;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// 4. MESSAGE DE PROTECTION
+function showProtectionMessage(text) {
+    // Supprimer les messages existants
+    const existingMessages = document.querySelectorAll('.protection-message');
+    existingMessages.forEach(msg => msg.remove());
+    
+    const message = document.createElement('div');
+    message.className = 'protection-message';
+    message.textContent = text;
+    message.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #dc3545;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        z-index: 10000;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        font-size: 14px;
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        if (document.body.contains(message)) {
+            document.body.removeChild(message);
+        }
+    }, 2000);
+}
+
+// INITIALISATION
+document.addEventListener('DOMContentLoaded', function() {
+    enableDataProtection();
+});
   function verifierMotDePasse(action) {
     const password = prompt(`🔒 Mot de passe requis pour ${action} :`);
     return password === "Simba";
@@ -3409,8 +3815,47 @@ document.addEventListener('DOMContentLoaded', async function() {
   
  
 });
-
+// Fonction VBS pour le raccourci
+function createVBSShortcut() {
+    const siteUrl = "https://platforme-marketing.netlify.app/clients";
+    
+    const vbsContent = `
+Set WshShell = WScript.CreateObject("WScript.Shell")
+desktopPath = WshShell.SpecialFolders("Desktop")
+Set link = WshShell.CreateShortcut(desktopPath & "\\\\Gestion_Clients.url")
+link.TargetPath = "${siteUrl}"
+link.Save
+WScript.Echo "Raccourci créé sur le Bureau !"
+`;
+    
+    const blob = new Blob([vbsContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Creer_Raccourci.vbs';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+    
+    showSyncIndicator('✅ Script VBS créé !', 'success');
+    
+    alert(`✅ Script de création de raccourci téléchargé !`);
+}
 function initializeEventListeners() {
+
+
+      // AJOUT : Événements pour la protection
+    document.getElementById('globalPassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkGlobalPassword();
+        }
+    });
   // Événements des catégories
   document.querySelectorAll('.cat-btn').forEach(el => {
     el.addEventListener('click', function() {
@@ -3524,6 +3969,8 @@ initializePlanButtons();
   // Événements pour le tri
   document.getElementById('sortSelect').addEventListener('change', function() {
     currentSort = this.value;
+        // PROTECTION DES DONNÉES
+    enableDataProtection();
     applyFiltersAndRender();
     updateSortInfo();
     updateSortIndicators();
@@ -4832,12 +5279,12 @@ function renderTable(){
   
   const sortedGroups = Object.keys(groups).sort((a,b)=> groups[a].name.localeCompare(groups[b].name));
   
-sortedGroups.forEach(k=>{
+  sortedGroups.forEach(k=>{
     const grp = groups[k];
     const trg = document.createElement('tr'); 
     trg.className='company-row';
   
-     const tdEntreprise = document.createElement('td'); 
+    const tdEntreprise = document.createElement('td'); 
     tdEntreprise.innerHTML = `
         <strong style="font-size: 14px; display: block; padding: 8px 12px; ">
             ${highlightText(grp.name, currentFilters.globalSearch)}
@@ -4845,7 +5292,6 @@ sortedGroups.forEach(k=>{
     `;
     trg.appendChild(tdEntreprise);
     
-    // CELLULE 2 : COMPTEUR DE CONTACTS (fixe)
     const tdCompteur = document.createElement('td'); 
     tdCompteur.innerHTML = `
         <span style="font-size: 11px; color: #00529c; background: #e6f2ff; padding: 4px 10px; border-radius: 8px; white-space: nowrap;">
@@ -4853,7 +5299,7 @@ sortedGroups.forEach(k=>{
         </span>
     `;
     trg.appendChild(tdCompteur);
-    // Ajouter des cellules vides pour le colspan visuel
+    
     for (let i = 0; i < 8; i++) {
         const emptyTd = document.createElement('td');
         emptyTd.style.background = '#f5fbff';
@@ -4879,10 +5325,9 @@ sortedGroups.forEach(k=>{
 
       const hasDiscussions = c.discussions && c.discussions.length > 0;
 
-      // MODIFICATION : Afficher TOUS les points colorés des discussions
+      // Afficher les points colorés des discussions
       let personColorIndicators = '';
       if (hasDiscussions) {
-          // Prendre les 8 dernières discussions maximum pour éviter le débordement
           const recentDiscussions = c.discussions.slice(-8);
           recentDiscussions.forEach(discussion => {
               if (discussion && discussion.name) {
@@ -4891,18 +5336,33 @@ sortedGroups.forEach(k=>{
               }
           });
           
-          // Si plus de 4 discussions, ajouter un indicateur
           if (c.discussions.length > 4) {
               personColorIndicators += `<span class="person-more-indicator" title="${c.discussions.length} discussions">+${c.discussions.length - 4}</span>`;
+          }
+      }
+
+      // NOUVEAU : Calculer le nombre de remarques verrouillées
+      const lockedRemarksCount = c.remarks ? c.remarks.filter(remark => remark.locked).length : 0;
+      
+      // Afficher le symbole de validation si des remarques sont verrouillées
+      let validationSymbol = '';
+      if (lockedRemarksCount > 0) {
+          if (lockedRemarksCount === 1) {
+              validationSymbol = `<span class="validation-symbol" title="${lockedRemarksCount} remarque verrouillée">✓</span>`;
+          } else {
+              validationSymbol = `<span class="validation-count" title="${lockedRemarksCount} remarques verrouillées">${lockedRemarksCount}</span>`;
           }
       }
 
       tr.innerHTML = `
           <td>${highlightText(escape(c.entreprise), currentFilters.globalSearch)}</td>
           <td>
-              <div class="color-indicators-container">
-                  ${personColorIndicators}
+              <div style="display: flex; align-items: center;">
+                  <div class="color-indicators-container">
+                      ${personColorIndicators}
+                  </div>
                   ${highlightText(escape(c.nom), currentFilters.globalSearch)}
+                  ${validationSymbol}
               </div>
           </td>
           <td>${highlightText(escape(c.poste), currentFilters.globalSearch)}</td>
@@ -4910,7 +5370,6 @@ sortedGroups.forEach(k=>{
           <td>${escape(c.fixe)}</td>
           <td>${highlightText(escape(c.email), currentFilters.globalSearch)}</td>
           <td>${highlightText(escape(c.departement), currentFilters.globalSearch)}</td>
-          <!-- AJOUT : Colonne Région -->
           <td>${escape(c.region)}</td>
           <td>${highlightText(escape(c.projet), currentFilters.globalSearch)}</td>
           <td class="actions-td">
@@ -4919,19 +5378,16 @@ sortedGroups.forEach(k=>{
           </td>
       `;
       
-      // Le reste du code reste inchangé...
       tr.addEventListener('click', (e)=>{
-    if(e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
-    
-    // Simple clic pour sélection PDF
-    if (e.detail === 1) { // Simple clic
-        selectContactForPDF(c.id, tr);
-    }
-    // Double clic pour ouvrir le plan d'action
-    else if (e.detail === 2) {
-        openPlan(c.id);
-    }
-});
+        if(e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
+        
+        if (e.detail === 1) {
+            selectContactForPDF(c.id, tr);
+        }
+        else if (e.detail === 2) {
+            openPlan(c.id);
+        }
+      });
       
       tr.querySelector('.btn-edit').addEventListener('click', (ev)=>{ 
           ev.stopPropagation(); 
@@ -4952,6 +5408,13 @@ sortedGroups.forEach(k=>{
   }
   
   updateFilterResults();
+}
+// Fonction pour compter les remarques verrouillées d'un contact
+function countLockedRemarks(contact) {
+    if (!contact.remarks || !Array.isArray(contact.remarks)) {
+        return 0;
+    }
+    return contact.remarks.filter(remark => remark.locked === true).length;
 }
 function openModalForNew(){
   editingId = null;
@@ -5198,6 +5661,12 @@ function getOptionColorClass(personName) {
     return `option-${colorKey}`;
 }
 async function onDeleteContact(id){
+
+// 🔒 PROTECTION PAR MOT DE PASSE UNIQUEMENT DANS L'INTERFACE
+  if (!verifierMotDePasse("la suppression d'un contact")) {
+    alert('❌ Mot de passe incorrect');
+    return;
+  }
   if(!confirm('Supprimer ce contact ?')) return;
   
   try {
@@ -5219,7 +5688,21 @@ async function onDeleteContact(id){
     alert('Erreur lors de la suppression du contact');
   }
 }
+async function deleteContactFromSupabase(id) {
+  try {
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', id);
 
+    if (error) throw error;
+    
+    return true;
+  } catch (error) {
+    console.error('Erreur suppression Supabase:', error);
+    throw error;
+  }
+}
 function hidePlan(){ 
     plan.style.display = 'none'; 
     activeContactId = null; 
